@@ -1,0 +1,12 @@
+material:human_flesh
+   name:Human Flesh
+   description:An elastic material that is resistant to minor forces.  May be covered in fine hair.
+   density:300
+   mass:100
+   hardness:200
+   elasticity:2800
+   rigidity:200
+   compressibility:1200
+   toughness:800
+   melting_point:8800
+   boiling_point:14000

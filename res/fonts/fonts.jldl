@@ -1,0 +1,18 @@
+font:EpilepsySansMono
+   name:Epilepsy Sans
+   file:store/EpilepsySans.ttf
+   small_size:13
+   default_size:26
+   large_size:52
+font:FairfaxMono
+   name:Fairfax
+   file:store/Fairfax.ttf
+   small_size:12
+   default_size:24
+   large_size:48
+font:PressStart2P
+   name:Press Start 2P
+   file:store/PressStart2P.ttf
+   small_size:8
+   default_size:16
+   large_size:32

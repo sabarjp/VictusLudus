@@ -1,0 +1,42 @@
+background:EZU
+   name:EZ University
+   description:A bachelor's degree in arts from good old EZ U will go a long way... if you put in more effort than everyone else.
+   degree:BA
+   respect:10
+   capital:40000
+   credit:A
+background:HometownU
+   name:Hometown U
+   description:Your degree in science from Hometown is at least tangentially relevant to success in the health care industry.
+   degree:BS
+   respect:15
+   capital:60000
+   credit:A
+background:UoIvy
+   name:University of Ivy
+   description:A doctorate in the field of theology may not be relevant, but most people don't know that.  Too bad you are still paying loans on your tuition.
+   degree:Th.D
+   respect:50
+   capital:110000
+   credit:BBB
+background:FieldsMed
+   name:Fields Medical School
+   description:You squeaked through medical school and are eager to start a business to pay off your sky-high debt.
+   degree:MD
+   respect:70
+   capital:140000
+   credit:CC
+background:AurumMed
+   name:Aurum Medical School
+   description:One of the top medical schools in the world couldn't even slow you down.  Now it is time to pay the bills.
+   degree:MD
+   respect:90
+   capital:190000
+   credit:CCC
+background:RailHigh
+   name:Railton High School
+   description:You never had enough money for college.  Uncle Jeb just passed away though and you got a nice inheritence!  Time to start your dream business!
+   degree:
+   respect:0
+   capital:55000
+   credit:AAA
