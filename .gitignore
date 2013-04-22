@@ -1,6 +1,8 @@
 bin
 .metadata
 /preferences.jldl
-.settings
+/.settings
+/.classpath
+/.project
 /log.txt
 /log.txt.1
