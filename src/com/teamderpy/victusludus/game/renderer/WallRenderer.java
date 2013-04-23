@@ -31,7 +31,7 @@ public class WallRenderer {
 
 		gameRenderer.game.getGameDimensions().setWallHeight(this.wallSheet.getHeight() / this.wallSheet.getVerticalCount());
 		gameRenderer.game.getGameDimensions().setWallWidth(this.wallSheet.getWidth() / this.wallSheet.getHorizontalCount());
-		gameRenderer.game.getGameDimensions().setLayerHeight(gameRenderer.game.getWallHeightS());
+		//gameRenderer.game.getGameDimensions().setLayerHeight(gameRenderer.game.getWallHeightS());
 	}
 
 	/**

@@ -82,6 +82,25 @@ public final class RenderUtil {
 	}
 
 	/**
+	 * Gets a world coordinate for a tile at x,y and returns the starting position on the screen of where to start the render
+	 * This returns an array with the x and y positions to avoid object overhead
+	 * This function has no camera offse or scaling applied!
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param layer the layer
+	 * @return the screen coord as an array with 2 elements, x and y
+	 */
+	public static int[] worldCoordToRawUnscaledScreenCoord(final int x, final int y, final int layer){
+		Game game = VictusLudus.e.currentGame;
+
+		float actualX = x*(game.getGameDimensions().getTileWidth()/2)-y*(game.getGameDimensions().getTileWidth()/2);
+		float actualY = y*(game.getGameDimensions().getTileHeight()/2)+x*(game.getGameDimensions().getTileHeight()/2)-layer*game.getGameDimensions().getLayerHeight();
+
+		return new int[]{(int)actualX, (int)actualY, layer};
+	}
+
+	/**
 	 * gets screen coordinates and current z layer and returns the world coordinate for a tile at x,y
 	 * This returns an array with the x, y, and z positions to avoid object overhead
 	 *
@@ -91,13 +110,43 @@ public final class RenderUtil {
 	 * @param calculateWallFacing the calculate wall facing
 	 * @return the world coord as an array with 3 elements, x y and z
 	 */
-	public static int[] screenCoordToRawWorldCoord(final float x, final float y, final int layer, final boolean calculateWallFacing){
+	public static int[] screenCoordToRawWorldCoord(final float x, final float y, final int layer){
 		Game game = VictusLudus.e.currentGame;
 
-		WorldCoordSelection w = new WorldCoordSelection(0,0);
+		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthS();
+		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer*game.getLayerHeightS())) / game.getTileHeightS();
+		int isoTileX, isoTileY;
 
-		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / (32 * game.getGameCamera().getZoom());
-		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer*game.getLayerHeightS())) / (32 * game.getGameCamera().getZoom() / 2);
+		if(virtualTileX + virtualTileY < 0.5){
+			isoTileX = (int)(virtualTileY + virtualTileX - 1.5f);
+			isoTileY = (int)(virtualTileY - virtualTileX - 1.5f);
+		} else if(virtualTileY - virtualTileX < 0){
+			isoTileX = (int)(virtualTileY + virtualTileX);
+			isoTileY = (int)(virtualTileY - virtualTileX - 0.5f);
+		} else {
+			isoTileX = (int)(virtualTileY + virtualTileX - 0.5f);
+			isoTileY = (int)(virtualTileY - virtualTileX + 0.5f);
+		}
+
+		return new int[]{isoTileX, isoTileY, layer};
+	}
+
+	/**
+	 * gets screen coordinates and current z layer and returns the world coordinate for a tile at x,y
+	 * This returns an array with the x, y, and z positions to avoid object overhead
+	 * This function has no camera offse or scaling applied!
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @param layer the layer
+	 * @param calculateWallFacing the calculate wall facing
+	 * @return the world coord as an array with 3 elements, x y and z
+	 */
+	public static int[] screenCoordToRawUnscaledWorldCoord(final float x, final float y, final int layer){
+		Game game = VictusLudus.e.currentGame;
+
+		float virtualTileX = x / game.getGameDimensions().getTileWidth();
+		float virtualTileY = (y + layer*game.getGameDimensions().getLayerHeight()) / game.getGameDimensions().getTileHeight();
 		int isoTileX, isoTileY;
 
 		if(virtualTileX + virtualTileY < 0.5){
@@ -129,8 +178,8 @@ public final class RenderUtil {
 
 		WorldCoordSelection w = new WorldCoordSelection(0,0);
 
-		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / (32 * game.getGameCamera().getZoom());
-		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer*game.getLayerHeightS())) / (32 * game.getGameCamera().getZoom() / 2);
+		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthS();
+		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer*game.getLayerHeightS())) / game.getTileHeightS();
 		int isoTileX, isoTileY;
 
 		if(virtualTileX + virtualTileY < 0.5){

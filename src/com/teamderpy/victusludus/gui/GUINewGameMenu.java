@@ -124,14 +124,12 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 
 		this.worldSizeSelect = new GUISelectFieldHorizontal(0, 0, "World size", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
 		this.worldSizeSelect.setCentered(true);
-		this.worldSizeSelect.addItem("Micro", "50", "A miniature area");
-		this.worldSizeSelect.addItem("Tiny", "75", "A very small area");
-		this.worldSizeSelect.addItem("Small", "100", "A small area");
-		this.worldSizeSelect.addItem("Average", "150", "A normal area");
-		this.worldSizeSelect.setCurrentSelectionIndex(3);
-		this.worldSizeSelect.addItem("Large", "200", "A large area");
-		this.worldSizeSelect.addItem("Huge", "250", "A huge area");
-		this.worldSizeSelect.addItem("Massive", "315", "A mammoth area");
+		this.worldSizeSelect.addItem("Tiny", "32", "A very small area");
+		this.worldSizeSelect.addItem("Small", "64", "A small area");
+		this.worldSizeSelect.addItem("Average", "128", "A normal area");
+		this.worldSizeSelect.setCurrentSelectionIndex(2);
+		this.worldSizeSelect.addItem("Large", "256", "A large area");
+		this.worldSizeSelect.addItem("Huge", "512", "A huge area");
 		this.worldSizeSelect.setTooltip("Pick the size of your starting area");
 		this.elementList.add(this.worldSizeSelect);
 		this.menuList.add(this.worldSizeSelect);
