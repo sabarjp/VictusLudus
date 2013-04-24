@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.InputPoller;
 import com.teamderpy.victusludus.engine.MousePointer;
 import com.teamderpy.victusludus.game.entity.GameEntity;
@@ -22,7 +22,6 @@ import com.teamderpy.victusludus.gui.eventhandler.event.EnumRenderEventType;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyboardEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.RenderEvent;
-import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 import com.teamderpy.victusludus.parts.Entity;
 import com.teamderpy.victusludus.parts.EnumBuildMode;
 
@@ -80,16 +79,21 @@ public class Game implements KeyboardListener, MouseListener{
 	/** The current dialog. */
 	private DialogBox currentDialog = null;
 
-	/** Whether or not the game is actually running yet */
+	/** Whether or not the game is actually running yet. */
 	private boolean isRunning = false;
 
-	/** Signal to terminate the game */
+	/** Signal to terminate the game. */
 	private boolean quitSignal = false;
 
 	/**
-	 * Instantiates a new game.
+	 * Initializes the game
+	 * @throws GameException
 	 */
-	public Game(final GameSettings requestedSettings){
+	public void init(final GameSettings requestedSettings) throws GameException{
+		if(requestedSettings == null){
+			throw new GameException();
+		}
+
 		this.gameDimensions = new GameDimensions();
 
 		//setup game map
@@ -140,7 +144,7 @@ public class Game implements KeyboardListener, MouseListener{
 	public void zoomOut(){
 		if(this.gameCamera.getZoom() > 0.25){
 			this.gameCamera.setZoom(this.gameCamera.getZoom() / 2);
-			VictusLudus.e.eventHandler.signal(new ResizeEvent(VictusLudus.e.currentDisplayMode, Display.getWidth(), Display.getHeight()));
+			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.ZOOM));
 		}
 	}
 
@@ -150,7 +154,7 @@ public class Game implements KeyboardListener, MouseListener{
 	public void zoomIn(){
 		if(this.gameCamera.getZoom() < 4){
 			this.gameCamera.setZoom(this.gameCamera.getZoom() * 2);
-			VictusLudus.e.eventHandler.signal(new ResizeEvent(VictusLudus.e.currentDisplayMode, Display.getWidth(), Display.getHeight()));
+			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.ZOOM));
 		}
 	}
 
@@ -417,7 +421,7 @@ public class Game implements KeyboardListener, MouseListener{
 			this.gameCamera.setOffsetX(this.gameCamera.getOffsetX() - (this.rightClickX - mouseEvent.getX()));
 			this.gameCamera.setOffsetY(this.gameCamera.getOffsetY() - (this.rightClickY - mouseEvent.getY()));
 
-			this.map.getLightMap().calculateLightMap(this.currentDepth);
+			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.SCROLL_MAP));
 
 			this.rightClickX = mouseEvent.getX();
 			this.rightClickY = mouseEvent.getY();
@@ -626,18 +630,38 @@ public class Game implements KeyboardListener, MouseListener{
 		this.map.addEntity(new GameEntity(objectID, x, y, z));
 	}
 
+	/**
+	 * Checks if is running.
+	 *
+	 * @return true, if is running
+	 */
 	public boolean isRunning() {
 		return this.isRunning;
 	}
 
+	/**
+	 * Sets the running.
+	 *
+	 * @param isRunning the new running
+	 */
 	public void setRunning(final boolean isRunning) {
 		this.isRunning = isRunning;
 	}
 
+	/**
+	 * Checks if is quit signal.
+	 *
+	 * @return true, if is quit signal
+	 */
 	public boolean isQuitSignal() {
 		return this.quitSignal;
 	}
 
+	/**
+	 * Sets the quit signal.
+	 *
+	 * @param quitSignal the new quit signal
+	 */
 	public void setQuitSignal(final boolean quitSignal) {
 		this.quitSignal = quitSignal;
 	}

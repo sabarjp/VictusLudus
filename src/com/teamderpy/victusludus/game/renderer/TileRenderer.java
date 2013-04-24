@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.SpriteSheet;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.WorldCoord;
@@ -49,6 +50,9 @@ public class TileRenderer implements RenderListener{
 
 		this.registerListeners();
 		this.culledTileArray = new GameTile[0];
+
+		//initial render
+		this.calculateCulledTiles();
 	}
 
 	/**
@@ -171,7 +175,7 @@ public class TileRenderer implements RenderListener{
 		int xStep = this.gameRenderer.game.getGameDimensions().getTileWidth()/2;
 		int yStep = this.gameRenderer.game.getGameDimensions().getTileHeight()/2;
 
-		System.err.println(X1 + "," + Y1 + " thru " + X2 + "," + Y2 + "   step:" + xStep + "," + yStep);
+		//System.err.println(X1 + "," + Y1 + " thru " + X2 + "," + Y2 + "   step:" + xStep + "," + yStep);
 
 		//cull tiles by depth
 		//split the screen into a grid
@@ -209,9 +213,22 @@ public class TileRenderer implements RenderListener{
 	public void cullRender(final ArrayList<GameTile> overlayList, final int layer){
 		this.tileSheet.startUse();
 
+		int rightBound =  VictusLudus.e.currentGame.getGameDimensions().getWidth() - this.gameRenderer.game.getTileWidthS();
+		int bottomBound = VictusLudus.e.currentGame.getGameDimensions().getHeight() - this.gameRenderer.game.getTileHeightS();;
+
 		//render tile list
 		for (GameTile t : this.culledTileArray) {
 			int[] sc = RenderUtil.worldCoordToRawScreenCoord(t.getPos().getX(), t.getPos().getY(), t.getPos().getZ());
+
+			//cull tiles not on the screen
+			if(sc[0] < 0 || sc[1] < 0 || sc[0] > rightBound || sc[1] > bottomBound){
+				continue;  //skip
+			}
+
+			//color by depth -- this is too slow to keep
+			float colorModDepth = (t.getPos().getZ() - (layer-15)) / 15.0F;
+			Color colorDepth = new Color(colorModDepth,colorModDepth,colorModDepth);
+			colorDepth.bind();
 
 			this.tileSheet.renderInUse(sc[0], sc[1],
 					VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,

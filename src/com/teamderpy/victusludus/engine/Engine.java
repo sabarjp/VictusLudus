@@ -17,6 +17,7 @@ import org.newdawn.slick.SlickException;
 import com.teamderpy.victusludus.data.DataReader;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.Game;
+import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.gui.DialogBox;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
@@ -639,15 +640,25 @@ public class Engine{
 	}
 
 	/**
-	 * Change the game, or remove the running one if passed a null value
+	 * Change the game, or remove the running one if passed a null value.
 	 *
 	 * @param game the game, or null to not run the current game
+	 * @param requestedSettings the requested settings to start the game with (not used if game passed is null)
 	 */
-	public void changeGame(final Game game){
+	public void changeGame(final Game game, final GameSettings requestedSettings){
 		if (this.currentGame != null){
 			this.currentGame.unregisterListeners();
 		}
 		this.currentGame = game;
+
+		if(game != null){
+			try {
+				this.currentGame.init(requestedSettings);
+			} catch (GameException e) {
+				e.printStackTrace();
+			}
+		}
+
 		InputPoller.forceMouseMove();
 	}
 
@@ -659,7 +670,7 @@ public class Engine{
 
 		if (this.currentGame != null){
 			this.currentGame.setRunning(false);
-			this.changeGame(null);
+			this.changeGame(null, null);
 		}
 
 		VictusLudus.e.mousePointer.loadPointer(MousePointer.DEFAULT_CURSOR);

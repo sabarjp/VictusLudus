@@ -82,7 +82,7 @@ public class LightMap implements RenderListener{
 			sightMapByteArray[i] = 0;
 			sightMapByteArray[i+1] = 0;
 			sightMapByteArray[i+2] = 0;
-			sightMapByteArray[i+3] = (byte)0;
+			sightMapByteArray[i+3] = (byte)128;
 		}
 
 		float xblock = (float)VictusLudus.e.currentGame.getGameDimensions().getWidth()/this.sightMapResolution;
@@ -223,7 +223,9 @@ public class LightMap implements RenderListener{
 
 	@Override
 	public void onRenderChangeEvent(final RenderEvent renderEvent) {
-		if(renderEvent.getEventType() == EnumRenderEventType.CHANGE_DEPTH){
+		if(renderEvent.getEventType() == EnumRenderEventType.CHANGE_DEPTH ||
+				renderEvent.getEventType() == EnumRenderEventType.ZOOM ||
+				renderEvent.getEventType() == EnumRenderEventType.SCROLL_MAP){
 			this.calculateLightMap(VictusLudus.e.currentGame.getCurrentDepth());
 		}
 	}

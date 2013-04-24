@@ -67,7 +67,7 @@ public class GameRenderer implements ResizeListener{
 		this.tileRenderer.render(map.getMap(), map.getTileOverlayList(), layer);
 		//this.wallRenderer.render(map.getMap(), layer);
 		//this.entityRenderer.render(map.getEntities(), layer);
-		//map.getLightMap().renderLightMap(layer);
+		map.getLightMap().renderLightMap(layer);
 
 		//this.renderBuffer.draw(0, 0);
 	}
