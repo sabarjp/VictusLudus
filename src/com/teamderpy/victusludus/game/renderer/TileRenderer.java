@@ -210,6 +210,14 @@ public class TileRenderer implements RenderListener{
 		Arrays.sort(this.culledTileArray, new RenderComparator());
 	}
 
+	/**
+	 * Renders the tiles that we culled for occlusion
+	 * We will also only render tiles that are on the screen here and
+	 * we will make sure that hidden tiles are replaced with the hidden placeholder
+	 * 
+	 * @param overlayList
+	 * @param layer
+	 */
 	public void cullRender(final ArrayList<GameTile> overlayList, final int layer){
 		this.tileSheet.startUse();
 
