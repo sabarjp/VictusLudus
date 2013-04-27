@@ -218,21 +218,36 @@ public class TileRenderer implements RenderListener{
 
 		//render tile list
 		for (GameTile t : this.culledTileArray) {
+			boolean showHidden = false; //whether or not the tile is hidden
+
 			int[] sc = RenderUtil.worldCoordToRawScreenCoord(t.getPos().getX(), t.getPos().getY(), t.getPos().getZ());
 
-			//cull tiles not on the screen
+			//skip tiles not on the screen
 			if(sc[0] < 0 || sc[1] < 0 || sc[0] > rightBound || sc[1] > bottomBound){
 				continue;  //skip
 			}
 
-			//color by depth -- this is too slow to keep
+			//color by depth -- this may be too slow to keep
 			float colorModDepth = (t.getPos().getZ() - (layer-15)) / 15.0F;
 			Color colorDepth = new Color(colorModDepth,colorModDepth,colorModDepth);
 			colorDepth.bind();
 
-			this.tileSheet.renderInUse(sc[0], sc[1],
-					VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
-					t.getSpriteSheetCol(), t.getSpriteSheetRow());
+			//calculate if a tile is hidden
+			if(t.getPos().getZ() < this.gameRenderer.game.getMap().getHighestPoint()){
+				if(this.gameRenderer.game.getMap().getMap()[t.getPos().getZ()+1][t.getPos().getX()][t.getPos().getY()] != null){
+					showHidden = true;
+				}
+			}
+
+			if (showHidden){
+				this.tileSheet.renderInUse(sc[0], sc[1],
+						VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
+						GameTile.getSpriteSheetCol(GameTile.ID_HIDDEN), GameTile.getSpriteSheetRow(GameTile.ID_HIDDEN));
+			} else {
+				this.tileSheet.renderInUse(sc[0], sc[1],
+						VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
+						t.getSpriteSheetCol(), t.getSpriteSheetRow());
+			}
 		}
 
 		//render tile overlays
