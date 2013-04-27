@@ -1,6 +1,5 @@
 package com.teamderpy.victusludus.data;
 
-import java.io.IOException;
 import java.util.Random;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -39,7 +38,7 @@ public class VictusLudus {
 		try {
 			FileHandler fileTxt = new FileHandler("log.txt");
 			VictusLudus.LOGGER.addHandler(fileTxt);
-		} catch (SecurityException | IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
