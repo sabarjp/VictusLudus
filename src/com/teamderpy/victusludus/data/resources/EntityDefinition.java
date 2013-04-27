@@ -16,9 +16,9 @@ import com.teamderpy.victusludus.game.renderer.Light;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class Entity.
+ * The Class Entity which is loaded and populated based on mod files
  */
-public class Entity {
+public class EntityDefinition {
 
 	/** The id. */
 	private String id;
@@ -53,7 +53,7 @@ public class Entity {
 	/**
 	 * Instantiates a new entity.
 	 */
-	public Entity(){
+	public EntityDefinition(){
 		this.buttonSpriteSheet = null;
 
 		this.behaviorList = null;
@@ -265,7 +265,7 @@ public class Entity {
 	 */
 	@Override
 	public boolean equals(final Object obj){
-		return this.getId().equals(((Entity)obj).getId());
+		return this.getId().equals(((EntityDefinition)obj).getId());
 	}
 
 	public int getHeight() {

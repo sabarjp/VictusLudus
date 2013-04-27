@@ -32,17 +32,8 @@ public class BackgroundRenderer {
 	 * Render.
 	 */
 	public void render(){
-		//Graphics g = null;
-
-		//try {
-		//	g = this.gameRenderer.getRenderBuffer().getGraphics();
-		//} catch (SlickException e) {
-		//	e.printStackTrace();
-		//}
-
 		VictusLudus.e.graphics.setColor(this.bgColor);
-		VictusLudus.e.graphics.fill(new Rectangle(0, 0, this.gameRenderer.getRenderBuffer().getWidth(), this.gameRenderer.getRenderBuffer().getHeight()));
-		//g.flush();
+		VictusLudus.e.graphics.fill(new Rectangle(0, 0, VictusLudus.e.X_RESOLUTION(), VictusLudus.e.Y_RESOLUTION()));
 	}
 
 	/**

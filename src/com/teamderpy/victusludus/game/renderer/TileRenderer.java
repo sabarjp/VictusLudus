@@ -56,98 +56,13 @@ public class TileRenderer implements RenderListener{
 	}
 
 	/**
-	 * Render.
+	 * Render (just a pass-through to cullRender)
 	 *
-	 * @param tileArray the tile array
 	 * @param overlayList the overlay list
 	 * @param layer the layer
 	 */
-	public void render(final GameTile[][][] tileArray, final ArrayList<GameTile> overlayList, final int layer){
+	public void render(final ArrayList<GameTile> overlayList, final int layer){
 		this.cullRender(overlayList, layer);
-
-		return;
-
-		/*
-
-		int x = 0;
-		int y = 0;
-		int z = layer - 15;
-
-		Color baseColor = new Color(255,255,255);
-
-		if(z < 0){
-			z = 0;
-		}
-
-		this.tileSheet.startUse();
-
-		int bottomLayer = z;
-
-		//render layers
-		while (z <= layer){
-			float colorModDepth = (float)(z-bottomLayer) / (float)(layer-bottomLayer);
-			Color colorDepth = new Color(colorModDepth,colorModDepth,colorModDepth);
-
-			while(x < tileArray[layer].length){
-				y = 0;
-
-				while(y < tileArray[layer][x].length){
-					ScreenCoord c = RenderUtil.worldCoordToScreenCoord(x, y, z);
-					boolean showHidden = false;
-
-					if(c.x < 0 || c.y < 0 || c.x > VictusLudus.e.currentGame.getGameDimensions().getWidth() || c.y > VictusLudus.e.currentGame.getGameDimensions().getHeight()){
-						y++;
-						continue;  //do not render tiles off the screen!
-					}
-
-					GameTile t = tileArray[z][x][y];
-
-					if(z < tileArray.length){
-						if(tileArray[z+1][x][y] != null){
-							showHidden = true;
-						}
-					}
-
-					if(t != null){
-						if(showHidden){
-							//baseColor.bind();
-
-							this.tileSheet.renderInUse(c.x, c.y,
-									VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
-									GameTile.getSpriteSheetCol(GameTile.ID_HIDDEN), GameTile.getSpriteSheetRow(GameTile.ID_HIDDEN));
-						} else {
-							//colorDepth.bind();
-
-							this.tileSheet.renderInUse(c.x, c.y,
-									VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
-									t.getSpriteSheetCol(), t.getSpriteSheetRow());
-						}
-					}
-
-					y++;
-				}
-
-				x++;
-			}
-
-			z++;
-			x = 0;
-			y = 0;
-		}
-
-		//render tile overlays
-		for(GameTile gt:overlayList){
-			if(gt.getPos().getZ() == layer){
-				ScreenCoord c = RenderUtil.worldCoordToScreenCoord(gt.getPos().getX(), gt.getPos().getY(), layer);
-
-				this.tileSheet.renderInUse(c.x, c.y,
-						VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
-						gt.getSpriteSheetCol(), gt.getSpriteSheetRow());
-			}
-		}
-
-		this.tileSheet.endUse();
-		 */
 	}
 
 	/**

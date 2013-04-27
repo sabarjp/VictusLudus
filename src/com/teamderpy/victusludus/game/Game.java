@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import org.lwjgl.input.Keyboard;
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.data.resources.Entity;
+import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.InputPoller;
 import com.teamderpy.victusludus.engine.MousePointer;
@@ -592,7 +592,7 @@ public class Game implements KeyboardListener, MouseListener{
 	 * @param z the z
 	 */
 	private void build(final String objectID, final int x, final int y, final int z){
-		Entity e = VictusLudus.resources.getEntityHash().get(objectID);
+		EntityDefinition e = VictusLudus.resources.getEntityHash().get(objectID);
 		WorldCoord wc = new WorldCoord(x, y, z);
 
 		//Check if there is any room

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
 
+import org.newdawn.slick.Animation;
+
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.ScreenCoord;
@@ -15,7 +17,7 @@ import com.teamderpy.victusludus.game.entity.GameEntity;
  * The Class EntityRenderer.
  */
 public class EntityRenderer {
-	
+
 	/** The game renderer. */
 	public GameRenderer gameRenderer;
 
@@ -53,11 +55,14 @@ public class EntityRenderer {
 				continue;  //do not render entities off the screen!
 			}
 
-			c.y -= gameEntity.getEntity().getAnimationHash().get("idle").getHeight()*VictusLudus.e.currentGame.getGameCamera().getZoom();
-			c.y += VictusLudus.e.currentGame.getTileHeightS();
+			Animation a = gameEntity.getCurrentAnimation();
+			if(a != null){
+				c.y -= a.getHeight()*VictusLudus.e.currentGame.getGameCamera().getZoom();
+				c.y += VictusLudus.e.currentGame.getTileHeightS();
 
-			gameEntity.getEntity().getAnimationHash().get("idle").draw(c.x, c.y,
-					gameEntity.getEntity().getAnimationHash().get("idle").getWidth()*VictusLudus.e.currentGame.getGameCamera().getZoom(), gameEntity.getEntity().getAnimationHash().get("idle").getHeight()*VictusLudus.e.currentGame.getGameCamera().getZoom());
+				a.draw(c.x, c.y,
+						a.getWidth()*VictusLudus.e.currentGame.getGameCamera().getZoom(), a.getHeight()*VictusLudus.e.currentGame.getGameCamera().getZoom());
+			}
 
 			//gameEntity.getEntity().getEntitySpriteSheet().endUse();
 		}
@@ -67,7 +72,7 @@ public class EntityRenderer {
 	 * The Class RenderComparator.
 	 */
 	private static class RenderComparator implements Comparator<GameEntity>{
-		
+
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */

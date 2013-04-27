@@ -1,7 +1,9 @@
 package com.teamderpy.victusludus.game.entity;
 
+import org.newdawn.slick.Animation;
+
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.data.resources.Entity;
+import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.game.Vec2i;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.renderer.Light;
@@ -11,27 +13,30 @@ import com.teamderpy.victusludus.game.renderer.Light;
  * The Class GameEntity.
  */
 public class GameEntity {
-	
+
 	/** The Constant ID_THING. */
 	public static final byte ID_THING        = 0x0;
-	
+
 	/** The Constant ID_THING2. */
 	public static final byte ID_THING2       = 0x1;
 
-	/** The e. */
-	private Entity e;
-	
+	/** The entity definition that this bases its properties on. */
+	private EntityDefinition e;
+
 	/** The pos. */
 	private WorldCoord pos = new WorldCoord(-1,-1,-1);
-	
+
 	/** The entity light. */
 	private Light entityLight;
-	
+
 	/** The movement vector. */
 	private Vec2i movementVector;
-	
+
 	/** The creation time. */
 	private long creationTime;
+
+	/** The animation that is playing */
+	private Animation currentAnimation;
 
 	/**
 	 * Instantiates a new game entity.
@@ -39,10 +44,12 @@ public class GameEntity {
 	 * @param entity the entity
 	 * @param pos the pos
 	 */
-	public GameEntity(final Entity entity, final WorldCoord pos){
+	public GameEntity(final EntityDefinition entity, final WorldCoord pos){
 		this.e = entity;
 		this.pos = pos;
 		this.creationTime = VictusLudus.e.getTickCount();
+		this.movementVector = new Vec2i(0, 0);
+		this.playAnimation("idle");
 	}
 
 	/**
@@ -53,6 +60,8 @@ public class GameEntity {
 	public GameEntity(final String entityID){
 		this.e = VictusLudus.resources.getEntityHash().get(entityID);
 		this.creationTime = VictusLudus.e.getTickCount();
+		this.movementVector = new Vec2i(0, 0);
+		this.playAnimation("idle");
 	}
 
 	/**
@@ -76,6 +85,7 @@ public class GameEntity {
 
 		this.movementVector = new Vec2i(0, 0);
 		this.creationTime = VictusLudus.e.getTickCount();
+		this.playAnimation("idle");
 	}
 
 	/**
@@ -110,7 +120,7 @@ public class GameEntity {
 	 *
 	 * @return the entity
 	 */
-	public Entity getEntity(){
+	public EntityDefinition getEntity(){
 		return this.e;
 	}
 
@@ -155,5 +165,23 @@ public class GameEntity {
 	 */
 	public long getCreationTime() {
 		return this.creationTime;
+	}
+
+	/**
+	 * Changes the animation to the one specified and starts it from frame zero.
+	 *
+	 * @param str the name of the animation to play
+	 */
+	public void playAnimation(final String str){
+		this.currentAnimation = this.e.getAnimationHash().get(str).copy();
+	}
+
+	/**
+	 * Gets the current animation.
+	 *
+	 * @return the current animation
+	 */
+	public Animation getCurrentAnimation() {
+		return this.currentAnimation;
 	}
 }

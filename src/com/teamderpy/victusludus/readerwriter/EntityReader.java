@@ -6,7 +6,7 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.data.resources.Entity;
+import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.behavior.CreateAdjacentBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
@@ -42,7 +42,7 @@ public class EntityReader implements IObjectReader {
 
 					ReadData entityLevel;
 
-					Entity e = new Entity();
+					EntityDefinition e = new EntityDefinition();
 					e.setId(baseLevel.getValue());
 
 					//entity children

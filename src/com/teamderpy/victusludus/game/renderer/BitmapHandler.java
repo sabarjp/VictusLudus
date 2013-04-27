@@ -17,10 +17,10 @@ import com.teamderpy.victusludus.data.VictusLudus;
  * The Class BitmapHandler.
  */
 public class BitmapHandler {
-	
+
 	/** The Constant SPRITE_SHEET_SIZE. */
 	public static final int SPRITE_SHEET_SIZE = 16;   //the number of sprites per row of the sheet
-	
+
 	/** The Constant TRANSPARENT_COLOR. */
 	public static final Color TRANSPARENT_COLOR = new Color(255,0,255);
 
@@ -77,8 +77,8 @@ public class BitmapHandler {
 	 * @param rowsPerSheet the rows per sheet
 	 * @param firstFrame the first frame
 	 * @param lastFrame the last frame
-	 * @param speed the speed
-	 * @return the animation
+	 * @param speed the speed of the animation
+	 * @return the animation object
 	 */
 	public static Animation LoadAnimationSheet(final String path, final int spritesPerRow, final int rowsPerSheet, final int firstFrame, final int lastFrame, final int speed){
 		SpriteSheet ss = BitmapHandler.LoadSpriteSheet(path, spritesPerRow, rowsPerSheet);

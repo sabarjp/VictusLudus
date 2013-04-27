@@ -8,7 +8,7 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.data.resources.Entity;
+import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.gui.element.GUIElement;
@@ -179,7 +179,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		/************
 		 * MENU
 		 */
-		for(final Entity entity:VictusLudus.resources.getEntityHash().values()){
+		for(final EntityDefinition entity:VictusLudus.resources.getEntityHash().values()){
 			if(entity.getFlagSet().contains(EnumFlags.BUILDABLE) && entity.getButtonSpriteSheet() != null){
 				GUIImageButton btn = new GUIImageButton(0, 0, 32, 32, (byte) 0x0, entity.getButtonSpriteSheet());
 				btn.setPressedAction(new Actionable(){

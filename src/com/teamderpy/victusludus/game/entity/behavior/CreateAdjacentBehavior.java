@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.data.resources.Entity;
+import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.entity.GameEntity;
@@ -64,7 +64,7 @@ public class CreateAdjacentBehavior extends EntityBehavior{
 
 				if(entityList != null){
 					//skip this tile if we are not stackable and there is a non-walkable entity on the tile
-					Entity ce = VictusLudus.resources.getEntityHash().get(this.objectID);
+					EntityDefinition ce = VictusLudus.resources.getEntityHash().get(this.objectID);
 					if(!ce.getFlagSet().contains(EnumFlags.STACKABLE)){
 						boolean isSpawnBlocked = false;
 

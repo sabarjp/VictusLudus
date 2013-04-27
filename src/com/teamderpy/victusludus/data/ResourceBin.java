@@ -3,7 +3,7 @@ package com.teamderpy.victusludus.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.teamderpy.victusludus.data.resources.Entity;
+import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.data.resources.FontFile;
 import com.teamderpy.victusludus.game.PlayerBackground;
 import com.teamderpy.victusludus.parts.Creature;
@@ -28,7 +28,7 @@ public class ResourceBin {
 	private Map<String, PlayerBackground> backgroundsHash;
 	
 	/** The entity hash. */
-	private Map<String, Entity> entityHash;
+	private Map<String, EntityDefinition> entityHash;
 
 	/**
 	 * Instantiates a new resource bin.
@@ -38,7 +38,7 @@ public class ResourceBin {
 		this.creatureHash     = new HashMap<String, Creature>();
 		this.fontHash         = new HashMap<String, FontFile>();
 		this.backgroundsHash  = new HashMap<String, PlayerBackground>();
-		this.entityHash       = new HashMap<String, Entity>();
+		this.entityHash       = new HashMap<String, EntityDefinition>();
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class ResourceBin {
 	 *
 	 * @return the entity hash
 	 */
-	public Map<String, Entity> getEntityHash() {
+	public Map<String, EntityDefinition> getEntityHash() {
 		return this.entityHash;
 	}
 }
