@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import org.lwjgl.input.Keyboard;
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.data.resources.Entity;
 import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.InputPoller;
 import com.teamderpy.victusludus.engine.MousePointer;
@@ -22,8 +23,6 @@ import com.teamderpy.victusludus.gui.eventhandler.event.EnumRenderEventType;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyboardEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.RenderEvent;
-import com.teamderpy.victusludus.parts.Entity;
-import com.teamderpy.victusludus.parts.EnumBuildMode;
 
 // TODO: Auto-generated Javadoc
 /**

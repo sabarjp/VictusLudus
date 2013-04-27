@@ -8,6 +8,7 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.data.resources.Entity;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.gui.element.GUIElement;
@@ -22,7 +23,6 @@ import com.teamderpy.victusludus.gui.eventhandler.event.KeyboardEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
-import com.teamderpy.victusludus.parts.Entity;
 
 // TODO: Auto-generated Javadoc
 /**

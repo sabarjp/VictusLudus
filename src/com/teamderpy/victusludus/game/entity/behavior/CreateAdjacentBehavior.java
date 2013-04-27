@@ -6,10 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.data.resources.Entity;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.entity.GameEntity;
-import com.teamderpy.victusludus.parts.Entity;
 
 // TODO: Auto-generated Javadoc
 /* This behavior creates an entity on an adjacent tile */

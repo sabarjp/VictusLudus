@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.gui;
+package com.teamderpy.victusludus.data.resources;
 
 import org.newdawn.slick.UnicodeFont;
 

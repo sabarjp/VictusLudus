@@ -1,10 +1,10 @@
 package com.teamderpy.victusludus.game.entity;
 
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.data.resources.Entity;
 import com.teamderpy.victusludus.game.Vec2i;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.renderer.Light;
-import com.teamderpy.victusludus.parts.Entity;
 
 // TODO: Auto-generated Javadoc
 /**

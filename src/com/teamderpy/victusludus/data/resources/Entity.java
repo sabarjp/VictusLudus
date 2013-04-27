@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.parts;
+package com.teamderpy.victusludus.data.resources;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.HashSet;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.SpriteSheet;
 
+import com.teamderpy.victusludus.game.EnumBuildMode;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;

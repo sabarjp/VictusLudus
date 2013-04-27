@@ -10,6 +10,7 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.geom.Rectangle;
 
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.data.resources.FontFile;
 import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 

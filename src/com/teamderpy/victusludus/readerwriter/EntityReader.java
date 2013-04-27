@@ -6,13 +6,13 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.data.resources.Entity;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.behavior.CreateAdjacentBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.MoveBehavior;
 import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 import com.teamderpy.victusludus.game.renderer.Light;
-import com.teamderpy.victusludus.parts.Entity;
 
 
 // TODO: Auto-generated Javadoc

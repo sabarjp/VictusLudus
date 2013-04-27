@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.teamderpy.victusludus.data.DataReader;
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.gui.FontFile;
+import com.teamderpy.victusludus.data.resources.FontFile;
 
 
 // TODO: Auto-generated Javadoc

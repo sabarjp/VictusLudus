@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.parts;
+package com.teamderpy.victusludus.game;
 
 // TODO: Auto-generated Javadoc
 /**

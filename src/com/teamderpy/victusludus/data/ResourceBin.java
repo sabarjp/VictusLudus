@@ -3,10 +3,10 @@ package com.teamderpy.victusludus.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.teamderpy.victusludus.data.resources.Entity;
+import com.teamderpy.victusludus.data.resources.FontFile;
 import com.teamderpy.victusludus.game.PlayerBackground;
-import com.teamderpy.victusludus.gui.FontFile;
 import com.teamderpy.victusludus.parts.Creature;
-import com.teamderpy.victusludus.parts.Entity;
 import com.teamderpy.victusludus.parts.Material;
 
 // TODO: Auto-generated Javadoc
