@@ -1,13 +1,11 @@
 package com.teamderpy.victusludus.game.renderer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Collections;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.SpriteSheet;
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.tile.GameTile;
 import com.teamderpy.victusludus.gui.eventhandler.RenderListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.EnumRenderEventType;
@@ -30,7 +28,7 @@ public class TileRenderer implements RenderListener{
 	public GameRenderer gameRenderer;
 
 	/** The culled tile list.  This should always be up-to-date with the tiles cleared for drawing. */
-	private GameTile[] culledTileArray;
+	private ArrayList<GameTile> culledTileList;
 
 	/**
 	 * Instantiates a new tile renderer.
@@ -49,7 +47,7 @@ public class TileRenderer implements RenderListener{
 		gameRenderer.game.getGameDimensions().setLayerHeight(gameRenderer.game.getGameDimensions().getTileHeight());
 
 		this.registerListeners();
-		this.culledTileArray = new GameTile[0];
+		this.culledTileList = new ArrayList<GameTile>();
 
 		//initial render
 		this.calculateCulledTiles();
@@ -71,21 +69,23 @@ public class TileRenderer implements RenderListener{
 	private void calculateCulledTiles(){
 		GameTile[][][] tileArray = this.gameRenderer.game.getMap().getMap();
 		int layer = this.gameRenderer.game.getCurrentDepth();
-		ArrayList<GameTile> culledTileList = new ArrayList<GameTile>();
 
-		int z = layer - 15;
+		this.culledTileList = new ArrayList<GameTile>();
+
+		int zdeep = GameRenderer.getMaxVisibleDepth();
+		int z = layer - zdeep;
 
 		if(z < 0){
 			z = 0;
 		}
 
-		int X1 = RenderUtil.worldCoordToRawUnscaledScreenCoord(0, this.gameRenderer.game.getMap().getHeight()+15, layer)[0];
+		int X1 = RenderUtil.worldCoordToRawUnscaledScreenCoord(0, this.gameRenderer.game.getMap().getHeight()+zdeep, layer)[0];
 		int Y1 = RenderUtil.worldCoordToRawUnscaledScreenCoord(0, 0, layer)[1];
 
 		int X2 = this.gameRenderer.game.getGameDimensions().getTileWidth() +
-				RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game.getMap().getWidth()+15, 0, layer)[0];
+				RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game.getMap().getWidth()+zdeep, 0, layer)[0];
 		int Y2 = this.gameRenderer.game.getGameDimensions().getTileHeight() +
-				RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game.getMap().getWidth()+15, this.gameRenderer.game.getMap().getHeight()+15, layer)[1];
+				RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game.getMap().getWidth()+zdeep, this.gameRenderer.game.getMap().getHeight()+zdeep, layer)[1];
 
 		int xStep = this.gameRenderer.game.getGameDimensions().getTileWidth()/2;
 		int yStep = this.gameRenderer.game.getGameDimensions().getTileHeight()/2;
@@ -107,9 +107,9 @@ public class TileRenderer implements RenderListener{
 
 						if(t != null){
 							//toss onto the render list
-							if(!culledTileList.contains(t)){
+							if(!this.culledTileList.contains(t)){
 								//System.err.println("matched " + wc[0] + "," + wc[1] + "," + wc[2]);
-								culledTileList.add(t);
+								this.culledTileList.add(t);
 							}
 
 							break; //found a tile
@@ -120,9 +120,7 @@ public class TileRenderer implements RenderListener{
 		}
 
 		//sort for proper rendering order
-		this.culledTileArray = new GameTile[culledTileList.size()];
-		culledTileList.toArray(this.culledTileArray);
-		Arrays.sort(this.culledTileArray, new RenderComparator());
+		Collections.sort(this.culledTileList, new EuclideanComparator());
 	}
 
 	/**
@@ -137,10 +135,11 @@ public class TileRenderer implements RenderListener{
 		this.tileSheet.startUse();
 
 		int rightBound =  VictusLudus.e.currentGame.getGameDimensions().getWidth() - this.gameRenderer.game.getTileWidthS();
-		int bottomBound = VictusLudus.e.currentGame.getGameDimensions().getHeight() - this.gameRenderer.game.getTileHeightS();;
+		int bottomBound = VictusLudus.e.currentGame.getGameDimensions().getHeight() - this.gameRenderer.game.getTileHeightS();
+		int zdeep = GameRenderer.getMaxVisibleDepth();
 
 		//render tile list
-		for (GameTile t : this.culledTileArray) {
+		for (GameTile t : this.culledTileList) {
 			boolean showHidden = false; //whether or not the tile is hidden
 
 			int[] sc = RenderUtil.worldCoordToRawScreenCoord(t.getPos().getX(), t.getPos().getY(), t.getPos().getZ());
@@ -151,7 +150,7 @@ public class TileRenderer implements RenderListener{
 			}
 
 			//color by depth -- this may be too slow to keep
-			float colorModDepth = (t.getPos().getZ() - (layer-15)) / 15.0F;
+			float colorModDepth = (t.getPos().getZ() - (layer-zdeep)) / (float)zdeep;
 			Color colorDepth = new Color(colorModDepth,colorModDepth,colorModDepth);
 			colorDepth.bind();
 
@@ -186,33 +185,6 @@ public class TileRenderer implements RenderListener{
 		}
 
 		this.tileSheet.endUse();
-	}
-
-	/**
-	 * The Class RenderComparator.
-	 */
-	private static class RenderComparator implements Comparator<GameTile>{
-
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		@Override
-		public int compare(final GameTile t1, final GameTile t2) {
-			WorldCoord tp1 = t1.getPos();
-			WorldCoord tp2 = t2.getPos();
-
-			int sum1 = tp1.getX() + tp1.getY() + tp1.getZ();
-			int sum2 = tp2.getX() + tp2.getY() + tp2.getZ();
-
-			if(sum1 < sum2){
-				return -1;
-			} else if (sum1 > sum2){
-				return 1;
-			}
-
-			//it is a perfect tie
-			return 0;
-		}
 	}
 
 	/**

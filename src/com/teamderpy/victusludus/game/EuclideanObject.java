@@ -4,7 +4,7 @@ package com.teamderpy.victusludus.game;
 /**
  * The Class EuclideanObject represents an object that exists in Euclidean space.
  */
-public class EuclideanObject {
+public class EuclideanObject{
 
 	/** The world coordinate of the euclidean object. */
 	private WorldCoord worldCoord;

@@ -25,6 +25,9 @@ public class GameRenderer{
 	/** The game. */
 	public Game game;
 
+	/** The deepest that we can see */
+	private static final int MAX_VISIBLE_DEPTH = 15;
+
 	/**
 	 * Instantiates a new game renderer.
 	 *
@@ -60,5 +63,9 @@ public class GameRenderer{
 	 */
 	public void unregisterListeners() {
 		this.tileRenderer.unregisterListeners();
+	}
+
+	public static int getMaxVisibleDepth() {
+		return MAX_VISIBLE_DEPTH;
 	}
 }

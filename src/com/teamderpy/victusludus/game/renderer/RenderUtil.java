@@ -110,7 +110,7 @@ public final class RenderUtil {
 	 * @param calculateWallFacing the calculate wall facing
 	 * @return the world coord as an array with 3 elements, x y and z
 	 */
-	public static int[] screenCoordToRawWorldCoord(final float x, final float y, final int layer){
+	public static int[] screenCoordToRawWorldCoord(final float x, final float y, final float layer){
 		Game game = VictusLudus.e.currentGame;
 
 		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthS();
@@ -128,7 +128,7 @@ public final class RenderUtil {
 			isoTileY = (int)(virtualTileY - virtualTileX + 0.5f);
 		}
 
-		return new int[]{isoTileX, isoTileY, layer};
+		return new int[]{isoTileX, isoTileY, (int) layer};
 	}
 
 	/**
@@ -142,7 +142,7 @@ public final class RenderUtil {
 	 * @param calculateWallFacing the calculate wall facing
 	 * @return the world coord as an array with 3 elements, x y and z
 	 */
-	public static int[] screenCoordToRawUnscaledWorldCoord(final float x, final float y, final int layer){
+	public static int[] screenCoordToRawUnscaledWorldCoord(final float x, final float y, final float layer){
 		Game game = VictusLudus.e.currentGame;
 
 		float virtualTileX = x / game.getGameDimensions().getTileWidth();
@@ -160,7 +160,7 @@ public final class RenderUtil {
 			isoTileY = (int)(virtualTileY - virtualTileX + 0.5f);
 		}
 
-		return new int[]{isoTileX, isoTileY, layer};
+		return new int[]{isoTileX, isoTileY, (int) layer};
 	}
 
 	/**
