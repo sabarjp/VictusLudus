@@ -85,7 +85,7 @@ public class Map {
 		for (int i=0; i<mapArray.length; i++) {
 			for (int j=0; j<mapArray[i].length; j++) {
 				for(int k=0; k<mapArray[i][j]; k++){
-					this.tiles[k][i][j] = new GameTile(GameTile.ID_AGAR, i, j, k);
+					this.tiles[k][i][j] = new GameTile(GameTile.ID_DIRT, i, j, k);
 					if(mapArray[i][j] > this.highestPoint){
 						this.highestPoint = mapArray[i][j];
 					}

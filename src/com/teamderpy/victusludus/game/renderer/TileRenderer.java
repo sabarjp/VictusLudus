@@ -156,6 +156,7 @@ public class TileRenderer implements RenderListener{
 			colorDepth.bind();
 
 			//calculate if a tile is hidden
+			//will need to change this to check if the tile is smothered instead of above
 			if(t.getPos().getZ() < this.gameRenderer.game.getMap().getHighestPoint()){
 				if(this.gameRenderer.game.getMap().getMap()[t.getPos().getZ()+1][t.getPos().getX()][t.getPos().getY()] != null){
 					showHidden = true;

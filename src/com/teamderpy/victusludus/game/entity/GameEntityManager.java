@@ -53,8 +53,8 @@ public class GameEntityManager {
 	/**
 	 * Move.
 	 *
-	 * @param coord the coord
-	 * @param ge the ge
+	 * @param coord the coord the object moves to
+	 * @param ge the game entity to move
 	 */
 	public void move(final WorldCoord coord, final GameEntity ge){
 		/* re-index then set position */

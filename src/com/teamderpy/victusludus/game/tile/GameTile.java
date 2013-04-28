@@ -1,5 +1,6 @@
 package com.teamderpy.victusludus.game.tile;
 
+import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 import com.teamderpy.victusludus.game.wall.GameWall;
@@ -8,7 +9,7 @@ import com.teamderpy.victusludus.game.wall.GameWall;
 /**
  * The Class GameTile.
  */
-public class GameTile {
+public class GameTile extends EuclideanObject{
 
 	/** The Constant ID_GRASS. */
 	public static final byte ID_GRASS       = 0x0;
@@ -46,9 +47,6 @@ public class GameTile {
 	/** The south west wall. */
 	private GameWall southWestWall = null;
 
-	/** The pos. */
-	private WorldCoord pos = new WorldCoord(-1, -1, -1);
-
 	/**
 	 * Instantiates a new game tile.
 	 *
@@ -67,9 +65,10 @@ public class GameTile {
 	 * @param z the z
 	 */
 	public GameTile(final int id, final int x, final int y, final int z){
+		super();
 		this.id = id;
 
-		this.pos = new WorldCoord(x, y, z);
+		super.setWorldCoord(new WorldCoord(x, y, z));
 	}
 
 	/**
@@ -199,20 +198,20 @@ public class GameTile {
 	}
 
 	/**
-	 * Gets the pos.
+	 * Gets the world position of the object
 	 *
 	 * @return the pos
 	 */
 	public WorldCoord getPos() {
-		return this.pos;
+		return super.getWorldCoord();
 	}
 
 	/**
-	 * Sets the pos.
+	 * Sets the world position of the object
 	 *
 	 * @param pos the new pos
 	 */
 	public void setPos(final WorldCoord pos) {
-		this.pos = pos;
+		super.setWorldCoord(pos);
 	}
 }

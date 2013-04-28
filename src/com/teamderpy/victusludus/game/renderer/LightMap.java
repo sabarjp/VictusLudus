@@ -28,7 +28,7 @@ public class LightMap implements RenderListener{
 	/** The sight map resolution. */
 	private int sightMapResolution = 128;
 
-	/** The is dirty. */
+	/** A dirty sight map needs to be recalculated on the next pass before rendering */
 	private boolean isDirty = true;
 
 	/**

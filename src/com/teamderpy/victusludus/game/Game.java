@@ -596,7 +596,7 @@ public class Game implements KeyboardListener, MouseListener{
 		WorldCoord wc = new WorldCoord(x, y, z);
 
 		//Check if there is any room
-		for(int h=1; h<e.getHeight(); h++) {
+		for(int h=1; h<=e.getHeight(); h++) {
 			if(this.map.getMap()[wc.getZ()+h][wc.getX()][wc.getY()] != null){
 				return;
 			}

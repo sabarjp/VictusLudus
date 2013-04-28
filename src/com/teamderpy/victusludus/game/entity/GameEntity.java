@@ -4,6 +4,7 @@ import org.newdawn.slick.Animation;
 
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
+import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.Vec2i;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.renderer.Light;
@@ -12,19 +13,9 @@ import com.teamderpy.victusludus.game.renderer.Light;
 /**
  * The Class GameEntity.
  */
-public class GameEntity {
-
-	/** The Constant ID_THING. */
-	public static final byte ID_THING        = 0x0;
-
-	/** The Constant ID_THING2. */
-	public static final byte ID_THING2       = 0x1;
-
+public class GameEntity extends EuclideanObject{
 	/** The entity definition that this bases its properties on. */
 	private EntityDefinition e;
-
-	/** The pos. */
-	private WorldCoord pos = new WorldCoord(-1,-1,-1);
 
 	/** The entity light. */
 	private Light entityLight;
@@ -45,8 +36,9 @@ public class GameEntity {
 	 * @param pos the pos
 	 */
 	public GameEntity(final EntityDefinition entity, final WorldCoord pos){
+		super(pos);
+
 		this.e = entity;
-		this.pos = pos;
 		this.creationTime = VictusLudus.e.getTickCount();
 		this.movementVector = new Vec2i(0, 0);
 		this.playAnimation("idle");
@@ -58,6 +50,8 @@ public class GameEntity {
 	 * @param entityID the entity id
 	 */
 	public GameEntity(final String entityID){
+		super();
+
 		this.e = VictusLudus.resources.getEntityHash().get(entityID);
 		this.creationTime = VictusLudus.e.getTickCount();
 		this.movementVector = new Vec2i(0, 0);
@@ -73,12 +67,12 @@ public class GameEntity {
 	 * @param z the z
 	 */
 	public GameEntity(final String entityID, final int x, final int y, final int z){
+		super(x, y, z);
+
 		this.e = VictusLudus.resources.getEntityHash().get(entityID);
 
-		this.pos = new WorldCoord(x, y, z);
-
 		if(this.e.getLight() != null){
-			this.entityLight = new Light(this.pos.getX(), this.pos.getY(), this.pos.getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
+			this.entityLight = new Light(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord().getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
 			this.entityLight.setBrightness(this.e.getLight().getBrightness());
 			VictusLudus.e.currentGame.getMap().getLightMap().add(this.entityLight);
 		}
@@ -103,7 +97,7 @@ public class GameEntity {
 	 * @return the pos
 	 */
 	public WorldCoord getPos() {
-		return this.pos;
+		return super.getWorldCoord();
 	}
 
 	/**
@@ -112,7 +106,7 @@ public class GameEntity {
 	 * @param pos the new pos
 	 */
 	protected void setPos(final WorldCoord pos) {
-		this.pos = pos;
+		super.setWorldCoord(pos);
 	}
 
 	/**
