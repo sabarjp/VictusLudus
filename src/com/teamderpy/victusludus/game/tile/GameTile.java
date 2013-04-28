@@ -54,6 +54,7 @@ public class GameTile extends EuclideanObject{
 	 */
 	public GameTile(final int id){
 		this.id = id;
+		super.setTotallyBlockingLOS(true);
 	}
 
 	/**
@@ -69,6 +70,7 @@ public class GameTile extends EuclideanObject{
 		this.id = id;
 
 		super.setWorldCoord(new WorldCoord(x, y, z));
+		super.setTotallyBlockingLOS(true);
 	}
 
 	/**

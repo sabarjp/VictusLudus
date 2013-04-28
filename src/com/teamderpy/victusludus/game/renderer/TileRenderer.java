@@ -29,7 +29,7 @@ public class TileRenderer implements RenderListener{
 	/** The game renderer. */
 	public GameRenderer gameRenderer;
 
-	/** The culled tile list.  This should always be up-to-date with the tiles clear for drawing. */
+	/** The culled tile list.  This should always be up-to-date with the tiles cleared for drawing. */
 	private GameTile[] culledTileArray;
 
 	/**
@@ -93,7 +93,7 @@ public class TileRenderer implements RenderListener{
 		//System.err.println(X1 + "," + Y1 + " thru " + X2 + "," + Y2 + "   step:" + xStep + "," + yStep);
 
 		//cull tiles by depth
-		//split the screen into a grid
+		//split the map into a grid
 		for(int j=Y1; j<Y2-yStep; j += yStep){
 			for(int i=X1; i<X2-xStep; i += xStep){
 				//locate the first tile that covers this spot
