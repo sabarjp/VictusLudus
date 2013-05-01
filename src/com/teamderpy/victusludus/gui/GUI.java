@@ -2,6 +2,7 @@ package com.teamderpy.victusludus.gui;
 
 import java.util.ArrayList;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
@@ -20,58 +21,58 @@ import com.teamderpy.victusludus.gui.element.GUIElement;
  * The Class GUI.
  */
 public abstract class GUI{
-	
+
 	/** The element color default. */
 	public static Color ELEMENT_COLOR_DEFAULT = new Color(46,46,46);
-	
+
 	/** The selection color default. */
 	public static Color SELECTION_COLOR_DEFAULT = new Color(67,55,255);
-	
+
 	/** The hover color default. */
 	public static Color HOVER_COLOR_DEFAULT = new Color(255,0,0);
-	
+
 	/** The press color default. */
 	public static Color PRESS_COLOR_DEFAULT = new Color(0,255,0);
-	
+
 	/** The subelement color default. */
 	public static Color SUBELEMENT_COLOR_DEFAULT = new Color(111,111,111);
-	
+
 	/** The subselection color default. */
 	public static Color SUBSELECTION_COLOR_DEFAULT = new Color(37,35,155);
-	
+
 	/** The subhover color default. */
 	public static Color SUBHOVER_COLOR_DEFAULT = new Color(155,0,0);
-	
+
 	/** The focused color default. */
 	public static Color FOCUSED_COLOR_DEFAULT = new Color(255,255,0);
-	
+
 	/** The tooltip text color default. */
 	public static Color TOOLTIP_TEXT_COLOR_DEFAULT = new Color(122,122,122);
 
 	/** The pmono font id. */
 	public static String PMONO_FONT_ID = "EpilepsySansMono";
-	
+
 	/** The title font id. */
 	public static String TITLE_FONT_ID = "EpilepsySansMono";
-	
+
 	/** The toolt font id. */
 	public static String TOOLT_FONT_ID = "EpilepsySansMono";
 
 	/** The Constant GUI_SHEET_PATH. */
 	public static final String  GUI_SHEET_PATH = "res/sprites/gui/buttons.png";
-	
+
 	/** The Constant ID_BUILD_BTN. */
 	public static final byte ID_BUILD_BTN   = 0x0;
-	
+
 	/** The Constant ID_QUERY_BTN. */
 	public static final byte ID_QUERY_BTN   = 0x4;
-	
+
 	/** The Constant ID_PEOPLE_BTN. */
 	public static final byte ID_PEOPLE_BTN  = 0x8;
-	
+
 	/** The Constant ID_QUIT_BTN. */
 	public static final byte ID_QUIT_BTN    = 0xC;
-	
+
 	/** The Constant ID_BLANK_BTN. */
 	public static final byte ID_BLANK_BTN   = 0x10;
 
@@ -83,34 +84,34 @@ public abstract class GUI{
 
 	/** The element list. */
 	protected ArrayList<GUIElement> elementList = null;
-	
+
 	/** The menu list. */
 	protected ArrayList<GUIElement> menuList = null;
-	
+
 	/** The current element. */
 	protected int currentElement = -1;
 
 	/** The next element y pos. */
 	protected int nextElementYPos = 0;
-	
+
 	/** The element spacing. */
 	protected int elementSpacing = 0;
 
 	/** The is listening. */
 	protected boolean isListening = false;
-	
+
 	/** The is disabled. */
 	protected boolean isDisabled = false;
 
 	/** The x. */
 	protected int x = -1;
-	
+
 	/** The y. */
 	protected int y = -1;
-	
+
 	/** The width. */
 	protected int width = -1;
-	
+
 	/** The height. */
 	protected int height = -1;
 
@@ -333,12 +334,14 @@ public abstract class GUI{
 	 */
 	@SuppressWarnings("unchecked")
 	public static void InitializeUnicodeFont(final UnicodeFont font){
-		font.addAsciiGlyphs();
-		font.addGlyphs(400, 600);
+		//font.addAsciiGlyphs();
+		font.addGlyphs(32, 127);
 		font.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
 
 		try {
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			font.loadGlyphs();
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
 		} catch (SlickException e) {
 			VictusLudus.LOGGER.severe(e.toString());
 		}
