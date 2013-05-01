@@ -9,7 +9,6 @@ import com.teamderpy.victusludus.game.map.Map;
  * The Class GameRenderer.
  */
 public class GameRenderer{
-
 	/** The tile renderer. */
 	private TileRenderer tileRenderer;
 
@@ -18,6 +17,9 @@ public class GameRenderer{
 
 	/** The entity renderer. */
 	private EntityRenderer entityRenderer;
+
+	/** The euclidean object renderer. */
+	private EuclideanObjectRenderer objectRenderer;
 
 	/** The bg renderer. */
 	private BackgroundRenderer bgRenderer;
@@ -39,6 +41,7 @@ public class GameRenderer{
 		this.tileRenderer = new TileRenderer(this);
 		this.wallRenderer = new WallRenderer(this);
 		this.entityRenderer = new EntityRenderer(this);
+		this.objectRenderer = new EuclideanObjectRenderer(this);
 		this.bgRenderer = new BackgroundRenderer(this, new Color(13,5,28));
 	}
 
@@ -50,9 +53,11 @@ public class GameRenderer{
 	 */
 	public void renderGameLayer(final Map map, final int layer){
 		this.bgRenderer.render();
-		this.tileRenderer.render(map.getTileOverlayList(), layer);
+		//this.tileRenderer.render(map.getTileOverlayList(), layer);
 		//this.wallRenderer.render(map.getMap(), layer);
-		this.entityRenderer.render(map.getEntities(), layer);
+		//this.entityRenderer.render(map.getEntities(), layer);
+		this.entityRenderer.calculateCulledEntities(map.getEntities(), layer);
+		this.objectRenderer.render(this.tileRenderer.getCulledTileList(), this.entityRenderer.getCulledEntityList(), map.getTileOverlayList(), layer);
 		map.getLightMap().renderLightMap(layer);
 
 		//this.renderBuffer.draw(0, 0);
@@ -66,6 +71,26 @@ public class GameRenderer{
 	}
 
 	public static int getMaxVisibleDepth() {
-		return MAX_VISIBLE_DEPTH;
+		return GameRenderer.MAX_VISIBLE_DEPTH;
+	}
+
+	public TileRenderer getTileRenderer() {
+		return this.tileRenderer;
+	}
+
+	public WallRenderer getWallRenderer() {
+		return this.wallRenderer;
+	}
+
+	public EntityRenderer getEntityRenderer() {
+		return this.entityRenderer;
+	}
+
+	public EuclideanObjectRenderer getObjectRenderer() {
+		return this.objectRenderer;
+	}
+
+	public BackgroundRenderer getBgRenderer() {
+		return this.bgRenderer;
 	}
 }

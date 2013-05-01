@@ -18,10 +18,10 @@ import com.teamderpy.victusludus.game.tile.GameTile;
 public class EntityRenderer {
 
 	/** The game renderer. */
-	public GameRenderer gameRenderer;
+	private GameRenderer gameRenderer;
 
-	/** The list of entites that have been culled, ready for rendering */
-	ArrayList<GameEntity> culledEntityList;
+	/** The list of entities that have been culled, ready for rendering */
+	private ArrayList<GameEntity> culledEntityList;
 
 	/**
 	 * Instantiates a new entity renderer.
@@ -134,6 +134,7 @@ public class EntityRenderer {
 	 * @param entityList the entity list
 	 * @param layer the layer
 	 */
+	@Deprecated
 	public void render(final Vector<GameEntity> entityList, final int layer){
 		this.calculateCulledEntities(entityList, layer);
 
@@ -159,5 +160,9 @@ public class EntityRenderer {
 
 			//gameEntity.getEntity().getEntitySpriteSheet().endUse();
 		}
+	}
+
+	public ArrayList<GameEntity> getCulledEntityList() {
+		return this.culledEntityList;
 	}
 }

@@ -9,10 +9,16 @@ public class EuclideanObject{
 	/** The world coordinate of the euclidean object. */
 	private WorldCoord worldCoord;
 
-	/** Whether or not this object totally blocks sight of other objects that exist
+	/**
+	 * Whether or not this object totally blocks sight of other objects that exist
 	 * in the screen coordinates where this object lies.  This is used for the render
 	 * of the object */
 	private boolean isTotallyBlockingLOS;
+
+	/**
+	 * Whether or not to render on the next pass
+	 */
+	private boolean canRenderNextPass;
 
 	/**
 	 * Instantiates a new euclidean object.
@@ -20,6 +26,7 @@ public class EuclideanObject{
 	public EuclideanObject(){
 		this.setWorldCoord(new WorldCoord(-1,-1,-1));
 		this.setTotallyBlockingLOS(false);
+		this.setRenderNextPass(false);
 	}
 
 	/**
@@ -32,6 +39,7 @@ public class EuclideanObject{
 	public EuclideanObject(final int x, final int y, final int z){
 		this.setWorldCoord(new WorldCoord(x,y,z));
 		this.setTotallyBlockingLOS(false);
+		this.setRenderNextPass(false);
 	}
 
 	/**
@@ -80,5 +88,13 @@ public class EuclideanObject{
 	 */
 	public void setTotallyBlockingLOS(final boolean isTotallyBlockingLOS) {
 		this.isTotallyBlockingLOS = isTotallyBlockingLOS;
+	}
+
+	public boolean canRenderNextPAss() {
+		return this.canRenderNextPass;
+	}
+
+	public void setRenderNextPass(final boolean canRenderNextPass) {
+		this.canRenderNextPass = canRenderNextPass;
 	}
 }

@@ -25,7 +25,7 @@ public class TileRenderer implements RenderListener{
 	private SpriteSheet tileSheet;
 
 	/** The game renderer. */
-	public GameRenderer gameRenderer;
+	private GameRenderer gameRenderer;
 
 	/** The culled tile list.  This should always be up-to-date with the tiles cleared for drawing. */
 	private ArrayList<GameTile> culledTileList;
@@ -59,6 +59,7 @@ public class TileRenderer implements RenderListener{
 	 * @param overlayList the overlay list
 	 * @param layer the layer
 	 */
+	@Deprecated
 	public void render(final ArrayList<GameTile> overlayList, final int layer){
 		this.cullRender(overlayList, layer);
 	}
@@ -131,6 +132,7 @@ public class TileRenderer implements RenderListener{
 	 * @param overlayList
 	 * @param layer
 	 */
+	@Deprecated
 	public void cullRender(final ArrayList<GameTile> overlayList, final int layer){
 		this.tileSheet.startUse();
 
@@ -214,5 +216,13 @@ public class TileRenderer implements RenderListener{
 		if(renderEvent.getEventType() == EnumRenderEventType.CHANGE_DEPTH){
 			this.calculateCulledTiles();
 		}
+	}
+
+	public ArrayList<GameTile> getCulledTileList() {
+		return this.culledTileList;
+	}
+
+	public SpriteSheet getTileSheet() {
+		return this.tileSheet;
 	}
 }
