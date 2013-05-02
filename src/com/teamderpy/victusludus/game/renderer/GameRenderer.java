@@ -24,11 +24,14 @@ public class GameRenderer{
 	/** The bg renderer. */
 	private BackgroundRenderer bgRenderer;
 
+	/** The debug overlay renderer. */
+	private DebugRenderer debugRenderer;
+
 	/** The game. */
 	public Game game;
 
 	/** The deepest that we can see */
-	private static final int MAX_VISIBLE_DEPTH = 15;
+	private static final int MAX_VISIBLE_DEPTH = 10;
 
 	/**
 	 * Instantiates a new game renderer.
@@ -43,6 +46,7 @@ public class GameRenderer{
 		this.entityRenderer = new EntityRenderer(this);
 		this.objectRenderer = new EuclideanObjectRenderer(this);
 		this.bgRenderer = new BackgroundRenderer(this, new Color(13,5,28));
+		this.debugRenderer = new DebugRenderer(this);
 	}
 
 	/**
@@ -59,6 +63,7 @@ public class GameRenderer{
 		this.entityRenderer.calculateCulledEntities(map.getEntities(), layer);
 		this.objectRenderer.render(this.tileRenderer.getCulledTileList(), this.entityRenderer.getCulledEntityList(), map.getTileOverlayList(), layer);
 		map.getLightMap().renderLightMap(layer);
+		this.debugRenderer.render();
 
 		//this.renderBuffer.draw(0, 0);
 	}

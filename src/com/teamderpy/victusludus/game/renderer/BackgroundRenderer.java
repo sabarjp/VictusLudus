@@ -12,7 +12,8 @@ import com.teamderpy.victusludus.data.VictusLudus;
 public class BackgroundRenderer {
 
 	/** The game renderer. */
-	public GameRenderer gameRenderer;
+	@SuppressWarnings("unused")
+	private GameRenderer gameRenderer;
 
 	/** The bg color. */
 	private Color bgColor;

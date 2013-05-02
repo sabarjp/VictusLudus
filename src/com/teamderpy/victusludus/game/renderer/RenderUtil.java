@@ -84,7 +84,7 @@ public final class RenderUtil {
 	/**
 	 * Gets a world coordinate for a tile at x,y and returns the starting position on the screen of where to start the render
 	 * This returns an array with the x and y positions to avoid object overhead
-	 * This function has no camera offse or scaling applied!
+	 * This function has no camera offset or scaling applied!
 	 *
 	 * @param x the x
 	 * @param y the y

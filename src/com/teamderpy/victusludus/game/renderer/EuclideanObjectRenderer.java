@@ -34,9 +34,10 @@ public class EuclideanObjectRenderer {
 		int zdeep = GameRenderer.getMaxVisibleDepth();
 
 		//master list
-		this.culledObjectList = (ArrayList<EuclideanObject>) tiles.clone();
-		this.culledObjectList.addAll(overlayTiles);
+		this.culledObjectList.clear();
+		this.culledObjectList.addAll(tiles);
 		this.culledObjectList.addAll(entities);
+		this.culledObjectList.addAll(overlayTiles);
 
 		Collections.sort(this.culledObjectList, new EuclideanComparator());
 
@@ -93,7 +94,7 @@ public class EuclideanObjectRenderer {
 
 					Animation a = ((GameEntity) o).getCurrentAnimation();
 					if(a != null){
-						sc[1] -= a.getHeight()*VictusLudus.e.currentGame.getGameCamera().getZoom();
+						sc[1] -= (a.getHeight()+1)*VictusLudus.e.currentGame.getGameCamera().getZoom();
 						sc[1] += VictusLudus.e.currentGame.getTileHeightS();
 
 						a.draw(sc[0], sc[1],
