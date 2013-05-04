@@ -134,7 +134,7 @@ public final class RenderUtil {
 	/**
 	 * gets screen coordinates and current z layer and returns the world coordinate for a tile at x,y
 	 * This returns an array with the x, y, and z positions to avoid object overhead
-	 * This function has no camera offse or scaling applied!
+	 * This function has no camera offset or scaling applied!
 	 *
 	 * @param x the x
 	 * @param y the y
