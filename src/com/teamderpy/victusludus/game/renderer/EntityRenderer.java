@@ -57,15 +57,15 @@ public class EntityRenderer {
 		int[] sc = RenderUtil.worldCoordToRawUnscaledScreenCoord(gameEntity.getPos().getX(), gameEntity.getPos().getY(), gameEntity.getPos().getZ());
 		System.err.println("base of entity is " + gameEntity.getPos() + "  " + sc[0] + "," + sc[1]);
 		int[] rrr = RenderUtil.screenCoordToRawUnscaledWorldCoord(sc[0], sc[1], gameEntity.getPos().getZ());
-		System.err.println("    at " + sc[0] + "," + sc[1] +  " for the layer " + gameEntity.getPos().getZ() + " the potential tile is " + rrr[0] + "," + rrr[1] + "," + rrr[2]);
+		System.err.println("   confirm at " + sc[0] + "," + sc[1] +  " for the layer " + gameEntity.getPos().getZ() + " the potential tile is " + rrr[0] + "," + rrr[1] + "," + rrr[2]);
 
 		GameTile[][][] tileArray = this.gameRenderer.game.getMap().getMap();
 
 		int z = gameEntity.getPos().getZ();
 
 		//set the offsets to see if each part of the entity can be hit by light
-		int[] yOffsets = new int[gameEntity.getEntity().getHeight()];
-		for(int i=0; i<gameEntity.getEntity().getHeight(); i++){
+		int[] yOffsets = new int[gameEntity.getEntity().getHeight()*2-1];
+		for(int i=0; i<gameEntity.getEntity().getHeight()*2-1; i++){
 			yOffsets[i] = sc[1] - (i+1) * this.gameRenderer.game.getGameDimensions().getLayerHeight();
 			System.err.println("  offset " + i + "  at " + yOffsets[i]);
 		}

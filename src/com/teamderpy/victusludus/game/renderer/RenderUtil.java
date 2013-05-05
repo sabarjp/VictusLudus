@@ -117,16 +117,8 @@ public final class RenderUtil {
 		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer*game.getLayerHeightS())) / game.getTileHeightS();
 		int isoTileX, isoTileY;
 
-		if(virtualTileX + virtualTileY < 0.5){
-			isoTileX = (int)(virtualTileY + virtualTileX - 1.5f);
-			isoTileY = (int)(virtualTileY - virtualTileX - 1.5f);
-		} else if(virtualTileY - virtualTileX < 0){
-			isoTileX = (int)(virtualTileY + virtualTileX);
-			isoTileY = (int)(virtualTileY - virtualTileX - 0.5f);
-		} else {
-			isoTileX = (int)(virtualTileY + virtualTileX - 0.5f);
-			isoTileY = (int)(virtualTileY - virtualTileX + 0.5f);
-		}
+		isoTileX = (int)Math.floor(virtualTileY + virtualTileX - 0.5);
+		isoTileY = (int)Math.floor(virtualTileY - virtualTileX + 0.5);
 
 		return new int[]{isoTileX, isoTileY, (int) layer};
 	}
@@ -147,18 +139,11 @@ public final class RenderUtil {
 
 		float virtualTileX = x / game.getGameDimensions().getTileWidth();
 		float virtualTileY = (y + layer*game.getGameDimensions().getLayerHeight()) / game.getGameDimensions().getTileHeight();
+
 		int isoTileX, isoTileY;
 
-		if(virtualTileX + virtualTileY < 0.5){
-			isoTileX = (int)(virtualTileY + virtualTileX - 1.5f);
-			isoTileY = (int)(virtualTileY - virtualTileX - 1.5f);
-		} else if(virtualTileY - virtualTileX < 0){
-			isoTileX = (int)(virtualTileY + virtualTileX);
-			isoTileY = (int)(virtualTileY - virtualTileX - 0.5f);
-		} else {
-			isoTileX = (int)(virtualTileY + virtualTileX - 0.5f);
-			isoTileY = (int)(virtualTileY - virtualTileX + 0.5f);
-		}
+		isoTileX = (int)Math.floor(virtualTileY + virtualTileX);
+		isoTileY = (int)Math.floor(virtualTileY - virtualTileX);
 
 		return new int[]{isoTileX, isoTileY, (int) layer};
 	}
@@ -180,18 +165,11 @@ public final class RenderUtil {
 
 		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthS();
 		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer*game.getLayerHeightS())) / game.getTileHeightS();
+
 		int isoTileX, isoTileY;
 
-		if(virtualTileX + virtualTileY < 0.5){
-			isoTileX = (int)(virtualTileY + virtualTileX - 1.5f);
-			isoTileY = (int)(virtualTileY - virtualTileX - 1.5f);
-		} else if(virtualTileY - virtualTileX < 0){
-			isoTileX = (int)(virtualTileY + virtualTileX);
-			isoTileY = (int)(virtualTileY - virtualTileX - 0.5f);
-		} else {
-			isoTileX = (int)(virtualTileY + virtualTileX - 0.5f);
-			isoTileY = (int)(virtualTileY - virtualTileX + 0.5f);
-		}
+		isoTileX = (int)Math.floor(virtualTileY + virtualTileX - 0.5);
+		isoTileY = (int)Math.floor(virtualTileY - virtualTileX + 0.5);
 
 		if(calculateWallFacing){
 			float segmentX = virtualTileX;
