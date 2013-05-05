@@ -11,8 +11,8 @@ import com.teamderpy.victusludus.game.EnumBuildMode;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
+import com.teamderpy.victusludus.game.light.LightEmitter;
 import com.teamderpy.victusludus.game.renderer.BitmapHandler;
-import com.teamderpy.victusludus.game.renderer.Light;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -45,7 +45,7 @@ public class EntityDefinition {
 	private ArrayList<EntityBehavior> behaviorList;
 
 	/** The light. */
-	private Light light;
+	private LightEmitter light;
 
 	/** Height in block units */
 	private int height;
@@ -229,7 +229,7 @@ public class EntityDefinition {
 	 *
 	 * @return the light
 	 */
-	public Light getLight() {
+	public LightEmitter getLight() {
 		return this.light;
 	}
 
@@ -238,7 +238,7 @@ public class EntityDefinition {
 	 *
 	 * @param light the new light
 	 */
-	public void setLight(final Light light) {
+	public void setLight(final LightEmitter light) {
 		this.light = light;
 	}
 

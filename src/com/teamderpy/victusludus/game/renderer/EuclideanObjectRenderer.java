@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
-
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.entity.GameEntity;
@@ -28,10 +26,15 @@ public class EuclideanObjectRenderer {
 		this.culledObjectList = new ArrayList<EuclideanObject>();
 	}
 
+	/**
+	 * @param tiles
+	 * @param entities
+	 * @param overlayTiles
+	 * @param layer
+	 */
 	public void render(final ArrayList<GameTile> tiles, final ArrayList<GameEntity> entities, final ArrayList<GameTile> overlayTiles, final int layer){
 		int rightBound =  VictusLudus.e.currentGame.getGameDimensions().getWidth() - this.gameRenderer.game.getTileWidthS();
 		int bottomBound = VictusLudus.e.currentGame.getGameDimensions().getHeight() - this.gameRenderer.game.getTileHeightS();
-		int zdeep = GameRenderer.getMaxVisibleDepth();
 
 		//master list
 		this.culledObjectList.clear();
@@ -55,9 +58,9 @@ public class EuclideanObjectRenderer {
 			boolean showHidden = false; //whether or not the object is hidden
 
 			//color by depth -- this may be too slow to keep
-			float colorModDepth = (o.getWorldCoord().getZ() - (layer-zdeep)) / (float)zdeep;
-			Color colorDepth = new Color(colorModDepth,colorModDepth,colorModDepth);
-			colorDepth.bind();
+			//float colorModDepth = (o.getWorldCoord().getZ() - (layer-zdeep)) / (float)zdeep;
+			//Color colorDepth = new Color(colorModDepth,colorModDepth,colorModDepth);
+			//colorDepth.bind();
 
 			//calculate if an object is hidden
 			//will need to change this to check if the object is smothered instead of above
@@ -78,21 +81,39 @@ public class EuclideanObjectRenderer {
 						GameTile.getSpriteSheetCol(GameTile.ID_HIDDEN), GameTile.getSpriteSheetRow(GameTile.ID_HIDDEN));
 			} else {
 				if(o instanceof GameTile){
+					/**
+					 * 
+					 * RENDER GAME TILE
+					 * 
+					 * */
+
+					GameTile t = (GameTile) o;
+
 					if(!isTileSheetInUse){
 						this.gameRenderer.getTileRenderer().getTileSheet().startUse();
 						isTileSheetInUse = true;
 					}
 
+					t.getTileLight().getColor().bind();
+
 					this.gameRenderer.getTileRenderer().getTileSheet().renderInUse(sc[0], sc[1],
 							VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
-							((GameTile) o).getSpriteSheetCol(), ((GameTile) o).getSpriteSheetRow());
+							t.getSpriteSheetCol(), t.getSpriteSheetRow());
 				}else if(o instanceof GameEntity){
+					/**
+					 * 
+					 * RENDER GAME ENTITY
+					 * 
+					 * */
+
+					GameEntity ge = (GameEntity) o;
+
 					if(isTileSheetInUse){
 						this.gameRenderer.getTileRenderer().getTileSheet().endUse();
 						isTileSheetInUse = false;
 					}
 
-					Animation a = ((GameEntity) o).getCurrentAnimation();
+					Animation a = ge.getCurrentAnimation();
 					if(a != null){
 						sc[1] -= (a.getHeight()+1)*VictusLudus.e.currentGame.getGameCamera().getZoom();
 						sc[1] += VictusLudus.e.currentGame.getTileHeightS();

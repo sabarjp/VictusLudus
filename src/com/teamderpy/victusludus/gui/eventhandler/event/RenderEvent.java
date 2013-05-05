@@ -2,6 +2,8 @@ package com.teamderpy.victusludus.gui.eventhandler.event;
 
 import java.util.EventObject;
 
+import com.teamderpy.victusludus.game.Game;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ResizeEvent.
@@ -14,6 +16,9 @@ public class RenderEvent extends EventObject{
 	/** The type of render event. */
 	private EnumRenderEventType eventType;
 
+	/** The game that the event refers to */
+	private Game game;
+
 	/**
 	 * Instantiates a new resize event.
 	 *
@@ -21,10 +26,11 @@ public class RenderEvent extends EventObject{
 	 * @param width the width
 	 * @param height the height
 	 */
-	public RenderEvent(final Object source, final EnumRenderEventType eventType) {
+	public RenderEvent(final Object source, final EnumRenderEventType eventType, final Game game) {
 		super(source);
 
 		this.setEventType(eventType);
+		this.setGame(game);
 	}
 
 	public EnumRenderEventType getEventType() {
@@ -38,6 +44,14 @@ public class RenderEvent extends EventObject{
 	 */
 	public void setEventType(final EnumRenderEventType eventType) {
 		this.eventType = eventType;
+	}
+
+	public Game getGame() {
+		return this.game;
+	}
+
+	public void setGame(final Game game) {
+		this.game = game;
 	}
 
 }

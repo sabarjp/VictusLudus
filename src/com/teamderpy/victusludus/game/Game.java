@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.Color;
+
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.GameException;
@@ -58,6 +60,9 @@ public class Game implements KeyboardListener, MouseListener{
 	/** The map. */
 	private Map map;
 
+	/** The color of the ambient light from the sun */
+	private Color ambientLightColor;
+
 	/** The game renderer. */
 	private GameRenderer gameRenderer;
 
@@ -93,6 +98,8 @@ public class Game implements KeyboardListener, MouseListener{
 			throw new GameException();
 		}
 
+		this.ambientLightColor = Color.white;
+
 		this.gameDimensions = new GameDimensions();
 
 		//setup game map
@@ -102,7 +109,7 @@ public class Game implements KeyboardListener, MouseListener{
 		this.registerListeners();
 
 		this.map = new Map(requestedSettings);
-		this.currentDepth = this.map.getHighestPoint();
+		this.currentDepth = this.map.getHighestPoint()-1;
 
 		//setup GUI
 		this.changeGUI(new com.teamderpy.victusludus.gui.GUIGameHUD());
@@ -143,7 +150,7 @@ public class Game implements KeyboardListener, MouseListener{
 	public void zoomOut(){
 		if(this.gameCamera.getZoom() > 0.25){
 			this.gameCamera.setZoom(this.gameCamera.getZoom() / 2);
-			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.ZOOM));
+			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.ZOOM, this));
 		}
 	}
 
@@ -153,7 +160,7 @@ public class Game implements KeyboardListener, MouseListener{
 	public void zoomIn(){
 		if(this.gameCamera.getZoom() < 4){
 			this.gameCamera.setZoom(this.gameCamera.getZoom() * 2);
-			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.ZOOM));
+			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.ZOOM, this));
 		}
 	}
 
@@ -249,7 +256,7 @@ public class Game implements KeyboardListener, MouseListener{
 		((GUIGameHUD) this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 		InputPoller.forceMouseMove();
 
-		VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.CHANGE_DEPTH));
+		VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.CHANGE_DEPTH, this));
 	}
 
 	/**
@@ -263,7 +270,7 @@ public class Game implements KeyboardListener, MouseListener{
 		((GUIGameHUD) this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 		InputPoller.forceMouseMove();
 
-		VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.CHANGE_DEPTH));
+		VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.CHANGE_DEPTH, this));
 	}
 
 
@@ -420,7 +427,7 @@ public class Game implements KeyboardListener, MouseListener{
 			this.gameCamera.setOffsetX(this.gameCamera.getOffsetX() - (this.rightClickX - mouseEvent.getX()));
 			this.gameCamera.setOffsetY(this.gameCamera.getOffsetY() - (this.rightClickY - mouseEvent.getY()));
 
-			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.SCROLL_MAP));
+			VictusLudus.e.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.SCROLL_MAP, this));
 
 			this.rightClickX = mouseEvent.getX();
 			this.rightClickY = mouseEvent.getY();
@@ -663,5 +670,17 @@ public class Game implements KeyboardListener, MouseListener{
 	 */
 	public void setQuitSignal(final boolean quitSignal) {
 		this.quitSignal = quitSignal;
+	}
+
+	public GameRenderer getGameRenderer() {
+		return this.gameRenderer;
+	}
+
+	public Color getAmbientLightColor() {
+		return this.ambientLightColor;
+	}
+
+	public void setAmbientLightColor(final Color ambientLightColor) {
+		this.ambientLightColor = ambientLightColor;
 	}
 }

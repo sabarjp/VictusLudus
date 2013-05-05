@@ -7,7 +7,7 @@ import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.Vec2i;
 import com.teamderpy.victusludus.game.WorldCoord;
-import com.teamderpy.victusludus.game.renderer.Light;
+import com.teamderpy.victusludus.game.light.LightEmitter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -18,7 +18,7 @@ public class GameEntity extends EuclideanObject{
 	private EntityDefinition e;
 
 	/** The entity light. */
-	private Light entityLight;
+	private LightEmitter entityLight;
 
 	/** The movement vector. */
 	private Vec2i movementVector;
@@ -39,9 +39,17 @@ public class GameEntity extends EuclideanObject{
 		super(pos);
 
 		this.e = entity;
+
+		if(this.e.getLight() != null){
+			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord().getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
+			this.entityLight.setBrightness(this.e.getLight().getBrightness());
+			VictusLudus.e.currentGame.getMap().getLightMap().add(this.entityLight);
+		}
+
 		this.creationTime = VictusLudus.e.getTickCount();
 		this.movementVector = new Vec2i(0, 0);
 		this.playAnimation("idle");
+		VictusLudus.e.currentGame.getGameRenderer().getEntityRenderer().calculateCulledEntity(this, VictusLudus.e.currentGame.getCurrentDepth());
 	}
 
 	/**
@@ -53,9 +61,17 @@ public class GameEntity extends EuclideanObject{
 		super();
 
 		this.e = VictusLudus.resources.getEntityHash().get(entityID);
+
+		if(this.e.getLight() != null){
+			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord().getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
+			this.entityLight.setBrightness(this.e.getLight().getBrightness());
+			VictusLudus.e.currentGame.getMap().getLightMap().add(this.entityLight);
+		}
+
 		this.creationTime = VictusLudus.e.getTickCount();
 		this.movementVector = new Vec2i(0, 0);
 		this.playAnimation("idle");
+		VictusLudus.e.currentGame.getGameRenderer().getEntityRenderer().calculateCulledEntity(this, VictusLudus.e.currentGame.getCurrentDepth());
 	}
 
 	/**
@@ -72,7 +88,7 @@ public class GameEntity extends EuclideanObject{
 		this.e = VictusLudus.resources.getEntityHash().get(entityID);
 
 		if(this.e.getLight() != null){
-			this.entityLight = new Light(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord().getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
+			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord().getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
 			this.entityLight.setBrightness(this.e.getLight().getBrightness());
 			VictusLudus.e.currentGame.getMap().getLightMap().add(this.entityLight);
 		}
@@ -80,6 +96,7 @@ public class GameEntity extends EuclideanObject{
 		this.movementVector = new Vec2i(0, 0);
 		this.creationTime = VictusLudus.e.getTickCount();
 		this.playAnimation("idle");
+		VictusLudus.e.currentGame.getGameRenderer().getEntityRenderer().calculateCulledEntity(this, VictusLudus.e.currentGame.getCurrentDepth());
 	}
 
 	/**
@@ -130,7 +147,7 @@ public class GameEntity extends EuclideanObject{
 	 *
 	 * @return the entity light
 	 */
-	public Light getEntityLight() {
+	public LightEmitter getEntityLight() {
 		return this.entityLight;
 	}
 

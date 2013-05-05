@@ -62,10 +62,15 @@ public class GameEntityManager {
 		ge.setPos(coord);
 		this.gameEntityList.add(coord, ge);
 
+		/* light associated with entity */
 		if(ge.getEntityLight() != null){
 			ge.getEntityLight().setPos(coord);
 			//we will need to re-calculate the light map
 			VictusLudus.e.currentGame.getMap().getLightMap().setDirty(true);
 		}
+
+		/* re-check culling of entity */
+		//NOOOO WE HAVE NO LINK TO THE RENDERING ENGINE, THIS SHALL BE UGLY
+		VictusLudus.e.currentGame.getGameRenderer().getEntityRenderer().calculateCulledEntity(ge, VictusLudus.e.currentGame.getCurrentDepth());
 	}
 }

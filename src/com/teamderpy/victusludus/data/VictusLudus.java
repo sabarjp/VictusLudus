@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.teamderpy.victusludus.engine.Engine;
+import com.teamderpy.victusludus.game.starcluster.Star;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -31,6 +32,19 @@ public class VictusLudus {
 	 * @param args the arguments (unused for now)
 	 */
 	public static void main(final String[] args) {
+		Star sun = new Star(Star.SOLAR_MASS);
+		Star little = new Star(Star.SOLAR_MASS / 2);
+		Star big = new Star(Star.SOLAR_MASS * 15);
+
+		System.err.println(sun);
+
+		for(int i=1; i<100; i++){
+			sun.tick(1000000);
+			System.err.println(sun);
+		}
+
+		System.exit(0);
+
 		VictusLudus.rand = new Random();
 
 		VictusLudus.LOGGER.setLevel(Level.FINEST);

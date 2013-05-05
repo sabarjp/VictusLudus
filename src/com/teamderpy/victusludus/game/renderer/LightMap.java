@@ -6,6 +6,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.ScreenCoord;
+import com.teamderpy.victusludus.game.light.LightEmitter;
 import com.teamderpy.victusludus.gui.eventhandler.RenderListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.EnumRenderEventType;
 import com.teamderpy.victusludus.gui.eventhandler.event.RenderEvent;
@@ -17,7 +18,7 @@ import com.teamderpy.victusludus.gui.eventhandler.event.RenderEvent;
 public class LightMap implements RenderListener{
 
 	/** The light list. */
-	private ArrayList<Light> lightList;
+	private ArrayList<LightEmitter> lightList;
 
 	/** The static sight map. */
 	private Image[] staticSightMap;
@@ -37,7 +38,7 @@ public class LightMap implements RenderListener{
 	 * @param depth the depth
 	 */
 	public LightMap(final int depth){
-		this.lightList = new ArrayList<Light>();
+		this.lightList = new ArrayList<LightEmitter>();
 		this.sightMapBuffer = new ImageBuffer(this.sightMapResolution, this.sightMapResolution);
 		this.staticSightMap = new Image[depth];
 
@@ -88,7 +89,7 @@ public class LightMap implements RenderListener{
 		float xblock = (float)VictusLudus.e.currentGame.getGameDimensions().getWidth()/this.sightMapResolution;
 		float yblock = (float)VictusLudus.e.currentGame.getGameDimensions().getHeight()/this.sightMapResolution;
 
-		for(Light l:this.lightList){
+		for(LightEmitter l:this.lightList){
 			if(l.getPos().getZ() == layer){
 				ScreenCoord lsc = RenderUtil.worldCoordToScreenCoord(l.getPos().getX(), l.getPos().getY(), l.getPos().getZ());
 				lsc.x += VictusLudus.e.currentGame.getTileWidthS()/2;
@@ -166,7 +167,7 @@ public class LightMap implements RenderListener{
 	 *
 	 * @return the light list
 	 */
-	public ArrayList<Light> getLightList() {
+	public ArrayList<LightEmitter> getLightList() {
 		return this.lightList;
 	}
 
@@ -175,7 +176,7 @@ public class LightMap implements RenderListener{
 	 *
 	 * @param light the light
 	 */
-	public void add(final Light light){
+	public void add(final LightEmitter light){
 		this.lightList.add(light);
 		this.isDirty = true;
 		//this.calculateLightMap(light.getPos().getZ());

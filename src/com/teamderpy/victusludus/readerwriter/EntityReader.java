@@ -11,8 +11,8 @@ import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.behavior.CreateAdjacentBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.MoveBehavior;
+import com.teamderpy.victusludus.game.light.LightEmitter;
 import com.teamderpy.victusludus.game.renderer.BitmapHandler;
-import com.teamderpy.victusludus.game.renderer.Light;
 
 
 // TODO: Auto-generated Javadoc
@@ -129,7 +129,7 @@ public class EntityReader implements IObjectReader {
 									System.out.println("found entity graphics light node");
 
 									ReadData lightLevel;
-									Light light = new Light(0, 0, 0, 0);
+									LightEmitter light = new LightEmitter(0, 0, 0, 0);
 									int red = 255;
 									int green = 255;
 									int blue = 255;

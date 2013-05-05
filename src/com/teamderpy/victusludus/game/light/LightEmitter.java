@@ -1,28 +1,27 @@
-package com.teamderpy.victusludus.game.renderer;
+package com.teamderpy.victusludus.game.light;
 
 import org.newdawn.slick.Color;
 
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.ScreenCoord;
 import com.teamderpy.victusludus.game.WorldCoord;
+import com.teamderpy.victusludus.game.renderer.RenderUtil;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class Light.
+ * The Class LightEmitter which is an object that emits light onto nearby objects.
  */
-public class Light {
-	
+public class LightEmitter extends EuclideanObject{
+
 	/** The strength. */
 	private int strength;
-	
+
 	/** The brightness. */
 	private float brightness;
-	
+
 	/** The color. */
 	private Color color;
-	
-	/** The pos. */
-	private WorldCoord pos;
 
 	/**
 	 * Instantiates a new light.
@@ -33,7 +32,7 @@ public class Light {
 	 * @param strength the strength
 	 * @param color the color
 	 */
-	public Light(final int x, final int y, final int z, final int strength, final Color color){
+	public LightEmitter(final int x, final int y, final int z, final int strength, final Color color){
 		this(x, y, z, strength);
 		this.color = color;
 	}
@@ -46,7 +45,7 @@ public class Light {
 	 * @param z the z
 	 * @param strength the strength
 	 */
-	public Light(final int x, final int y, final int z, final int strength){
+	public LightEmitter(final int x, final int y, final int z, final int strength){
 		this.setStrength(strength);
 		this.setPos(new WorldCoord(x, y, z));
 		this.color = Color.white;
@@ -77,7 +76,7 @@ public class Light {
 	 * @return the pos
 	 */
 	public WorldCoord getPos() {
-		return this.pos;
+		return super.getWorldCoord();
 	}
 
 	/**
@@ -86,7 +85,7 @@ public class Light {
 	 * @param pos the new pos
 	 */
 	public void setPos(final WorldCoord pos) {
-		this.pos = pos;
+		super.setWorldCoord(pos);
 	}
 
 	/**

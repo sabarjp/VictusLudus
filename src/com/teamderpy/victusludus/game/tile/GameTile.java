@@ -1,7 +1,9 @@
 package com.teamderpy.victusludus.game.tile;
 
+import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.WorldCoord;
+import com.teamderpy.victusludus.game.light.LightLevel;
 import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 import com.teamderpy.victusludus.game.wall.GameWall;
 
@@ -35,6 +37,9 @@ public class GameTile extends EuclideanObject{
 	/** The id. */
 	private int id;
 
+	/** The current light of the tile */
+	private LightLevel tileLight;
+
 	/** The north east wall. */
 	private GameWall northEastWall = null;
 
@@ -54,6 +59,9 @@ public class GameTile extends EuclideanObject{
 	 */
 	public GameTile(final int id){
 		this.id = id;
+
+		this.setTileLight(new LightLevel(1, VictusLudus.e.currentGame.getAmbientLightColor()));
+
 		super.setTotallyBlockingLOS(true);
 	}
 
@@ -68,6 +76,8 @@ public class GameTile extends EuclideanObject{
 	public GameTile(final int id, final int x, final int y, final int z){
 		super();
 		this.id = id;
+
+		this.setTileLight(new LightLevel(1, VictusLudus.e.currentGame.getAmbientLightColor()));
 
 		super.setWorldCoord(new WorldCoord(x, y, z));
 		super.setTotallyBlockingLOS(true);
@@ -215,5 +225,13 @@ public class GameTile extends EuclideanObject{
 	 */
 	public void setPos(final WorldCoord pos) {
 		super.setWorldCoord(pos);
+	}
+
+	public LightLevel getTileLight() {
+		return tileLight;
+	}
+
+	public void setTileLight(LightLevel tileLight) {
+		this.tileLight = tileLight;
 	}
 }

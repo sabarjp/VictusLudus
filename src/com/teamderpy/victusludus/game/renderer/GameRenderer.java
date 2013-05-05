@@ -57,10 +57,14 @@ public class GameRenderer{
 	 */
 	public void renderGameLayer(final Map map, final int layer){
 		this.bgRenderer.render();
+
 		//this.tileRenderer.render(map.getTileOverlayList(), layer);
 		//this.wallRenderer.render(map.getMap(), layer);
 		//this.entityRenderer.render(map.getEntities(), layer);
-		this.entityRenderer.calculateCulledEntities(map.getEntities(), layer);
+
+		//NO, NOT ON EVERY FRAME
+		//this.entityRenderer.calculateCulledEntities(map.getEntities(), layer);
+
 		this.objectRenderer.render(this.tileRenderer.getCulledTileList(), this.entityRenderer.getCulledEntityList(), map.getTileOverlayList(), layer);
 		map.getLightMap().renderLightMap(layer);
 		this.debugRenderer.render();
