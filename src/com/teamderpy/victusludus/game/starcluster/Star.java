@@ -1,43 +1,82 @@
 package com.teamderpy.victusludus.game.starcluster;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
+import com.teamderpy.victusludus.data.VictusLudus;
+
 
 /** A star in a solar system */
 public class Star {
-	public static double SOLAR_MASS = 1.9891E30;
-	public static double SOLAR_LUMINOSITY = 3.827E26;
-	public static double SOLAR_RADIUS = 6.960E8;
-	public static double AU = 149.5978E6;
-	public static double STEFAN_BOLTZMANN = 5.67E-8;
-	public static double PROTOSTAR_START_TEMP = 1500D;
+	public static BigDecimal SOLAR_MASS = new BigDecimal("1.98855E30");
+	public static BigDecimal SOLAR_LUMINOSITY = new BigDecimal("3.846E26");
+	public static BigDecimal SOLAR_RADIUS = new BigDecimal("6.955E8");
+	public static BigDecimal SOLAR_TEMPERATURE = new BigDecimal("5800");
+	public static BigDecimal AU = new BigDecimal("149.597870700E6");
+	public static BigDecimal STEFAN_BOLTZMANN = new BigDecimal("5.670373E-8");
+	public static BigDecimal PROTOSTAR_START_TEMP = new BigDecimal("1500");
+	public static BigDecimal CHANDRASEKHAR_LIMIT = Star.SOLAR_MASS.multiply(new BigDecimal("1.4"), MathContext.DECIMAL32);
 
-	private static double MAIN_SEQUENCE_START_MULT = 0.80;
-	private static double MAIN_SEQUENCE_END_MULT = 1.60;
+	private static BigDecimal MAIN_SEQUENCE_START_MULT = new BigDecimal("0.80");
+	private static BigDecimal MAIN_SEQUENCE_END_MULT = new BigDecimal("1.60");
+
+	private static MathContext STELLAR_RND = MathContext.DECIMAL32;
+
+	/** the random seed for this star **/
+	private float seed;
 
 	/** the luminosity of a star in watts */
-	private double luminosity;
+	private BigDecimal luminosity;
 
 	/** the luminosity of a star in kilograms */
-	private double mass;
+	private BigDecimal mass;
 
 	/** the surface temperature of the star in kelvins */
-	private double surfaceTemperature;
+	private BigDecimal surfaceTemperature;
 
 	/** the age of the star in years */
-	private double age;
+	private BigDecimal age;
 
 	/** the radius of the star in meters */
-	private double radius;
+	private BigDecimal radius;
+
+	/** values that the start started its life phase with */
+	private BigDecimal startedPhaseAge;
+	private BigDecimal startedPhaseLuminosity;
+	private BigDecimal startedPhaseMass;
+	private BigDecimal startedPhaseTemperature;
 
 	/** the type of star */
 	private EnumStarType starType;
 
-	public Star(final double startingMass){
+	public Star(final BigDecimal startingMass){
 		this.mass = startingMass;
-		this.age = 0D;
+
+		this.startedPhaseMass = this.mass;
+		this.age = BigDecimal.ZERO;
+		this.startedPhaseAge = this.age;
 		this.starType = EnumStarType.PROTOSTAR;
 		this.surfaceTemperature = Star.PROTOSTAR_START_TEMP;
+		this.startedPhaseTemperature = this.surfaceTemperature;
 		this.luminosity = this.calcBirthLuminosity();
+		this.startedPhaseLuminosity = this.luminosity;
 		this.radius = this.calcRadius();
+		this.seed = VictusLudus.rand.nextInt()/2;
+	}
+
+	public Star(final String startingMass){
+		this.mass = new BigDecimal(startingMass);
+
+		this.startedPhaseMass = this.mass;
+		this.age = BigDecimal.ZERO;
+		this.startedPhaseAge = this.age;
+		this.starType = EnumStarType.PROTOSTAR;
+		this.surfaceTemperature = Star.PROTOSTAR_START_TEMP;
+		this.startedPhaseTemperature = this.surfaceTemperature;
+		this.luminosity = this.calcBirthLuminosity();
+		this.startedPhaseLuminosity = this.luminosity;
+		this.radius = this.calcRadius();
+		this.seed = VictusLudus.rand.nextInt()/2;
 	}
 
 	/**
@@ -45,7 +84,7 @@ public class Star {
 	 * 
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
-	public void tick(final double delta){
+	public void tick(final BigDecimal delta){
 		switch (this.starType){
 			case PROTOSTAR:
 				this.tickProtostar(delta);
@@ -59,6 +98,18 @@ public class Star {
 			case BROWN_DWARF:
 				this.tickMainSequence(delta);
 				break;
+			case SUB_GIANT:
+				this.tickSubGiant(delta);
+				break;
+			case GIANT:
+				this.tickGiant(delta);
+				break;
+			case PLANETARY_NEBULA:
+				this.tickPlanetaryNebula(delta);
+				break;
+			case WHITE_DWARF:
+				this.tickWhiteDwarf(delta);
+				break;
 		}
 	}
 
@@ -68,42 +119,43 @@ public class Star {
 	 * 
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
-	private void tickProtostar(final double delta){
-		double endOfLife = this.calcTimeAsProtostar();
-		double startLuminosity = this.calcBirthLuminosity() ;
-		double startTemperature = Star.PROTOSTAR_START_TEMP;
-		double targetLuminosity = this.getMainSequenceLuminosityFromMass() * Star.MAIN_SEQUENCE_START_MULT;
-		double targetTemperature = this.getMainSequenceTemperatureFromMass(targetLuminosity);
-		double nextDate = this.age + delta;
-		double rolloverDelta = 0;
+	private void tickProtostar(final BigDecimal delta){
+		BigDecimal endOfLife = this.calcTimeAsProtostar();
+		BigDecimal targetLuminosity = this.getMainSequenceLuminosityFromMass().multiply(Star.MAIN_SEQUENCE_START_MULT, Star.STELLAR_RND);
+		BigDecimal targetTemperature = this.getMainSequenceTemperatureFromLuminosity(targetLuminosity);
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
 
 		//is this a failure star?
-		if(this.mass / Star.SOLAR_MASS < 0.08){
+		if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.08")) < 0){
 			this.starType = EnumStarType.BROWN_DWARF;
+			this.setStartingPhaseValues();
 			this.tick(rolloverDelta);
 			return;
 		}
 
 		//will we be in main sequence during this tick?
-		if(nextDate > endOfLife){
-			rolloverDelta = nextDate - endOfLife;
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
 			nextDate = endOfLife;
 		}
 
 		//find our new luminosity
-		this.luminosity = startLuminosity + nextDate / endOfLife * (targetLuminosity - startLuminosity );
+		this.luminosity = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
 
 		//find our new temperature
-		this.surfaceTemperature = startTemperature + nextDate / endOfLife * (targetTemperature - startTemperature);
+		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
 		this.radius = this.calcRadius();
 
 		//proceed to main sequence
-		if(nextDate >= endOfLife){
-			if(this.mass/Star.SOLAR_MASS > 0.5){
+		if(nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.5")) > 0){
 				this.starType = EnumStarType.MAIN_SEQUENCE;
-			}else if(this.mass/Star.SOLAR_MASS > 0.075){
+			}else if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.075")) > 0){
 				this.starType = EnumStarType.RED_DWARF;
 			}else{
 				this.starType = EnumStarType.BROWN_DWARF;
@@ -114,7 +166,7 @@ public class Star {
 		this.age = nextDate;
 
 		//do another tick as we finished this stage early
-		if(rolloverDelta > 0){
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
 			this.tick(rolloverDelta);
 			return;
 		}
@@ -126,37 +178,37 @@ public class Star {
 	 * 
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
-	private void tickMainSequence(final double delta){
-		double endOfLife = this.calcTimeAsMainSequence();
-		double startLuminosity = this.getMainSequenceLuminosityFromMass() * Star.MAIN_SEQUENCE_START_MULT;
-		double startTemperature = this.getMainSequenceTemperatureFromMass(startLuminosity);
-		double targetLuminosity = this.getMainSequenceLuminosityFromMass() * Star.MAIN_SEQUENCE_END_MULT;
-		double targetTemperature = this.getMainSequenceTemperatureFromMass(targetLuminosity);
-		double nextDate = this.age + delta;
-		double rolloverDelta = 0;
+	private void tickMainSequence(final BigDecimal delta){
+		BigDecimal endOfLife = this.calcTimeAsMainSequence();
+		BigDecimal targetLuminosity = this.getMainSequenceLuminosityFromMass().multiply(Star.MAIN_SEQUENCE_END_MULT, Star.STELLAR_RND);
+		BigDecimal targetTemperature = this.getMainSequenceTemperatureFromLuminosity(targetLuminosity);
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
 
 		//will we roll over this tick?
-		if(nextDate > endOfLife){
-			rolloverDelta = nextDate - endOfLife;
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
 			nextDate = endOfLife;
 		}
 
 		//find our new luminosity
-		this.luminosity = startLuminosity + nextDate / endOfLife * (targetLuminosity - startLuminosity);
+		this.luminosity = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
 
 		//find our new temperature
-		this.surfaceTemperature = startTemperature + nextDate / endOfLife * (targetTemperature - startTemperature);
+		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
 		this.radius = this.calcRadius();
 
 		//proceed to next sequence
-		if(nextDate >= endOfLife){
-			if(this.mass/Star.SOLAR_MASS > 40){
+		if(nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(BigDecimal.valueOf(40)) > 0){
 				this.starType = EnumStarType.HYPER_GIANT;
-			} else if(this.mass/Star.SOLAR_MASS > 10){
+			} else if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(BigDecimal.valueOf(8)) > 0){
 				this.starType = EnumStarType.SUPER_GIANT;
-			} else if(this.mass/Star.SOLAR_MASS > 0.2){
+			} else if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.2")) > 0){
 				this.starType = EnumStarType.SUB_GIANT;
 			} else {
 				if(this.starType != EnumStarType.BROWN_DWARF){
@@ -171,7 +223,196 @@ public class Star {
 		this.age = nextDate;
 
 		//do another tick as we finished this stage early
-		if(rolloverDelta > 0){
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
+			this.tick(rolloverDelta);
+			return;
+		}
+	}
+
+	/**
+	 * A sub giant is a hydrogen-shell burning star on its way to being a normal giant.
+	 * This is a rather short phase and basically goes into the giant phase.
+	 * The primary event here is a lowering of surface temperature but a massive
+	 * increase in radius and luminosity.
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickSubGiant(final BigDecimal delta){
+		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsSubGiant());
+		BigDecimal targetLuminosity = this.getSubGiantLuminosityFromMass();
+		BigDecimal targetTemperature = this.getSubgiantTemperatureFromLuminosity(targetLuminosity);
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
+			nextDate = endOfLife;
+		}
+
+		//find our new luminosity
+		this.luminosity = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("0.3"));
+
+		//find our new temperature
+		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("0.3"));
+
+		//recalculate the radius
+		this.radius = this.calcRadius();
+
+		//proceed to next sequence
+		if(nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.2")) > 0){
+				this.starType = EnumStarType.GIANT;
+			} else {
+				this.starType = EnumStarType.HELIUM_WHITE_DWARF;
+			}
+		}
+
+		//age the star
+		this.age = nextDate;
+
+		//do another tick as we finished this stage early
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
+			this.tick(rolloverDelta);
+			return;
+		}
+	}
+
+	/**
+	 * A giant is a low or intermediate mass star that is burning helium
+	 * at a very fast rate.  The star will become a white dwarf pretty fast.
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickGiant(final BigDecimal delta){
+		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsGiant());
+		BigDecimal targetMass = this.getGiantMassAfterLoss();
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
+			nextDate = endOfLife;
+		}
+
+		//find the new mass
+		this.mass = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate);
+
+		//calculate new temperature
+		this.surfaceTemperature = this.calcTemperature();
+
+		//recalculate the radius
+		this.radius = this.calcRadius();
+
+		//proceed to next sequence
+		if(nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			this.starType = EnumStarType.PLANETARY_NEBULA;
+		}
+
+		//age the star
+		this.age = nextDate;
+
+		//do another tick as we finished this stage early
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
+			this.tick(rolloverDelta);
+			return;
+		}
+	}
+
+	/**
+	 * A planetary nebula is pretty much an an explosion where
+	 * a giant rapidly transitions to a white dwarf.
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickPlanetaryNebula(final BigDecimal delta){
+		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsPlanetaryNebula());
+		BigDecimal targetMass = this.getWhiteDwarfBirthMass();
+		BigDecimal targetTemperature = this.getWhiteDwarfTemperature();
+		BigDecimal targetLuminosity = this.getWhiteDwarfLuminosity();
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
+			nextDate = endOfLife;
+		}
+
+		//find the new mass
+		this.mass = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate, new BigDecimal("-0.3"));
+
+		//find our new luminosity
+		this.luminosity = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("-0.3"));
+
+		//find our new temperature
+		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.3"));
+
+		//recalculate the radius
+		this.radius = this.calcRadius();
+
+		//proceed to next sequence
+		if(nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			this.starType = EnumStarType.WHITE_DWARF;
+		}
+
+		//age the star
+		this.age = nextDate;
+
+		//do another tick as we finished this stage early
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
+			this.tick(rolloverDelta);
+			return;
+		}
+	}
+
+	/**
+	 * A planetary nebula is pretty much an an explosion where
+	 * a giant rapidly transitions to a white dwarf.
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickWhiteDwarf(final BigDecimal delta){
+		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsWhiteDwarf());
+		BigDecimal targetTemperature = this.getBlackDwarfTemperature();
+		BigDecimal targetLuminosity = this.getBlackDwarfLuminosity();
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
+			nextDate = endOfLife;
+		}
+
+		//find our new luminosity
+		this.luminosity = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("0.5"));
+
+		//find our new temperature
+		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.5"));
+
+		//recalculate the radius
+		//this.radius = this.calcRadius();
+
+		//proceed to next sequence
+		if(nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			this.starType = EnumStarType.BLACK_DWARF;
+		}
+
+		//age the star
+		this.age = nextDate;
+
+		//do another tick as we finished this stage early
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
 			this.tick(rolloverDelta);
 			return;
 		}
@@ -183,8 +424,8 @@ public class Star {
 	 * @param mass the mass of the star in kilograms
 	 * @return the luminosity of the star in watts
 	 */
-	public double calcBirthLuminosity(){
-		return Star.SOLAR_LUMINOSITY * (46.0654687347D * Math.pow(this.mass/Star.SOLAR_MASS, 2.254768727D));
+	public BigDecimal calcBirthLuminosity(){
+		return Star.SOLAR_LUMINOSITY.multiply(new BigDecimal("46.0654687347").multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.254768727")), Star.STELLAR_RND), Star.STELLAR_RND);
 	}
 
 	/**
@@ -192,8 +433,17 @@ public class Star {
 	 * 
 	 * @return the radius of the star in meters
 	 */
-	public double calcRadius(){
-		return Math.sqrt(this.luminosity / (4 * Math.PI * Star.STEFAN_BOLTZMANN * Math.pow(this.surfaceTemperature, 4)));
+	public BigDecimal calcRadius(){
+		return Star.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Star.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.5"));
+	}
+
+	/**
+	 * Calculates the temperature of a star in kelvin
+	 * 
+	 * @return the temperature of the surface in kevlin
+	 */
+	public BigDecimal calcTemperature(){
+		return Star.pow(Star.pow(this.startedPhaseMass.divide(this.mass, Star.STELLAR_RND), new BigDecimal("2.5")), new BigDecimal("0.25")).multiply(this.startedPhaseTemperature, Star.STELLAR_RND);
 	}
 
 	/**
@@ -201,18 +451,58 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public double getMainSequenceLuminosityFromMass(){
-		double solarMass = this.mass/Star.SOLAR_MASS;
+	public BigDecimal getMainSequenceLuminosityFromMass(){
+		BigDecimal solarMass = this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND);
 
-		if(solarMass < 0.43){
-			return 0.23 * Math.pow(this.mass / Star.SOLAR_MASS, 2.3) * Star.SOLAR_LUMINOSITY;
-		}else if(solarMass < 2.00){
-			return Math.pow(this.mass / Star.SOLAR_MASS, 4.0) * Star.SOLAR_LUMINOSITY;
-		}else if(solarMass < 20.0){
-			return 1.5 * Math.pow(this.mass / Star.SOLAR_MASS, 3.5) * Star.SOLAR_LUMINOSITY;
+		if(solarMass.compareTo(new BigDecimal("0.43")) < 0){
+			return new BigDecimal("0.23").multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+		}else if(solarMass.compareTo(new BigDecimal("2.00")) < 0){
+			return Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND);
+		}else if(solarMass.compareTo(new BigDecimal("20.0")) < 0){
+			return new BigDecimal("1.5").multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else{
-			return 42 * Math.pow(this.mass / Star.SOLAR_MASS, 2.5) * Star.SOLAR_LUMINOSITY;
+			return BigDecimal.valueOf(42).multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}
+	}
+
+	/**
+	 * Calculates the luminosity of a sub-giant star in watts from the mass
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getSubGiantLuminosityFromMass(){
+		BigDecimal solarMass = this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND);
+		BigDecimal luminosity = BigDecimal.ZERO;
+
+		if(solarMass.compareTo(new BigDecimal("0.43")) < 0){
+			luminosity = new BigDecimal("0.23").multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+		}else if(solarMass.compareTo(new BigDecimal("2.00")) < 0){
+			luminosity = Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND);
+		}else if(solarMass.compareTo(new BigDecimal("20.0")) < 0){
+			luminosity = new BigDecimal("1.5").multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+		}else{
+			luminosity = BigDecimal.valueOf(42).multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+		}
+
+		return luminosity.multiply(BigDecimal.valueOf(4500), Star.STELLAR_RND);
+	}
+
+	/**
+	 * Calculates the luminosity of a white dwarf in watts from its current phase luminosity
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getWhiteDwarfLuminosity(){
+		return this.startedPhaseLuminosity.multiply(new BigDecimal("0.01"), Star.STELLAR_RND);
+	}
+
+	/**
+	 * Calculates the luminosity of a black dwarf in watts
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getBlackDwarfLuminosity(){
+		return new BigDecimal("1E-5");
 	}
 
 	/**
@@ -220,8 +510,35 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public double getMainSequenceTemperatureFromMass(final double luminosity){
-		return 6118.1162283755D * Math.pow(luminosity/Star.SOLAR_LUMINOSITY, 0.1349483096D);
+	public BigDecimal getMainSequenceTemperatureFromLuminosity(final BigDecimal luminosity){
+		return new BigDecimal("6118.1162283755").multiply(Star.pow(luminosity.divide(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.1349483096")), Star.STELLAR_RND);
+	}
+
+	/**
+	 * Calculates the temperature of a subgiant in kelvin from the mass
+	 * 
+	 * @return the temperature in kelvin
+	 */
+	public BigDecimal getSubgiantTemperatureFromLuminosity(final BigDecimal luminosity){
+		return BigDecimal.valueOf(2500).multiply(Star.pow(luminosity.divide(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.0631514365")), Star.STELLAR_RND);
+	}
+
+	/**
+	 * Returns the temperature of a new white dwarf
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getWhiteDwarfTemperature(){
+		return BigDecimal.valueOf(28000 + (1.0F + this.randomNoise(32)) * 4000);
+	}
+
+	/**
+	 * Returns the temperature of a new black dwarf
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getBlackDwarfTemperature(){
+		return BigDecimal.valueOf(600D +  1200D * (1.0F + this.randomNoise(698)));
 	}
 
 	/**
@@ -229,8 +546,8 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public double calcTimeAsProtostar(){
-		return 37190503.1847951D * Math.pow(this.mass/Star.SOLAR_MASS, -2.3519309281D);
+	public BigDecimal calcTimeAsProtostar(){
+		return new BigDecimal("37190503.1847951").multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.3519309281")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -238,8 +555,63 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public double calcTimeAsMainSequence(){
-		return 10000000000D * Math.pow(this.mass/Star.SOLAR_MASS, -2.5D);
+	public BigDecimal calcTimeAsMainSequence(){
+		return BigDecimal.valueOf(10000000000L).multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.5")), Star.STELLAR_RND);
+	}
+
+	/**
+	 * Calculates how long a star stays a sub giant, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsSubGiant(){
+		return BigDecimal.valueOf(1000000000).multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.1")), Star.STELLAR_RND);
+	}
+
+	/**
+	 * Calculates how long a star stays a giant, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsGiant(){
+		return BigDecimal.valueOf(360000000).multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.3")), Star.STELLAR_RND);
+	}
+
+	/**
+	 * Calculates how long a star stays a planetary nebula, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsPlanetaryNebula(){
+		return BigDecimal.valueOf(50000D + 50000D * (1.0F + this.randomNoise(205)));
+	}
+
+	/**
+	 * Calculates how long a star stays a white dwarf, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsWhiteDwarf(){
+		return BigDecimal.valueOf(1E12D + 1E12D * (1.0F + this.randomNoise(541)));
+	}
+
+	/**
+	 * Returns the mass of the star after losing some to solar wind in
+	 * the giant stage
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getGiantMassAfterLoss(){
+		return this.startedPhaseMass.multiply(BigDecimal.valueOf(1 - (1.0F + this.randomNoise(13)) * 0.25), Star.STELLAR_RND);
+	}
+
+	/**
+	 * Returns the mass of the star after it becomes a planetary nebula
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getWhiteDwarfBirthMass(){
+		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(54)) / 2.2F), Star.STELLAR_RND).min(Star.CHANDRASEKHAR_LIMIT.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(54)) / 2.2F), Star.STELLAR_RND));
 	}
 
 	/**
@@ -250,131 +622,131 @@ public class Star {
 	public String getSpectralClass(){
 		StringBuilder sb = new StringBuilder();
 
-		if(this.surfaceTemperature >= 33000){
+		if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(33000)) >= 0){
 			sb.append("O");
-		}else if(this.surfaceTemperature >= 30700){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(30700)) >= 0){
 			sb.append("B0");
-		}else if(this.surfaceTemperature >= 28400){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(28400)) >= 0){
 			sb.append("B1");
-		}else if(this.surfaceTemperature >= 26100){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(26100)) >= 0){
 			sb.append("B2");
-		}else if(this.surfaceTemperature >= 23800){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(23800)) >= 0){
 			sb.append("B3");
-		}else if(this.surfaceTemperature >= 21500){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(21500)) >= 0){
 			sb.append("B4");
-		}else if(this.surfaceTemperature >= 19200){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(19200)) >= 0){
 			sb.append("B5");
-		}else if(this.surfaceTemperature >= 16900){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(16900)) >= 0){
 			sb.append("B6");
-		}else if(this.surfaceTemperature >= 14600){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(14600)) >= 0){
 			sb.append("B7");
-		}else if(this.surfaceTemperature >= 12300){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(12300)) >= 0){
 			sb.append("B8");
-		}else if(this.surfaceTemperature >= 10000){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(10000)) >= 0){
 			sb.append("B9");
-		}else if(this.surfaceTemperature >= 9750){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(9750)) >= 0){
 			sb.append("A0");
-		}else if(this.surfaceTemperature >= 9500){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(9500)) >= 0){
 			sb.append("A1");
-		}else if(this.surfaceTemperature >= 9250){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(9250)) >= 0){
 			sb.append("A2");
-		}else if(this.surfaceTemperature >= 9000){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(9000)) >= 0){
 			sb.append("A3");
-		}else if(this.surfaceTemperature >= 8750){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(8750)) >= 0){
 			sb.append("A4");
-		}else if(this.surfaceTemperature >= 8500){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(8500)) >= 0){
 			sb.append("A5");
-		}else if(this.surfaceTemperature >= 8250){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(8250)) >= 0){
 			sb.append("A6");
-		}else if(this.surfaceTemperature >= 8000){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(8000)) >= 0){
 			sb.append("A7");
-		}else if(this.surfaceTemperature >= 7750){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(7750)) >= 0){
 			sb.append("A8");
-		}else if(this.surfaceTemperature >= 7500){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(7500)) >= 0){
 			sb.append("A9");
-		}else if(this.surfaceTemperature >= 7350){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(7350)) >= 0){
 			sb.append("F0");
-		}else if(this.surfaceTemperature >= 7200){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(7200)) >= 0){
 			sb.append("F1");
-		}else if(this.surfaceTemperature >= 7050){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(7050)) >= 0){
 			sb.append("F2");
-		}else if(this.surfaceTemperature >= 6900){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(6900)) >= 0){
 			sb.append("F3");
-		}else if(this.surfaceTemperature >= 6750){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(6750)) >= 0){
 			sb.append("F4");
-		}else if(this.surfaceTemperature >= 6600){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(6600)) >= 0){
 			sb.append("F5");
-		}else if(this.surfaceTemperature >= 6450){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(6450)) >= 0){
 			sb.append("F6");
-		}else if(this.surfaceTemperature >= 6300){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(6300)) >= 0){
 			sb.append("F7");
-		}else if(this.surfaceTemperature >= 6150){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(6150)) >= 0){
 			sb.append("F8");
-		}else if(this.surfaceTemperature >= 6000){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(6000)) >= 0){
 			sb.append("F9");
-		}else if(this.surfaceTemperature >= 5920){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5920)) >= 0){
 			sb.append("G0");
-		}else if(this.surfaceTemperature >= 5840){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5840)) >= 0){
 			sb.append("G1");
-		}else if(this.surfaceTemperature >= 5760){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5760)) >= 0){
 			sb.append("G2");
-		}else if(this.surfaceTemperature >= 5680){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5680)) >= 0){
 			sb.append("G3");
-		}else if(this.surfaceTemperature >= 5600){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5600)) >= 0){
 			sb.append("G4");
-		}else if(this.surfaceTemperature >= 5520){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5520)) >= 0){
 			sb.append("G5");
-		}else if(this.surfaceTemperature >= 5440){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5440)) >= 0){
 			sb.append("G6");
-		}else if(this.surfaceTemperature >= 5360){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5360)) >= 0){
 			sb.append("G7");
-		}else if(this.surfaceTemperature >= 5280){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5280)) >= 0){
 			sb.append("G8");
-		}else if(this.surfaceTemperature >= 5200){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5200)) >= 0){
 			sb.append("G9");
-		}else if(this.surfaceTemperature >= 5050){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(5050)) >= 0){
 			sb.append("K0");
-		}else if(this.surfaceTemperature >= 4900){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(4900)) >= 0){
 			sb.append("K1");
-		}else if(this.surfaceTemperature >= 4750){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(4750)) >= 0){
 			sb.append("K2");
-		}else if(this.surfaceTemperature >= 4600){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(4600)) >= 0){
 			sb.append("K3");
-		}else if(this.surfaceTemperature >= 4450){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(4450)) >= 0){
 			sb.append("K4");
-		}else if(this.surfaceTemperature >= 4300){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(4300)) >= 0){
 			sb.append("K5");
-		}else if(this.surfaceTemperature >= 4150){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(4150)) >= 0){
 			sb.append("K6");
-		}else if(this.surfaceTemperature >= 4000){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(4000)) >= 0){
 			sb.append("K7");
-		}else if(this.surfaceTemperature >= 3850){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(3850)) >= 0){
 			sb.append("K8");
-		}else if(this.surfaceTemperature >= 3700){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(3700)) >= 0){
 			sb.append("K9");
-		}else if(this.surfaceTemperature >= 3530){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(3530)) >= 0){
 			sb.append("M0");
-		}else if(this.surfaceTemperature >= 3360){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(3360)) >= 0){
 			sb.append("M1");
-		}else if(this.surfaceTemperature >= 3190){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(3190)) >= 0){
 			sb.append("M2");
-		}else if(this.surfaceTemperature >= 3020){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(3020)) >= 0){
 			sb.append("M3");
-		}else if(this.surfaceTemperature >= 2850){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(2850)) >= 0){
 			sb.append("M4");
-		}else if(this.surfaceTemperature >= 2680){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(2680)) >= 0){
 			sb.append("M5");
-		}else if(this.surfaceTemperature >= 2510){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(2510)) >= 0){
 			sb.append("M6");
-		}else if(this.surfaceTemperature >= 2340){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(2340)) >= 0){
 			sb.append("M7");
-		}else if(this.surfaceTemperature >= 2170){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(2170)) >= 0){
 			sb.append("M8");
-		}else if(this.surfaceTemperature >= 2000){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(2000)) >= 0){
 			sb.append("M9");
-		}else if(this.surfaceTemperature >= 1300){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(1300)) >= 0){
 			sb.append("L");
-		}else if(this.surfaceTemperature >= 700){
+		}else if(this.surfaceTemperature.compareTo(BigDecimal.valueOf(700)) >= 0){
 			sb.append("T");
 		}else{
 			sb.append("Y");
@@ -404,13 +776,13 @@ public class Star {
 	@Override
 	public String toString(){
 		return "  Star type: " + this.starType + "\n"
-				+ "        age: " + this.getFormattedStellarAge(this.age) + "\n"
-				+ "       mass: " + this.mass + "  Solar " + this.mass / Star.SOLAR_MASS + "\n"
-				+ " luminosity: " + this.luminosity + "  Solar " + this.luminosity / Star.SOLAR_LUMINOSITY + "\n"
-				+ "     radius: " + this.radius + "  Solar " + this.radius / Star.SOLAR_RADIUS + "\n"
-				+ "       temp: " + Math.round(this.surfaceTemperature) + " K" + "\n"
+				+ "        age: " + Star.getFormattedStellarAge(this.age) + "\n"
+				+ "       mass: " + this.mass + "  Solar " + this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND) + "\n"
+				+ " luminosity: " + this.luminosity + "  Solar " + this.luminosity.divide(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND) + "\n"
+				+ "     radius: " + this.radius + "  Solar " + this.radius.divide(Star.SOLAR_RADIUS, Star.STELLAR_RND) + "\n"
+				+ "       temp: " + Math.round(this.surfaceTemperature.doubleValue()) + " K" + "\n"
 				+ "      class: " + this.getSpectralClass() + "\n"
-				+ "     MS lum: " + this.getMainSequenceLuminosityFromMass() + "  Solar " + this.getMainSequenceLuminosityFromMass() / Star.SOLAR_LUMINOSITY + "\n";
+				+ "     MS lum: " + this.getMainSequenceLuminosityFromMass() + "  Solar " + this.getMainSequenceLuminosityFromMass().divide(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND) + "\n";
 	}
 
 	/**
@@ -420,17 +792,98 @@ public class Star {
 	 * @param age in years
 	 * @return string formatted for stellar timescale
 	 */
-	private String getFormattedStellarAge(final double age){
-		if(age >= 1000000000000D){
-			return age / 1000000000000D + " trillion years";
-		}else if(age >= 1000000000D){
-			return age / 1000000000D + " billion years";
-		}else if(age >= 1000000D){
-			return age / 1000000D + " million years";
-		}else if(age >= 1000D){
-			return age / 1000D + " thousand years";
+	private static String getFormattedStellarAge(final BigDecimal age){
+		if(age.compareTo(BigDecimal.valueOf(1000000000000L)) >= 0){
+			return age.divide(BigDecimal.valueOf(1000000000000L), Star.STELLAR_RND) + " trillion years";
+		}else if(age.compareTo(BigDecimal.valueOf(1000000000)) >= 0){
+			return age.divide(BigDecimal.valueOf(1000000000), Star.STELLAR_RND) + " billion years";
+		}else if(age.compareTo(BigDecimal.valueOf(1000000)) >= 0){
+			return age.divide(BigDecimal.valueOf(1000000), Star.STELLAR_RND) + " million years";
+		}else if(age.compareTo(BigDecimal.valueOf(1000)) >= 0){
+			return age.divide(BigDecimal.valueOf(1000), Star.STELLAR_RND) + " thousand years";
 		}
 
 		return age + " years";
+	}
+
+	/**
+	 * Linear interpolation between two known points
+	 * 
+	 * @param x1
+	 * @param x2
+	 * @param y1
+	 * @param y2
+	 * @param desiredX the x at which we desire an interpolated Y
+	 * @return the interpolated Y
+	 */
+	private static BigDecimal linearInterpolation(final BigDecimal x1, final BigDecimal x2, final BigDecimal y1, final BigDecimal y2, final BigDecimal desiredX){
+		return y1.add(y2.subtract(y1).multiply(desiredX.subtract(x1).divide(x2.subtract(x1), Star.STELLAR_RND), Star.STELLAR_RND));
+	}
+
+	/**
+	 * Exponential interpolation between two known points
+	 * 
+	 * @param x1
+	 * @param x2
+	 * @param y1
+	 * @param y2
+	 * @param desiredX the x at which we desire an interpolated Y
+	 * @param slopeFactor a float which determines the growth curve.  A number
+	 * less than 1 will cause rapid growth early that tapers off, with more
+	 * aggressive grown the closer to zero the value is.  If the value is greater
+	 * than one, then the opposite effect occurs, with slow growth early, but
+	 * rapid growth rate.  Similar to a graph of Y=X^(slopeFactor)
+	 * @return the interpolated Y
+	 */
+	private static BigDecimal exponentialInterpolation(final BigDecimal x1, final BigDecimal x2, final BigDecimal y1, final BigDecimal y2, final BigDecimal desiredX, final BigDecimal slopeFactor){
+		return Star.pow(Star.pow(y1, BigDecimal.ONE.divide(slopeFactor, Star.STELLAR_RND)).add(Star.pow(y2, BigDecimal.ONE.divide(slopeFactor, Star.STELLAR_RND)).subtract(Star.pow(y1, BigDecimal.ONE.divide(slopeFactor, Star.STELLAR_RND))).multiply(desiredX.subtract(x1).divide(x2.subtract(x1), Star.STELLAR_RND))), slopeFactor);
+	}
+
+	/**
+	 * Sets the phase start values to the current ones
+	 */
+	private void setStartingPhaseValues(){
+		this.startedPhaseAge = new BigDecimal(this.age.toString());
+		this.startedPhaseLuminosity = new BigDecimal(this.luminosity.toString());
+		this.startedPhaseMass = new BigDecimal(this.mass.toString());
+		this.startedPhaseTemperature = new BigDecimal(this.surfaceTemperature.toString());
+	}
+
+	/**
+	 * Random noise generator
+	 *
+	 * @param modifier an int to seed the random function
+	 * @return a float between -1.0 and 1.0
+	 */
+	private float randomNoise(final int modifier){
+		int h = modifier * 113;
+		h += this.seed;
+		h = h << 13 ^ h;
+		return 1.0F - (h * (h * h * 19531 + 1046527) + 1073807359 & 0x7fffffff) / 1073741824.0F;
+	}
+
+	private static BigDecimal pow(final BigDecimal n1, BigDecimal n2){
+		int signOf2 = n2.signum();
+		BigDecimal result;
+
+		// Perform X^(A+B)=X^A*X^B (B = remainder)
+		double dn1 = n1.doubleValue();
+
+		n2 = n2.multiply(new BigDecimal(signOf2)); // n2 is now positive
+		BigDecimal remainderOf2 = n2.remainder(BigDecimal.ONE);
+		BigDecimal n2IntPart = n2.subtract(remainderOf2);
+
+		// Calculate big part of the power using context -
+		// bigger range and performance but lower accuracy
+		BigDecimal intPow = n1.pow(n2IntPart.intValueExact());
+		BigDecimal doublePow = new BigDecimal(Math.pow(dn1, remainderOf2.doubleValue()));
+		result = intPow.multiply(doublePow);
+
+		// Fix negative power
+		if (signOf2 == -1) {
+			result = BigDecimal.ONE.divide(result, Star.STELLAR_RND);
+		}
+
+		return result;
 	}
 }

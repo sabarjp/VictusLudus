@@ -1,5 +1,6 @@
 package com.teamderpy.victusludus.data;
 
+import java.math.BigDecimal;
 import java.util.Random;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -32,20 +33,28 @@ public class VictusLudus {
 	 * @param args the arguments (unused for now)
 	 */
 	public static void main(final String[] args) {
+		VictusLudus.rand = new Random();
+
+
+
+
+
 		Star sun = new Star(Star.SOLAR_MASS);
-		Star little = new Star(Star.SOLAR_MASS / 2);
-		Star big = new Star(Star.SOLAR_MASS * 15);
+		Star little = new Star(Star.SOLAR_MASS.divide(BigDecimal.valueOf(2)));
+		Star big = new Star(Star.SOLAR_MASS.multiply(BigDecimal.valueOf(15)));
 
 		System.err.println(sun);
 
-		for(int i=1; i<100; i++){
-			sun.tick(1000000);
+		for(int i=1; i<99361; i++){
+			sun.tick(BigDecimal.valueOf(10000000));
 			System.err.println(sun);
 		}
 
 		System.exit(0);
 
-		VictusLudus.rand = new Random();
+
+
+
 
 		VictusLudus.LOGGER.setLevel(Level.FINEST);
 
