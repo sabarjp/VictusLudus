@@ -110,6 +110,12 @@ public class Star {
 			case WHITE_DWARF:
 				this.tickWhiteDwarf(delta);
 				break;
+			case BLACK_DWARF:
+				this.tickBlackDwarf(delta);
+				break;
+			case DEAD_BROWN_DWARF:
+				this.tickBlackDwarf(delta);
+				break;
 		}
 	}
 
@@ -129,6 +135,7 @@ public class Star {
 		//is this a failure star?
 		if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.08")) < 0){
 			this.starType = EnumStarType.BROWN_DWARF;
+			this.surfaceTemperature = this.getBrownDwarfBirthTemperature();
 			this.setStartingPhaseValues();
 			this.tick(rolloverDelta);
 			return;
@@ -374,8 +381,7 @@ public class Star {
 	}
 
 	/**
-	 * A planetary nebula is pretty much an an explosion where
-	 * a giant rapidly transitions to a white dwarf.
+	 * A white dwarf undergoes no fusion and slowly decays
 	 * 
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
@@ -398,9 +404,6 @@ public class Star {
 		//find our new temperature
 		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.5"));
 
-		//recalculate the radius
-		//this.radius = this.calcRadius();
-
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
 			this.setStartingPhaseValues();
@@ -419,6 +422,34 @@ public class Star {
 	}
 
 	/**
+	 * A black dwarf is pretty much a dead star
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickBlackDwarf(final BigDecimal delta){
+		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsBlackDwarf());
+		BigDecimal targetTemperature = this.getSpaceTemperature();
+		BigDecimal targetLuminosity = BigDecimal.ZERO;
+		BigDecimal nextDate = this.age.add(delta);
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			nextDate = endOfLife;
+		}
+
+		//find our new luminosity
+		if(nextDate.compareTo(endOfLife) <= 0){
+			this.luminosity = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
+
+			//find our new temperature
+			this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
+		}
+
+		//age the star
+		this.age = nextDate;
+	}
+
+	/**
 	 * Calculates the luminosity of a star at birth
 	 * 
 	 * @param mass the mass of the star in kilograms
@@ -434,7 +465,11 @@ public class Star {
 	 * @return the radius of the star in meters
 	 */
 	public BigDecimal calcRadius(){
-		return Star.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Star.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.5"));
+		if(this.starType == EnumStarType.BROWN_DWARF){
+			return Star.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Star.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.45"));
+		} else {
+			return Star.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Star.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.5"));
+		}
 	}
 
 	/**
@@ -454,7 +489,9 @@ public class Star {
 	public BigDecimal getMainSequenceLuminosityFromMass(){
 		BigDecimal solarMass = this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND);
 
-		if(solarMass.compareTo(new BigDecimal("0.43")) < 0){
+		if(solarMass.compareTo(new BigDecimal("0.08")) < 0){
+			return new BigDecimal("0.05").multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("1.2")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+		}else if(solarMass.compareTo(new BigDecimal("0.43")) < 0){
 			return new BigDecimal("0.23").multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("2.00")) < 0){
 			return Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Star.SOLAR_LUMINOSITY, Star.STELLAR_RND);
@@ -526,19 +563,37 @@ public class Star {
 	/**
 	 * Returns the temperature of a new white dwarf
 	 * 
-	 * @return the mass in kilograms
+	 * @return the temperature in kelvin
 	 */
 	public BigDecimal getWhiteDwarfTemperature(){
 		return BigDecimal.valueOf(28000 + (1.0F + this.randomNoise(32)) * 4000);
 	}
 
 	/**
+	 * Returns the temperature of a new brown dwarf
+	 * 
+	 * @return the temperature in kelvin
+	 */
+	public BigDecimal getBrownDwarfBirthTemperature(){
+		return BigDecimal.valueOf(300 + (1.0F + this.randomNoise(942)) * 1000);
+	}
+
+	/**
 	 * Returns the temperature of a new black dwarf
 	 * 
-	 * @return the mass in kilograms
+	 * @return the temperature in kelvin
 	 */
 	public BigDecimal getBlackDwarfTemperature(){
 		return BigDecimal.valueOf(600D +  1200D * (1.0F + this.randomNoise(698)));
+	}
+
+	/**
+	 * Returns the temperature of space
+	 * 
+	 * @return the temperature in kelvin
+	 */
+	public BigDecimal getSpaceTemperature(){
+		return BigDecimal.valueOf(30);
 	}
 
 	/**
@@ -593,6 +648,15 @@ public class Star {
 	 */
 	public BigDecimal calcTimeAsWhiteDwarf(){
 		return BigDecimal.valueOf(1E12D + 1E12D * (1.0F + this.randomNoise(541)));
+	}
+
+	/**
+	 * Calculates how long a star stays a black dwarf, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsBlackDwarf(){
+		return BigDecimal.valueOf(1E13D);
 	}
 
 	/**

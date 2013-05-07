@@ -39,9 +39,7 @@ public class VictusLudus {
 
 
 
-		Star sun = new Star(Star.SOLAR_MASS);
-		Star little = new Star(Star.SOLAR_MASS.divide(BigDecimal.valueOf(2)));
-		Star big = new Star(Star.SOLAR_MASS.multiply(BigDecimal.valueOf(15)));
+		Star sun = new Star(Star.SOLAR_MASS.divide(new BigDecimal("200")));
 
 		System.err.println(sun);
 
