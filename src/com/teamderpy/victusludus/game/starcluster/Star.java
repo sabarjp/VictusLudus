@@ -15,7 +15,8 @@ public class Star {
 	public static BigDecimal AU = new BigDecimal("149.597870700E6");
 	public static BigDecimal STEFAN_BOLTZMANN = new BigDecimal("5.670373E-8");
 	public static BigDecimal PROTOSTAR_START_TEMP = new BigDecimal("1500");
-	public static BigDecimal CHANDRASEKHAR_LIMIT = Star.SOLAR_MASS.multiply(new BigDecimal("1.4"), MathContext.DECIMAL32);
+	public static BigDecimal CHANDRASEKHAR_LIMIT = Star.SOLAR_MASS.multiply(new BigDecimal("1.44"), MathContext.DECIMAL32);
+	public static BigDecimal TOV_LIMIT = Star.SOLAR_MASS.multiply(new BigDecimal("3.00"), MathContext.DECIMAL32);
 
 	private static BigDecimal MAIN_SEQUENCE_START_MULT = new BigDecimal("0.80");
 	private static BigDecimal MAIN_SEQUENCE_END_MULT = new BigDecimal("1.60");
@@ -60,7 +61,7 @@ public class Star {
 		this.startedPhaseTemperature = this.surfaceTemperature;
 		this.luminosity = this.calcBirthLuminosity();
 		this.startedPhaseLuminosity = this.luminosity;
-		this.radius = this.calcRadius();
+		this.radius = this.calcMainSequenceRadius();
 		this.seed = VictusLudus.rand.nextInt()/2;
 	}
 
@@ -75,7 +76,7 @@ public class Star {
 		this.startedPhaseTemperature = this.surfaceTemperature;
 		this.luminosity = this.calcBirthLuminosity();
 		this.startedPhaseLuminosity = this.luminosity;
-		this.radius = this.calcRadius();
+		this.radius = this.calcMainSequenceRadius();
 		this.seed = VictusLudus.rand.nextInt()/2;
 	}
 
@@ -116,6 +117,36 @@ public class Star {
 			case DEAD_BROWN_DWARF:
 				this.tickBlackDwarf(delta);
 				break;
+			case SUPER_GIANT:
+				this.tickSuperGiant(delta);
+				break;
+			case HYPER_GIANT:
+				this.tickSuperGiant(delta);
+				break;
+			case WOLF_RAYET_STAR:
+				this.tickSuperGiant(delta);
+				break;
+			case 	SUPER_NOVA_TYPE_Ib:
+				this.tickSuperNova(delta);
+				break;
+			case 	SUPER_NOVA_TYPE_Ic:
+				this.tickSuperNova(delta);
+				break;
+			case 	SUPER_NOVA_TYPE_IIP:
+				this.tickSuperNova(delta);
+				break;
+			case 	SUPER_NOVA_TYPE_IIL:
+				this.tickSuperNova(delta);
+				break;
+			case 	NEUTRON_STAR:
+				this.tickNeutronStar(delta);
+				break;
+			case 	PULSAR:
+				this.tickNeutronStar(delta);
+				break;
+			case  BLACK_HOLE:
+				this.tickBlackHole(delta);
+				break;
 		}
 	}
 
@@ -154,7 +185,7 @@ public class Star {
 		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
-		this.radius = this.calcRadius();
+		this.radius = this.calcMainSequenceRadius();
 
 		//proceed to main sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -205,7 +236,7 @@ public class Star {
 		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
-		this.radius = this.calcRadius();
+		this.radius = this.calcMainSequenceRadius();
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -264,7 +295,7 @@ public class Star {
 		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("0.3"));
 
 		//recalculate the radius
-		this.radius = this.calcRadius();
+		this.radius = this.calcMainSequenceRadius();
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -312,13 +343,81 @@ public class Star {
 		this.surfaceTemperature = this.calcTemperature();
 
 		//recalculate the radius
-		this.radius = this.calcRadius();
+		this.radius = this.calcMainSequenceRadius();
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
 			this.setStartingPhaseValues();
 
 			this.starType = EnumStarType.PLANETARY_NEBULA;
+		}
+
+		//age the star
+		this.age = nextDate;
+
+		//do another tick as we finished this stage early
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
+			this.tick(rolloverDelta);
+			return;
+		}
+	}
+
+	/**
+	 * A super giant is a massive star that should burn out pretty fast
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickSuperGiant(final BigDecimal delta){
+		BigDecimal endOfLife;
+		BigDecimal targetMass;
+
+		if(this.starType == EnumStarType.WOLF_RAYET_STAR){
+			endOfLife = this.startedPhaseAge.add(this.calcTimeAsSuperGiant().divide(new BigDecimal("2"), Star.STELLAR_RND));
+			targetMass = this.getSuperGiantMassAfterLoss();
+		} else {
+			endOfLife = this.startedPhaseAge.add(this.calcTimeAsSuperGiant());
+			targetMass = this.getSuperGiantMassAfterLoss();
+		}
+
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
+			nextDate = endOfLife;
+		}
+
+		//find the new mass
+		this.mass = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate);
+
+		//determine new temperature
+		this.surfaceTemperature = this.getSuperGiantLoopTemperature(nextDate.subtract(this.startedPhaseAge));
+
+		//recalculate the radius
+		this.radius = this.calcMainSequenceRadius();
+
+		//turn into wolf-rayet star
+		if(this.starType != EnumStarType.WOLF_RAYET_STAR && this.mass.compareTo(this.startedPhaseMass.divide(new BigDecimal("2"), Star.STELLAR_RND)) < 0){
+			this.surfaceTemperature = this.getWolfRayetTemperature();
+			this.setStartingPhaseValues();
+			this.starType = EnumStarType.WOLF_RAYET_STAR;
+		} else if(nextDate.compareTo(endOfLife) >= 0){
+
+			//next sequence
+			this.setStartingPhaseValues();
+
+			if(this.starType == EnumStarType.WOLF_RAYET_STAR){
+				if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("50")) > 0){
+					this.starType = EnumStarType.SUPER_NOVA_TYPE_Ib;
+				} else {
+					this.starType = EnumStarType.SUPER_NOVA_TYPE_Ic;
+				}
+			} else if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("20")) > 0){
+				this.starType = EnumStarType.SUPER_NOVA_TYPE_IIL;
+			} else {
+				this.starType = EnumStarType.SUPER_NOVA_TYPE_IIP;
+			}
 		}
 
 		//age the star
@@ -361,7 +460,7 @@ public class Star {
 		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.3"));
 
 		//recalculate the radius
-		this.radius = this.calcRadius();
+		this.radius = this.calcMainSequenceRadius();
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -378,6 +477,142 @@ public class Star {
 			this.tick(rolloverDelta);
 			return;
 		}
+	}
+
+	/**
+	 * A super nova is a massive stellar explosion that will
+	 * leave a neutron star or a black hole
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickSuperNova(final BigDecimal delta){
+		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsSuperNova());
+		BigDecimal targetMass = this.getNeutronStarBirthMass();
+		BigDecimal targetTemperature = this.getNeutronStarTemperature();
+		BigDecimal targetLuminosity = this.getNeutronStarLuminosity();
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
+			nextDate = endOfLife;
+		}
+
+		//find the new mass
+		this.mass = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate, new BigDecimal("-0.3"));
+
+		//find our new luminosity
+		this.luminosity = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("-0.3"));
+
+		//find our new temperature
+		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.3"));
+
+		//recalculate the radius
+		this.radius = this.calcMainSequenceRadius();
+
+		//proceed to next sequence
+		if(nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			this.starType = EnumStarType.PULSAR;
+		}
+
+		//age the star
+		this.age = nextDate;
+
+		//do another tick as we finished this stage early
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
+			this.tick(rolloverDelta);
+			return;
+		}
+	}
+
+	/**
+	 * A star made entirely of degenerate matter.  Can collapse into a black hole.
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickNeutronStar(final BigDecimal delta){
+		BigDecimal endOfLife;
+		BigDecimal targetTemperature = this.getBlackDwarfTemperature();
+		BigDecimal targetLuminosity = this.getBlackDwarfLuminosity();
+
+
+		if(this.starType == EnumStarType.PULSAR){
+			endOfLife = this.startedPhaseAge.add(this.calcTimeAsPulsar());
+		} else {
+			endOfLife = this.startedPhaseAge.add(this.calcTimeAsNeutronStar());
+		}
+
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			nextDate = endOfLife;
+		}
+
+		//find our new luminosity
+		this.luminosity = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
+
+		//find our new temperature
+		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
+
+		//recalculate the radius
+		this.radius = this.calcDegenerateRadius();
+
+		//proceed to next sequence of black hole or neutron star
+		if(this.mass.compareTo(Star.TOV_LIMIT) > 0){
+			this.radius = BigDecimal.ZERO;
+			this.luminosity = BigDecimal.ZERO;
+			this.surfaceTemperature = BigDecimal.ZERO;
+
+			this.setStartingPhaseValues();
+
+			this.starType = EnumStarType.BLACK_HOLE;
+
+			//roll over
+			if(nextDate.compareTo(endOfLife) > 0){
+				rolloverDelta = nextDate.subtract(endOfLife);
+			}
+		}else if(this.starType == EnumStarType.PULSAR && nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			this.starType = EnumStarType.NEUTRON_STAR;
+
+			//roll over
+			if(nextDate.compareTo(endOfLife) > 0){
+				rolloverDelta = nextDate.subtract(endOfLife);
+			}
+		}
+
+		//age the star
+		this.age = nextDate;
+
+		//do another tick as we finished this stage early
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
+			this.tick(rolloverDelta);
+			return;
+		}
+	}
+
+	/**
+	 * A black hole.
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickBlackHole(final BigDecimal delta){
+		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsNeutronStar());
+		BigDecimal nextDate = this.age.add(delta);
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			nextDate = endOfLife;
+		}
+
+		//age the star
+		this.age = nextDate;
 	}
 
 	/**
@@ -403,6 +638,9 @@ public class Star {
 
 		//find our new temperature
 		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.5"));
+
+		//re-calculate radius
+		this.radius = this.calcDegenerateRadius();
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -460,16 +698,25 @@ public class Star {
 	}
 
 	/**
-	 * Calculates the radius of the star in meters
+	 * Calculates the radius of the star in meters using main sequence as a model
 	 * 
 	 * @return the radius of the star in meters
 	 */
-	public BigDecimal calcRadius(){
+	public BigDecimal calcMainSequenceRadius(){
 		if(this.starType == EnumStarType.BROWN_DWARF){
 			return Star.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Star.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.45"));
 		} else {
 			return Star.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Star.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.5"));
 		}
+	}
+
+	/**
+	 * Calculates the radius of the star in meters using degenerate matter as a model
+	 * 
+	 * @return the radius of the star in meters
+	 */
+	public BigDecimal calcDegenerateRadius(){
+		return new BigDecimal("0.010").multiply(Star.pow(this.mass, new BigDecimal("-0.333333333")));
 	}
 
 	/**
@@ -534,6 +781,15 @@ public class Star {
 	}
 
 	/**
+	 * Calculates the luminosity of a neutron star in watts from its current phase luminosity
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getNeutronStarLuminosity(){
+		return this.startedPhaseLuminosity.multiply(new BigDecimal("0.000001"), Star.STELLAR_RND);
+	}
+
+	/**
 	 * Calculates the luminosity of a black dwarf in watts
 	 * 
 	 * @return the mass in kilograms
@@ -561,12 +817,38 @@ public class Star {
 	}
 
 	/**
+	 * Returns the temperature of a super giant as a function of time
+	 * 
+	 * @return the temperature in kelvin
+	 */
+	public BigDecimal getSuperGiantLoopTemperature(final BigDecimal deltaT){
+		return this.surfaceTemperature.add(BigDecimal.valueOf(4000).multiply(BigDecimal.valueOf(Math.cos(1/(32000/Math.PI) * deltaT.doubleValue()))), Star.STELLAR_RND);
+	}
+
+	/**
+	 * The temperature of a new wolf-rayet star
+	 * @return the temperature in kelvin
+	 */
+	public BigDecimal getWolfRayetTemperature(){
+		return this.startedPhaseTemperature.multiply(BigDecimal.valueOf((1.0F + this.randomNoise(1234)) * 2));
+	}
+
+	/**
 	 * Returns the temperature of a new white dwarf
 	 * 
 	 * @return the temperature in kelvin
 	 */
 	public BigDecimal getWhiteDwarfTemperature(){
 		return BigDecimal.valueOf(28000 + (1.0F + this.randomNoise(32)) * 4000);
+	}
+
+	/**
+	 * Returns the temperature of a new neutron star
+	 * 
+	 * @return the temperature in kelvin
+	 */
+	public BigDecimal getNeutronStarTemperature(){
+		return BigDecimal.valueOf(22000 + (1.0F + this.randomNoise(2246)) * 4000);
 	}
 
 	/**
@@ -593,7 +875,7 @@ public class Star {
 	 * @return the temperature in kelvin
 	 */
 	public BigDecimal getSpaceTemperature(){
-		return BigDecimal.valueOf(30);
+		return new BigDecimal("2.725");
 	}
 
 	/**
@@ -633,6 +915,15 @@ public class Star {
 	}
 
 	/**
+	 * Calculates how long a star stays a super giant, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsSuperGiant(){
+		return BigDecimal.valueOf(550000).multiply(Star.pow(this.startedPhaseMass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.6")), Star.STELLAR_RND);
+	}
+
+	/**
 	 * Calculates how long a star stays a planetary nebula, in years
 	 * 
 	 * @return the time in years
@@ -642,12 +933,39 @@ public class Star {
 	}
 
 	/**
+	 * Calculates how long a star stays a super nova, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsSuperNova(){
+		return BigDecimal.valueOf(25000D + 25000D * (1.0F + this.randomNoise(9574)));
+	}
+
+	/**
 	 * Calculates how long a star stays a white dwarf, in years
 	 * 
 	 * @return the time in years
 	 */
 	public BigDecimal calcTimeAsWhiteDwarf(){
 		return BigDecimal.valueOf(1E12D + 1E12D * (1.0F + this.randomNoise(541)));
+	}
+
+	/**
+	 * Calculates how long a star stays a neutron star, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsNeutronStar(){
+		return BigDecimal.valueOf(1E15D + 1E15D * (1.0F + this.randomNoise(4384)));
+	}
+
+	/**
+	 * Calculates how long a star stays a pulsar star, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsPulsar(){
+		return BigDecimal.valueOf(10000000 + 45000000 * (1.0F + this.randomNoise(56467)));
 	}
 
 	/**
@@ -670,12 +988,31 @@ public class Star {
 	}
 
 	/**
+	 * Returns the mass of the star after losing some to solar wind in
+	 * the super giant stage
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getSuperGiantMassAfterLoss(){
+		return this.startedPhaseMass.multiply(BigDecimal.valueOf(1 - (1.0F + this.randomNoise(8432)) * 0.35), Star.STELLAR_RND);
+	}
+
+	/**
 	 * Returns the mass of the star after it becomes a planetary nebula
 	 * 
 	 * @return the mass in kilograms
 	 */
 	public BigDecimal getWhiteDwarfBirthMass(){
-		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(54)) / 2.2F), Star.STELLAR_RND).min(Star.CHANDRASEKHAR_LIMIT.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(54)) / 2.2F), Star.STELLAR_RND));
+		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(54)) / 2.2F), Star.STELLAR_RND).min(Star.CHANDRASEKHAR_LIMIT.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(512)) / 2.2F), Star.STELLAR_RND));
+	}
+
+	/**
+	 * Returns the mass of the star after it becomes a super nova
+	 * 
+	 * @return the mass in kilograms
+	 */
+	public BigDecimal getNeutronStarBirthMass(){
+		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.0F + this.randomNoise(14999)) / 8F), Star.STELLAR_RND);
 	}
 
 	/**
