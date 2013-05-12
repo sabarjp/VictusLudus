@@ -16,12 +16,12 @@ public class Star {
 	public static BigDecimal STEFAN_BOLTZMANN = new BigDecimal("5.670373E-8");
 	public static BigDecimal PROTOSTAR_START_TEMP = new BigDecimal("1500");
 	public static BigDecimal CHANDRASEKHAR_LIMIT = Star.SOLAR_MASS.multiply(new BigDecimal("1.44"), MathContext.DECIMAL32);
-	public static BigDecimal TOV_LIMIT = Star.SOLAR_MASS.multiply(new BigDecimal("3.00"), MathContext.DECIMAL32);
+	public static BigDecimal TOV_LIMIT = Star.SOLAR_MASS.multiply(new BigDecimal("3.2"), MathContext.DECIMAL32);
 
 	private static BigDecimal MAIN_SEQUENCE_START_MULT = new BigDecimal("0.80");
 	private static BigDecimal MAIN_SEQUENCE_END_MULT = new BigDecimal("1.60");
 
-	private static MathContext STELLAR_RND = MathContext.DECIMAL32;
+	public static MathContext STELLAR_RND = MathContext.DECIMAL32;
 
 	/** the random seed for this star **/
 	private float seed;
@@ -111,6 +111,9 @@ public class Star {
 			case WHITE_DWARF:
 				this.tickWhiteDwarf(delta);
 				break;
+			case HELIUM_WHITE_DWARF:
+				this.tickWhiteDwarf(delta);
+				break;
 			case BLACK_DWARF:
 				this.tickBlackDwarf(delta);
 				break;
@@ -146,6 +149,9 @@ public class Star {
 				break;
 			case  BLACK_HOLE:
 				this.tickBlackHole(delta);
+				break;
+			case  BLUE_DWARF:
+				this.tickBlueDwarf(delta);
 				break;
 		}
 	}
@@ -301,9 +307,16 @@ public class Star {
 		if(nextDate.compareTo(endOfLife) >= 0){
 			this.setStartingPhaseValues();
 
-			if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.2")) > 0){
+			if(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.5")) > 0){
+				this.setStartingPhaseValues();
+
 				this.starType = EnumStarType.GIANT;
 			} else {
+				//shed outside layers
+				this.surfaceTemperature = this.getWhiteDwarfTemperature();
+
+				this.setStartingPhaseValues();
+
 				this.starType = EnumStarType.HELIUM_WHITE_DWARF;
 			}
 		}
@@ -560,7 +573,7 @@ public class Star {
 		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
-		this.radius = this.calcDegenerateRadius();
+		this.radius = this.calcNeutronDegenerateRadius();
 
 		//proceed to next sequence of black hole or neutron star
 		if(this.mass.compareTo(Star.TOV_LIMIT) > 0){
@@ -577,8 +590,6 @@ public class Star {
 				rolloverDelta = nextDate.subtract(endOfLife);
 			}
 		}else if(this.starType == EnumStarType.PULSAR && nextDate.compareTo(endOfLife) >= 0){
-			this.setStartingPhaseValues();
-
 			this.starType = EnumStarType.NEUTRON_STAR;
 
 			//roll over
@@ -588,7 +599,11 @@ public class Star {
 		}
 
 		//age the star
-		this.age = nextDate;
+		if(this.starType == EnumStarType.NEUTRON_STAR){
+			this.age = this.age.add(delta);
+		}else{
+			this.age = nextDate;
+		}
 
 		//do another tick as we finished this stage early
 		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
@@ -612,7 +627,48 @@ public class Star {
 		}
 
 		//age the star
+		this.age = this.age.add(delta);
+	}
+
+	/**
+	 * A blue dwarf is a red dwarf that will increase its surface temperature
+	 * a bunch on the way to being a white dwarf.
+	 * 
+	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 */
+	private void tickBlueDwarf(final BigDecimal delta){
+		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsBlueDwarf());
+		BigDecimal targetTemperature = this.getWhiteDwarfTemperature();
+		BigDecimal nextDate = this.age.add(delta);
+		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//will we roll over this tick?
+		if(nextDate.compareTo(endOfLife) > 0){
+			rolloverDelta = nextDate.subtract(endOfLife);
+			nextDate = endOfLife;
+		}
+
+		//find our new temperature
+		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
+
+		//recalculate the radius
+		this.radius = this.calcElectronDegenerateRadius();
+
+		//proceed to next sequence
+		if(nextDate.compareTo(endOfLife) >= 0){
+			this.setStartingPhaseValues();
+
+			this.starType = EnumStarType.WHITE_DWARF;
+		}
+
+		//age the star
 		this.age = nextDate;
+
+		//do another tick as we finished this stage early
+		if(rolloverDelta.compareTo(BigDecimal.ZERO) > 0){
+			this.tick(rolloverDelta);
+			return;
+		}
 	}
 
 	/**
@@ -640,7 +696,7 @@ public class Star {
 		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.5"));
 
 		//re-calculate radius
-		this.radius = this.calcDegenerateRadius();
+		this.radius = this.calcElectronDegenerateRadius();
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -684,7 +740,7 @@ public class Star {
 		}
 
 		//age the star
-		this.age = nextDate;
+		this.age = this.age.add(delta);
 	}
 
 	/**
@@ -711,12 +767,21 @@ public class Star {
 	}
 
 	/**
-	 * Calculates the radius of the star in meters using degenerate matter as a model
+	 * Calculates the radius of the star in meters using electron degenerate matter as a model
 	 * 
 	 * @return the radius of the star in meters
 	 */
-	public BigDecimal calcDegenerateRadius(){
-		return new BigDecimal("0.010").multiply(Star.pow(this.mass, new BigDecimal("-0.333333333")));
+	public BigDecimal calcElectronDegenerateRadius(){
+		return new BigDecimal("0.010").multiply(Star.pow(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Star.SOLAR_RADIUS, Star.STELLAR_RND);
+	}
+
+	/**
+	 * Calculates the radius of the star in meters using electron degenerate matter as a model
+	 * 
+	 * @return the radius of the star in meters
+	 */
+	public BigDecimal calcNeutronDegenerateRadius(){
+		return new BigDecimal("0.00010").multiply(Star.pow(this.mass.divide(Star.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Star.SOLAR_RADIUS, Star.STELLAR_RND);
 	}
 
 	/**
@@ -786,7 +851,7 @@ public class Star {
 	 * @return the mass in kilograms
 	 */
 	public BigDecimal getNeutronStarLuminosity(){
-		return this.startedPhaseLuminosity.multiply(new BigDecimal("0.000001"), Star.STELLAR_RND);
+		return this.startedPhaseLuminosity.multiply(new BigDecimal("0.0001"), Star.STELLAR_RND);
 	}
 
 	/**
@@ -951,6 +1016,15 @@ public class Star {
 	}
 
 	/**
+	 * Calculates how long a star stays a blue dwarf, in years
+	 * 
+	 * @return the time in years
+	 */
+	public BigDecimal calcTimeAsBlueDwarf(){
+		return BigDecimal.valueOf(1E12D + 1E12D * (1.0F + this.randomNoise(4210)));
+	}
+
+	/**
 	 * Calculates how long a star stays a neutron star, in years
 	 * 
 	 * @return the time in years
@@ -1003,7 +1077,7 @@ public class Star {
 	 * @return the mass in kilograms
 	 */
 	public BigDecimal getWhiteDwarfBirthMass(){
-		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(54)) / 2.2F), Star.STELLAR_RND).min(Star.CHANDRASEKHAR_LIMIT.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(512)) / 2.2F), Star.STELLAR_RND));
+		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(54)) / 2.2F), Star.STELLAR_RND).min(Star.CHANDRASEKHAR_LIMIT);
 	}
 
 	/**
@@ -1012,7 +1086,7 @@ public class Star {
 	 * @return the mass in kilograms
 	 */
 	public BigDecimal getNeutronStarBirthMass(){
-		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.0F + this.randomNoise(14999)) / 8F), Star.STELLAR_RND);
+		return Star.SOLAR_MASS.multiply(BigDecimal.valueOf((1.4F + this.randomNoise(14999)) * 2.3F), Star.STELLAR_RND).max(Star.CHANDRASEKHAR_LIMIT).min(Star.TOV_LIMIT);
 	}
 
 	/**
@@ -1194,7 +1268,9 @@ public class Star {
 	 * @return string formatted for stellar timescale
 	 */
 	private static String getFormattedStellarAge(final BigDecimal age){
-		if(age.compareTo(BigDecimal.valueOf(1000000000000L)) >= 0){
+		if(age.compareTo(BigDecimal.valueOf(1000000000000000L)) >= 0){
+			return age.divide(BigDecimal.valueOf(1000000000000000L), Star.STELLAR_RND) + " quadrillion years";
+		}else if(age.compareTo(BigDecimal.valueOf(1000000000000L)) >= 0){
 			return age.divide(BigDecimal.valueOf(1000000000000L), Star.STELLAR_RND) + " trillion years";
 		}else if(age.compareTo(BigDecimal.valueOf(1000000000)) >= 0){
 			return age.divide(BigDecimal.valueOf(1000000000), Star.STELLAR_RND) + " billion years";

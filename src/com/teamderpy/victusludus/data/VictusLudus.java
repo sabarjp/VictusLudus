@@ -36,12 +36,12 @@ public class VictusLudus {
 		VictusLudus.rand = new Random();
 
 
-		Star sun = new Star(Star.SOLAR_MASS.multiply(new BigDecimal("50")));
+		Star sun = new Star(Star.SOLAR_MASS.multiply(new BigDecimal("14"), Star.STELLAR_RND));
 
 		System.err.println(sun);
 
-		for(int i=1; i<80; i++){
-			sun.tick(BigDecimal.valueOf(10000));
+		for(int i=1; i<150000; i++){
+			sun.tick(BigDecimal.valueOf(1000000000L));
 			System.err.println(sun);
 		}
 
