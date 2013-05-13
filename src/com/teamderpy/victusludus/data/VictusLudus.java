@@ -1,13 +1,14 @@
 package com.teamderpy.victusludus.data;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Random;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.teamderpy.victusludus.engine.Engine;
-import com.teamderpy.victusludus.game.starcluster.Star;
+import com.teamderpy.victusludus.game.starcluster.Planet;
+import com.teamderpy.victusludus.game.starcluster.StarDate;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -35,15 +36,23 @@ public class VictusLudus {
 	public static void main(final String[] args) {
 		VictusLudus.rand = new Random();
 
+		StarDate starDate = new StarDate(new BigInteger("23463645346"));
+		//Star sun = new Star(starDate, Cosmology.SOLAR_MASS.multiply(new BigDecimal("150"), Star.STELLAR_RND));
 
-		Star sun = new Star(Star.SOLAR_MASS.multiply(new BigDecimal("14"), Star.STELLAR_RND));
 
-		System.err.println(sun);
+		Planet planet = new Planet(starDate);
+		System.err.println(planet);
 
-		for(int i=1; i<150000; i++){
-			sun.tick(BigDecimal.valueOf(1000000000L));
-			System.err.println(sun);
+		//System.err.println(sun);
+
+		for(int i=1; i<2000; i++){
+			//sun.tick(BigDecimal.valueOf(100000000L));
+			starDate.addYears(new BigInteger("100000000"));
+
+			//System.err.println(sun);
 		}
+
+		//System.err.println(sun.getHistory());
 
 		System.exit(0);
 

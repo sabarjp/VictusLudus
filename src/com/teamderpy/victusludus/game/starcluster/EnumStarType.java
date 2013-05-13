@@ -1,6 +1,7 @@
 package com.teamderpy.victusludus.game.starcluster;
 
 public enum EnumStarType {
+	DUST,
 	BROWN_DWARF,
 	DEAD_BROWN_DWARF,
 	PROTOSTAR,
