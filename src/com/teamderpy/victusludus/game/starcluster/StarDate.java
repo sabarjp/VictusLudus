@@ -58,7 +58,7 @@ public class StarDate {
 
 	@Override
 	public String toString(){
-		return StarDate.getFormattedStellarAge(this);
+		return StarDate.getFormattedStarDate(this);
 	}
 
 	/**
@@ -142,13 +142,12 @@ public class StarDate {
 	}
 
 	/**
-	 * Turns a number into a string for stellar age.
-	 * I.E, 6000000 returns "Year 6 billion"
+	 * Prints the star date in standard star date format
 	 * 
 	 * @param age in years
 	 * @return string formatted for stellar timescale
 	 */
-	public static String getFormattedStellarAge(final StarDate starDate){
+	public static String getFormattedStarDate(final StarDate starDate){
 		return starDate.getYear() + "." + starDate.getCentury() + "." + starDate.getMillennium() + ", " + starDate.getEpoch();
 	}
 }

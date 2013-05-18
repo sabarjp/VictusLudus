@@ -214,10 +214,10 @@ public class Star {
 		BigDecimal timeAdvance = nextDate.subtract(this.age);
 
 		//find our new luminosity
-		this.luminosity = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
+		this.luminosity = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
 
 		//find our new temperature
-		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
+		this.surfaceTemperature = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
@@ -267,10 +267,10 @@ public class Star {
 		BigDecimal timeAdvance = nextDate.subtract(this.age);
 
 		//find our new luminosity
-		this.luminosity = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
+		this.luminosity = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
 
 		//find our new temperature
-		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
+		this.surfaceTemperature = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
@@ -333,10 +333,10 @@ public class Star {
 		BigDecimal timeAdvance = nextDate.subtract(this.age);
 
 		//find our new luminosity
-		this.luminosity = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("0.3"));
+		this.luminosity = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("0.3"));
 
 		//find our new temperature
-		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("0.3"));
+		this.surfaceTemperature = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("0.3"));
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
@@ -397,7 +397,7 @@ public class Star {
 		this.age = nextDate;
 
 		//find the new mass
-		this.mass = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate);
+		this.mass = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate);
 
 		//calculate new temperature
 		this.surfaceTemperature = this.calcTemperature();
@@ -450,7 +450,7 @@ public class Star {
 		BigDecimal timeAdvance = nextDate.subtract(this.age);
 
 		//find the new mass
-		this.mass = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate);
+		this.mass = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate);
 
 		//determine new temperature
 		this.surfaceTemperature = this.getSuperGiantLoopTemperature(nextDate.subtract(this.startedPhaseAge));
@@ -523,13 +523,13 @@ public class Star {
 		this.age = nextDate;
 
 		//find the new mass
-		this.mass = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate, new BigDecimal("-0.3"));
+		this.mass = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate, new BigDecimal("-0.3"));
 
 		//find our new luminosity
-		this.luminosity = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("-0.3"));
+		this.luminosity = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("-0.3"));
 
 		//find our new temperature
-		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.3"));
+		this.surfaceTemperature = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.3"));
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
@@ -573,13 +573,13 @@ public class Star {
 		BigDecimal timeAdvance = nextDate.subtract(this.age);
 
 		//find the new mass
-		this.mass = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate, new BigDecimal("-0.3"));
+		this.mass = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseMass, targetMass, nextDate, new BigDecimal("-0.3"));
 
 		//find our new luminosity
-		this.luminosity = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("-0.3"));
+		this.luminosity = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("-0.3"));
 
 		//find our new temperature
-		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.3"));
+		this.surfaceTemperature = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.3"));
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
@@ -631,10 +631,10 @@ public class Star {
 		BigDecimal timeAdvance = nextDate.subtract(this.age);
 
 		//find our new luminosity
-		this.luminosity = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
+		this.luminosity = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
 
 		//find our new temperature
-		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
+		this.surfaceTemperature = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
 		this.radius = this.calcNeutronDegenerateRadius();
@@ -719,7 +719,7 @@ public class Star {
 		BigDecimal timeAdvance = nextDate.subtract(this.age);
 
 		//find our new temperature
-		this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
+		this.surfaceTemperature = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 
 		//recalculate the radius
 		this.radius = this.calcElectronDegenerateRadius();
@@ -764,10 +764,10 @@ public class Star {
 		BigDecimal timeAdvance = nextDate.subtract(this.age);
 
 		//find our new luminosity
-		this.luminosity = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("0.5"));
+		this.luminosity = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate, new BigDecimal("0.5"));
 
 		//find our new temperature
-		this.surfaceTemperature = Star.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.5"));
+		this.surfaceTemperature = Cosmology.exponentialInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate, new BigDecimal("-0.5"));
 
 		//re-calculate radius
 		this.radius = this.calcElectronDegenerateRadius();
@@ -809,10 +809,10 @@ public class Star {
 
 		//find our new luminosity
 		if(nextDate.compareTo(endOfLife) <= 0){
-			this.luminosity = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
+			this.luminosity = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseLuminosity, targetLuminosity, nextDate);
 
 			//find our new temperature
-			this.surfaceTemperature = Star.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
+			this.surfaceTemperature = Cosmology.linearInterpolation(this.startedPhaseAge, endOfLife, this.startedPhaseTemperature, targetTemperature, nextDate);
 		}
 
 		//age the star
@@ -826,7 +826,7 @@ public class Star {
 	 * @return the luminosity of the star in watts
 	 */
 	public BigDecimal calcBirthLuminosity(){
-		return Cosmology.SOLAR_LUMINOSITY.multiply(new BigDecimal("46.0654687347").multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.254768727")), Star.STELLAR_RND), Star.STELLAR_RND);
+		return Cosmology.SOLAR_LUMINOSITY.multiply(new BigDecimal("46.0654687347").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.254768727")), Star.STELLAR_RND), Star.STELLAR_RND);
 	}
 
 	/**
@@ -836,9 +836,9 @@ public class Star {
 	 */
 	public BigDecimal calcMainSequenceRadius(){
 		if(this.starType == EnumStarType.BROWN_DWARF){
-			return Star.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Cosmology.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.45"));
+			return Cosmology.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Cosmology.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.45"));
 		} else {
-			return Star.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Cosmology.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.5"));
+			return Cosmology.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Cosmology.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.5"));
 		}
 	}
 
@@ -848,7 +848,7 @@ public class Star {
 	 * @return the radius of the star in meters
 	 */
 	public BigDecimal calcElectronDegenerateRadius(){
-		return new BigDecimal("0.010").multiply(Star.pow(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND);
+		return new BigDecimal("0.010").multiply(Cosmology.pow(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND);
 	}
 
 	/**
@@ -857,7 +857,7 @@ public class Star {
 	 * @return the radius of the star in meters
 	 */
 	public BigDecimal calcNeutronDegenerateRadius(){
-		return new BigDecimal("0.00010").multiply(Star.pow(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND);
+		return new BigDecimal("0.00010").multiply(Cosmology.pow(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND);
 	}
 
 	/**
@@ -875,7 +875,7 @@ public class Star {
 	 * @return the temperature of the surface in kevlin
 	 */
 	public BigDecimal calcTemperature(){
-		return Star.pow(Star.pow(this.startedPhaseMass.divide(this.mass, Star.STELLAR_RND), new BigDecimal("2.5")), new BigDecimal("0.25")).multiply(this.startedPhaseTemperature, Star.STELLAR_RND);
+		return Cosmology.pow(Cosmology.pow(this.startedPhaseMass.divide(this.mass, Star.STELLAR_RND), new BigDecimal("2.5")), new BigDecimal("0.25")).multiply(this.startedPhaseTemperature, Star.STELLAR_RND);
 	}
 
 	/**
@@ -887,15 +887,15 @@ public class Star {
 		BigDecimal solarMass = this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND);
 
 		if(solarMass.compareTo(new BigDecimal("0.08")) < 0){
-			return new BigDecimal("0.05").multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("1.2")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			return new BigDecimal("0.05").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("1.2")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("0.43")) < 0){
-			return new BigDecimal("0.23").multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			return new BigDecimal("0.23").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("2.00")) < 0){
-			return Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
+			return Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("20.0")) < 0){
-			return new BigDecimal("1.5").multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			return new BigDecimal("1.5").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else{
-			return BigDecimal.valueOf(42).multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			return BigDecimal.valueOf(42).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}
 	}
 
@@ -909,13 +909,13 @@ public class Star {
 		BigDecimal luminosity = BigDecimal.ZERO;
 
 		if(solarMass.compareTo(new BigDecimal("0.43")) < 0){
-			luminosity = new BigDecimal("0.23").multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			luminosity = new BigDecimal("0.23").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("2.00")) < 0){
-			luminosity = Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
+			luminosity = Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("20.0")) < 0){
-			luminosity = new BigDecimal("1.5").multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			luminosity = new BigDecimal("1.5").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else{
-			luminosity = BigDecimal.valueOf(42).multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			luminosity = BigDecimal.valueOf(42).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}
 
 		return luminosity.multiply(BigDecimal.valueOf(4500), Star.STELLAR_RND);
@@ -954,7 +954,7 @@ public class Star {
 	 * @return the temperature in kelvin
 	 */
 	public BigDecimal getMainSequenceTemperatureFromLuminosity(final BigDecimal luminosity){
-		return new BigDecimal("6118.1162283755").multiply(Star.pow(luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.1349483096")), Star.STELLAR_RND);
+		return new BigDecimal("6118.1162283755").multiply(Cosmology.pow(luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.1349483096")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -963,7 +963,7 @@ public class Star {
 	 * @return the temperature in kelvin
 	 */
 	public BigDecimal getSubgiantTemperatureFromLuminosity(final BigDecimal luminosity){
-		return BigDecimal.valueOf(2500).multiply(Star.pow(luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.0631514365")), Star.STELLAR_RND);
+		return BigDecimal.valueOf(2500).multiply(Cosmology.pow(luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.0631514365")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1034,7 +1034,7 @@ public class Star {
 	 * @return the time in years
 	 */
 	public BigDecimal calcTimeAsProtostar(){
-		return new BigDecimal("37190503.1847951").multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.3519309281")), Star.STELLAR_RND);
+		return new BigDecimal("37190503.1847951").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.3519309281")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1043,7 +1043,7 @@ public class Star {
 	 * @return the time in years
 	 */
 	public BigDecimal calcTimeAsMainSequence(){
-		return BigDecimal.valueOf(10000000000L).multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.5")), Star.STELLAR_RND);
+		return BigDecimal.valueOf(10000000000L).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.5")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1052,7 +1052,7 @@ public class Star {
 	 * @return the time in years
 	 */
 	public BigDecimal calcTimeAsSubGiant(){
-		return BigDecimal.valueOf(1000000000).multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.1")), Star.STELLAR_RND);
+		return BigDecimal.valueOf(1000000000).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.1")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1061,7 +1061,7 @@ public class Star {
 	 * @return the time in years
 	 */
 	public BigDecimal calcTimeAsGiant(){
-		return BigDecimal.valueOf(360000000).multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.3")), Star.STELLAR_RND);
+		return BigDecimal.valueOf(360000000).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.3")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1070,7 +1070,7 @@ public class Star {
 	 * @return the time in years
 	 */
 	public BigDecimal calcTimeAsSuperGiant(){
-		return BigDecimal.valueOf(550000).multiply(Star.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.6")), Star.STELLAR_RND);
+		return BigDecimal.valueOf(550000).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.6")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1336,7 +1336,7 @@ public class Star {
 	@Override
 	public String toString(){
 		return "  Star type: " + this.starType + "\n"
-				+ "        age: " + Star.getFormattedStellarAge(this.age) + "\n"
+				+ "        age: " + Cosmology.getFormattedStellarAge(this.age) + "\n"
 				+ "       mass: " + this.mass + "  Solar " + this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND) + "\n"
 				+ " luminosity: " + this.luminosity + "  Solar " + this.luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND) + "\n"
 				+ "     radius: " + this.radius + "  Solar " + this.radius.divide(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND) + "\n"
@@ -1362,28 +1362,6 @@ public class Star {
 		return sbuf.toString();
 	}
 
-	/**
-	 * Turns a number into a string for stellar age.
-	 * I.E, 6000000 returns "6 billion years"
-	 * 
-	 * @param age in years
-	 * @return string formatted for stellar timescale
-	 */
-	private static String getFormattedStellarAge(final BigDecimal age){
-		if(age.compareTo(BigDecimal.valueOf(1000000000000000L)) >= 0){
-			return age.divide(BigDecimal.valueOf(1000000000000000L), Star.LOWPREC_RND) + " quadrillion years";
-		}else if(age.compareTo(BigDecimal.valueOf(1000000000000L)) >= 0){
-			return age.divide(BigDecimal.valueOf(1000000000000L), Star.LOWPREC_RND) + " trillion years";
-		}else if(age.compareTo(BigDecimal.valueOf(1000000000)) >= 0){
-			return age.divide(BigDecimal.valueOf(1000000000), Star.LOWPREC_RND) + " billion years";
-		}else if(age.compareTo(BigDecimal.valueOf(1000000)) >= 0){
-			return age.divide(BigDecimal.valueOf(1000000), Star.LOWPREC_RND) + " million years";
-		}else if(age.compareTo(BigDecimal.valueOf(1000)) >= 0){
-			return age.divide(BigDecimal.valueOf(1000), Star.LOWPREC_RND) + " thousand years";
-		}
-
-		return age + " years";
-	}
 
 	/**
 	 * Adds history to this star
@@ -1397,42 +1375,9 @@ public class Star {
 		StarDate d = new StarDate(starDate.getSecondsSinceBigBang());
 		d.addYears(age.toBigInteger());
 
-		this.historyLog.add(StarDate.getFormattedStellarAge(d)
-				+ "\n    Age " + Star.getFormattedStellarAge(age)
+		this.historyLog.add(StarDate.getFormattedStarDate(d)
+				+ "\n    Age " + Cosmology.getFormattedStellarAge(age)
 				+ "\n    " + text + "\n");
-	}
-
-	/**
-	 * Linear interpolation between two known points
-	 * 
-	 * @param x1
-	 * @param x2
-	 * @param y1
-	 * @param y2
-	 * @param desiredX the x at which we desire an interpolated Y
-	 * @return the interpolated Y
-	 */
-	private static BigDecimal linearInterpolation(final BigDecimal x1, final BigDecimal x2, final BigDecimal y1, final BigDecimal y2, final BigDecimal desiredX){
-		return y1.add(y2.subtract(y1).multiply(desiredX.subtract(x1).divide(x2.subtract(x1), Star.STELLAR_RND), Star.STELLAR_RND));
-	}
-
-	/**
-	 * Exponential interpolation between two known points
-	 * 
-	 * @param x1
-	 * @param x2
-	 * @param y1
-	 * @param y2
-	 * @param desiredX the x at which we desire an interpolated Y
-	 * @param slopeFactor a float which determines the growth curve.  A number
-	 * less than 1 will cause rapid growth early that tapers off, with more
-	 * aggressive grown the closer to zero the value is.  If the value is greater
-	 * than one, then the opposite effect occurs, with slow growth early, but
-	 * rapid growth rate.  Similar to a graph of Y=X^(slopeFactor)
-	 * @return the interpolated Y
-	 */
-	private static BigDecimal exponentialInterpolation(final BigDecimal x1, final BigDecimal x2, final BigDecimal y1, final BigDecimal y2, final BigDecimal desiredX, final BigDecimal slopeFactor){
-		return Star.pow(Star.pow(y1, BigDecimal.ONE.divide(slopeFactor, Star.STELLAR_RND)).add(Star.pow(y2, BigDecimal.ONE.divide(slopeFactor, Star.STELLAR_RND)).subtract(Star.pow(y1, BigDecimal.ONE.divide(slopeFactor, Star.STELLAR_RND))).multiply(desiredX.subtract(x1).divide(x2.subtract(x1), Star.STELLAR_RND))), slopeFactor);
 	}
 
 	/**
@@ -1456,31 +1401,6 @@ public class Star {
 		h += this.seed;
 		h = h << 13 ^ h;
 		return 1.0F - (h * (h * h * 19531 + 1046527) + 1073807359 & 0x7fffffff) / 1073741824.0F;
-	}
-
-	private static BigDecimal pow(final BigDecimal n1, BigDecimal n2){
-		int signOf2 = n2.signum();
-		BigDecimal result;
-
-		// Perform X^(A+B)=X^A*X^B (B = remainder)
-		double dn1 = n1.doubleValue();
-
-		n2 = n2.multiply(new BigDecimal(signOf2)); // n2 is now positive
-		BigDecimal remainderOf2 = n2.remainder(BigDecimal.ONE);
-		BigDecimal n2IntPart = n2.subtract(remainderOf2);
-
-		// Calculate big part of the power using context -
-		// bigger range and performance but lower accuracy
-		BigDecimal intPow = n1.pow(n2IntPart.intValueExact());
-		BigDecimal doublePow = new BigDecimal(Math.pow(dn1, remainderOf2.doubleValue()));
-		result = intPow.multiply(doublePow);
-
-		// Fix negative power
-		if (signOf2 == -1) {
-			result = BigDecimal.ONE.divide(result, Star.STELLAR_RND);
-		}
-
-		return result;
 	}
 
 	/*

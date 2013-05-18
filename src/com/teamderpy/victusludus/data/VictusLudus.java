@@ -1,5 +1,6 @@
 package com.teamderpy.victusludus.data;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 import java.util.logging.FileHandler;
@@ -41,16 +42,22 @@ public class VictusLudus {
 
 
 		Planet planet = new Planet(starDate);
-		System.err.println(planet);
 
 		//System.err.println(sun);
 
+		BigDecimal delta = BigDecimal.valueOf(100000000L);
+
 		for(int i=1; i<2000; i++){
 			//sun.tick(BigDecimal.valueOf(100000000L));
-			starDate.addYears(new BigInteger("100000000"));
+
+			planet.tick(delta);
+			starDate.addYears(delta.toBigInteger());
+
 
 			//System.err.println(sun);
 		}
+
+		System.err.println(planet);
 
 		//System.err.println(sun.getHistory());
 
