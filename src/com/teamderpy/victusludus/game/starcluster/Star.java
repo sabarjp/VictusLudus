@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.precision.Precision;
 
 
 /** A star in a solar system */
@@ -13,7 +14,6 @@ public class Star {
 	public static BigDecimal PROTOSTAR_START_TEMP = new BigDecimal("1500");
 
 	public static MathContext STELLAR_RND = MathContext.DECIMAL128;
-	public static MathContext LOWPREC_RND = MathContext.DECIMAL32;
 
 	/** the random seed for this star **/
 	private float seed;
@@ -825,8 +825,8 @@ public class Star {
 	 * @param mass the mass of the star in kilograms
 	 * @return the luminosity of the star in watts
 	 */
-	public BigDecimal calcBirthLuminosity(){
-		return Cosmology.SOLAR_LUMINOSITY.multiply(new BigDecimal("46.0654687347").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.254768727")), Star.STELLAR_RND), Star.STELLAR_RND);
+	private BigDecimal calcBirthLuminosity(){
+		return Cosmology.SOLAR_LUMINOSITY.multiply(new BigDecimal("46.0654687347").multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.254768727")), Star.STELLAR_RND), Star.STELLAR_RND);
 	}
 
 	/**
@@ -834,11 +834,11 @@ public class Star {
 	 * 
 	 * @return the radius of the star in meters
 	 */
-	public BigDecimal calcMainSequenceRadius(){
+	private BigDecimal calcMainSequenceRadius(){
 		if(this.starType == EnumStarType.BROWN_DWARF){
-			return Cosmology.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Cosmology.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.45"));
+			return Precision.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Cosmology.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.45"));
 		} else {
-			return Cosmology.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Cosmology.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.5"));
+			return Precision.pow(this.luminosity.divide(BigDecimal.valueOf(4).multiply(BigDecimal.valueOf(Math.PI), Star.STELLAR_RND).multiply(Cosmology.STEFAN_BOLTZMANN, Star.STELLAR_RND).multiply(this.surfaceTemperature.pow(4), Star.STELLAR_RND), Star.STELLAR_RND),new BigDecimal("0.5"));
 		}
 	}
 
@@ -847,8 +847,8 @@ public class Star {
 	 * 
 	 * @return the radius of the star in meters
 	 */
-	public BigDecimal calcElectronDegenerateRadius(){
-		return new BigDecimal("0.010").multiply(Cosmology.pow(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND);
+	private BigDecimal calcElectronDegenerateRadius(){
+		return new BigDecimal("0.010").multiply(Precision.pow(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND);
 	}
 
 	/**
@@ -856,8 +856,8 @@ public class Star {
 	 * 
 	 * @return the radius of the star in meters
 	 */
-	public BigDecimal calcNeutronDegenerateRadius(){
-		return new BigDecimal("0.00010").multiply(Cosmology.pow(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND);
+	private BigDecimal calcNeutronDegenerateRadius(){
+		return new BigDecimal("0.00010").multiply(Precision.pow(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.333333333"))).multiply(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND);
 	}
 
 	/**
@@ -875,7 +875,7 @@ public class Star {
 	 * @return the temperature of the surface in kevlin
 	 */
 	public BigDecimal calcTemperature(){
-		return Cosmology.pow(Cosmology.pow(this.startedPhaseMass.divide(this.mass, Star.STELLAR_RND), new BigDecimal("2.5")), new BigDecimal("0.25")).multiply(this.startedPhaseTemperature, Star.STELLAR_RND);
+		return Precision.pow(Precision.pow(this.startedPhaseMass.divide(this.mass, Star.STELLAR_RND), new BigDecimal("2.5")), new BigDecimal("0.25")).multiply(this.startedPhaseTemperature, Star.STELLAR_RND);
 	}
 
 	/**
@@ -883,19 +883,19 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getMainSequenceLuminosityFromMass(){
+	private BigDecimal getMainSequenceLuminosityFromMass(){
 		BigDecimal solarMass = this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND);
 
 		if(solarMass.compareTo(new BigDecimal("0.08")) < 0){
-			return new BigDecimal("0.05").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("1.2")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			return new BigDecimal("0.05").multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("1.2")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("0.43")) < 0){
-			return new BigDecimal("0.23").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			return new BigDecimal("0.23").multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("2.00")) < 0){
-			return Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
+			return Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("20.0")) < 0){
-			return new BigDecimal("1.5").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			return new BigDecimal("1.5").multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else{
-			return BigDecimal.valueOf(42).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			return BigDecimal.valueOf(42).multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}
 	}
 
@@ -904,18 +904,18 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getSubGiantLuminosityFromMass(){
+	private BigDecimal getSubGiantLuminosityFromMass(){
 		BigDecimal solarMass = this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND);
 		BigDecimal luminosity = BigDecimal.ZERO;
 
 		if(solarMass.compareTo(new BigDecimal("0.43")) < 0){
-			luminosity = new BigDecimal("0.23").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			luminosity = new BigDecimal("0.23").multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.3")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("2.00")) < 0){
-			luminosity = Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
+			luminosity = Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("4.0")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
 		}else if(solarMass.compareTo(new BigDecimal("20.0")) < 0){
-			luminosity = new BigDecimal("1.5").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			luminosity = new BigDecimal("1.5").multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("3.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}else{
-			luminosity = BigDecimal.valueOf(42).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
+			luminosity = BigDecimal.valueOf(42).multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("2.5")).multiply(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), Star.STELLAR_RND);
 		}
 
 		return luminosity.multiply(BigDecimal.valueOf(4500), Star.STELLAR_RND);
@@ -926,7 +926,7 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getWhiteDwarfLuminosity(){
+	private BigDecimal getWhiteDwarfLuminosity(){
 		return this.startedPhaseLuminosity.multiply(new BigDecimal("0.01"), Star.STELLAR_RND);
 	}
 
@@ -935,7 +935,7 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getNeutronStarLuminosity(){
+	private BigDecimal getNeutronStarLuminosity(){
 		return this.startedPhaseLuminosity.multiply(new BigDecimal("0.0001"), Star.STELLAR_RND);
 	}
 
@@ -944,7 +944,7 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getBlackDwarfLuminosity(){
+	private BigDecimal getBlackDwarfLuminosity(){
 		return new BigDecimal("1E-5");
 	}
 
@@ -953,8 +953,8 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getMainSequenceTemperatureFromLuminosity(final BigDecimal luminosity){
-		return new BigDecimal("6118.1162283755").multiply(Cosmology.pow(luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.1349483096")), Star.STELLAR_RND);
+	private BigDecimal getMainSequenceTemperatureFromLuminosity(final BigDecimal luminosity){
+		return new BigDecimal("6118.1162283755").multiply(Precision.pow(luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.1349483096")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -962,8 +962,8 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getSubgiantTemperatureFromLuminosity(final BigDecimal luminosity){
-		return BigDecimal.valueOf(2500).multiply(Cosmology.pow(luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.0631514365")), Star.STELLAR_RND);
+	private BigDecimal getSubgiantTemperatureFromLuminosity(final BigDecimal luminosity){
+		return BigDecimal.valueOf(2500).multiply(Precision.pow(luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND), new BigDecimal("0.0631514365")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -971,7 +971,7 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getSuperGiantLoopTemperature(final BigDecimal deltaT){
+	private BigDecimal getSuperGiantLoopTemperature(final BigDecimal deltaT){
 		return this.surfaceTemperature.add(BigDecimal.valueOf(4000).multiply(BigDecimal.valueOf(Math.cos(1/(32000/Math.PI) * deltaT.doubleValue()))), Star.STELLAR_RND);
 	}
 
@@ -979,7 +979,7 @@ public class Star {
 	 * The temperature of a new wolf-rayet star
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getWolfRayetTemperature(){
+	private BigDecimal getWolfRayetTemperature(){
 		return this.startedPhaseTemperature.multiply(BigDecimal.valueOf((1.0F + this.randomNoise(1234)) * 2));
 	}
 
@@ -988,7 +988,7 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getWhiteDwarfTemperature(){
+	private BigDecimal getWhiteDwarfTemperature(){
 		return BigDecimal.valueOf(28000 + (1.0F + this.randomNoise(32)) * 4000);
 	}
 
@@ -997,7 +997,7 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getNeutronStarTemperature(){
+	private BigDecimal getNeutronStarTemperature(){
 		return BigDecimal.valueOf(22000 + (1.0F + this.randomNoise(2246)) * 4000);
 	}
 
@@ -1006,7 +1006,7 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getBrownDwarfBirthTemperature(){
+	private BigDecimal getBrownDwarfBirthTemperature(){
 		return BigDecimal.valueOf(300 + (1.0F + this.randomNoise(942)) * 1000);
 	}
 
@@ -1015,7 +1015,7 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getBlackDwarfTemperature(){
+	private BigDecimal getBlackDwarfTemperature(){
 		return BigDecimal.valueOf(600D +  1200D * (1.0F + this.randomNoise(698)));
 	}
 
@@ -1024,7 +1024,7 @@ public class Star {
 	 * 
 	 * @return the temperature in kelvin
 	 */
-	public BigDecimal getSpaceTemperature(){
+	private BigDecimal getSpaceTemperature(){
 		return new BigDecimal("2.725");
 	}
 
@@ -1033,8 +1033,8 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsProtostar(){
-		return new BigDecimal("37190503.1847951").multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.3519309281")), Star.STELLAR_RND);
+	private BigDecimal calcTimeAsProtostar(){
+		return new BigDecimal("37190503.1847951").multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.3519309281")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1042,8 +1042,8 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsMainSequence(){
-		return BigDecimal.valueOf(10000000000L).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.5")), Star.STELLAR_RND);
+	private BigDecimal calcTimeAsMainSequence(){
+		return BigDecimal.valueOf(10000000000L).multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-2.5")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1051,8 +1051,8 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsSubGiant(){
-		return BigDecimal.valueOf(1000000000).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.1")), Star.STELLAR_RND);
+	private BigDecimal calcTimeAsSubGiant(){
+		return BigDecimal.valueOf(1000000000).multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.1")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1060,8 +1060,8 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsGiant(){
-		return BigDecimal.valueOf(360000000).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.3")), Star.STELLAR_RND);
+	private BigDecimal calcTimeAsGiant(){
+		return BigDecimal.valueOf(360000000).multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-1.3")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1069,8 +1069,8 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsSuperGiant(){
-		return BigDecimal.valueOf(550000).multiply(Cosmology.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.6")), Star.STELLAR_RND);
+	private BigDecimal calcTimeAsSuperGiant(){
+		return BigDecimal.valueOf(550000).multiply(Precision.pow(this.startedPhaseMass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND), new BigDecimal("-0.6")), Star.STELLAR_RND);
 	}
 
 	/**
@@ -1078,7 +1078,7 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsPlanetaryNebula(){
+	private BigDecimal calcTimeAsPlanetaryNebula(){
 		return BigDecimal.valueOf(50000D + 50000D * (1.0F + this.randomNoise(205)));
 	}
 
@@ -1087,7 +1087,7 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsSuperNova(){
+	private BigDecimal calcTimeAsSuperNova(){
 		return BigDecimal.valueOf(25000D + 25000D * (1.0F + this.randomNoise(9574)));
 	}
 
@@ -1096,7 +1096,7 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsWhiteDwarf(){
+	private BigDecimal calcTimeAsWhiteDwarf(){
 		return BigDecimal.valueOf(1E12D + 1E12D * (1.0F + this.randomNoise(541)));
 	}
 
@@ -1105,7 +1105,7 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsBlueDwarf(){
+	private BigDecimal calcTimeAsBlueDwarf(){
 		return BigDecimal.valueOf(1E12D + 1E12D * (1.0F + this.randomNoise(4210)));
 	}
 
@@ -1114,7 +1114,7 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsNeutronStar(){
+	private BigDecimal calcTimeAsNeutronStar(){
 		return BigDecimal.valueOf(1E15D + 1E15D * (1.0F + this.randomNoise(4384)));
 	}
 
@@ -1123,7 +1123,7 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsPulsar(){
+	private BigDecimal calcTimeAsPulsar(){
 		return BigDecimal.valueOf(10000000 + 45000000 * (1.0F + this.randomNoise(56467)));
 	}
 
@@ -1132,7 +1132,7 @@ public class Star {
 	 * 
 	 * @return the time in years
 	 */
-	public BigDecimal calcTimeAsBlackDwarf(){
+	private BigDecimal calcTimeAsBlackDwarf(){
 		return BigDecimal.valueOf(1E13D);
 	}
 
@@ -1142,7 +1142,7 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getGiantMassAfterLoss(){
+	private BigDecimal getGiantMassAfterLoss(){
 		return this.startedPhaseMass.multiply(BigDecimal.valueOf(1 - (1.0F + this.randomNoise(13)) * 0.25), Star.STELLAR_RND);
 	}
 
@@ -1152,7 +1152,7 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getSuperGiantMassAfterLoss(){
+	private BigDecimal getSuperGiantMassAfterLoss(){
 		return this.startedPhaseMass.multiply(BigDecimal.valueOf(1 - (1.0F + this.randomNoise(8432)) * 0.35), Star.STELLAR_RND);
 	}
 
@@ -1161,7 +1161,7 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getWhiteDwarfBirthMass(){
+	private BigDecimal getWhiteDwarfBirthMass(){
 		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.2F + this.randomNoise(54)) / 2.2F), Star.STELLAR_RND).min(Cosmology.CHANDRASEKHAR_LIMIT);
 	}
 
@@ -1170,7 +1170,7 @@ public class Star {
 	 * 
 	 * @return the mass in kilograms
 	 */
-	public BigDecimal getNeutronStarBirthMass(){
+	private BigDecimal getNeutronStarBirthMass(){
 		return this.startedPhaseMass.multiply(BigDecimal.valueOf((1.0F + this.randomNoise(14999)) / 2.0F), Star.STELLAR_RND).max(Cosmology.CHANDRASEKHAR_LIMIT);
 	}
 
@@ -1342,7 +1342,7 @@ public class Star {
 				+ "     radius: " + this.radius + "  Solar " + this.radius.divide(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND) + "\n"
 				+ "       temp: " + Math.round(this.surfaceTemperature.doubleValue()) + " K   " + this.getStarColorName() + "\n"
 				+ "      class: " + this.getSpectralClass() + "\n"
-				+ "    gravity: " + this.calculateGravity() + "\n";
+				+ "    gravity: " + Cosmology.calculateGravity(this.mass, this.radius) + "\n";
 	}
 
 	/**
@@ -1403,13 +1403,6 @@ public class Star {
 		return 1.0F - (h * (h * h * 19531 + 1046527) + 1073807359 & 0x7fffffff) / 1073741824.0F;
 	}
 
-	/*
-	 * Calculates the gravitational force of the star
-	 */
-	private BigDecimal calculateGravity(){
-		return Cosmology.GRAVITATIONAL_CONST.multiply(this.mass, Star.STELLAR_RND).divide(this.radius.pow(2), Star.STELLAR_RND);
-	}
-
 	/**
 	 * Returns the name of the color of the star
 	 * @return the name of the color of the star
@@ -1436,5 +1429,33 @@ public class Star {
 		}else{
 			return "dark brown";
 		}
+	}
+
+	public StarDate getBirthDate() {
+		return this.birthDate;
+	}
+
+	public BigDecimal getLuminosity() {
+		return this.luminosity;
+	}
+
+	public BigDecimal getMass() {
+		return this.mass;
+	}
+
+	public BigDecimal getSurfaceTemperature() {
+		return this.surfaceTemperature;
+	}
+
+	public BigDecimal getAge() {
+		return this.age;
+	}
+
+	public BigDecimal getRadius() {
+		return this.radius;
+	}
+
+	public EnumStarType getStarType() {
+		return this.starType;
 	}
 }

@@ -3,14 +3,12 @@ package com.teamderpy.victusludus.game.starcluster;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
-import java.math.RoundingMode;
-
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.precision.Precision;
 
 /** A planet in a solar system */
 public class Planet {
 	public static MathContext PLANET_RND = MathContext.DECIMAL128;
-	public static MathContext SCI_RND = new MathContext(5);
 	public static BigDecimal MIN_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 / 400);
 	public static BigDecimal MAX_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 * 400);
 
@@ -19,6 +17,9 @@ public class Planet {
 
 	private static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV", "V", "VI", "VII",
 		"VIII", "IX", "X", "XI", "XII"};
+
+	/** the star that this planet orbits */
+	private Star parentStar;
 
 	/** the random seed for this planet **/
 	private float seed;
@@ -49,10 +50,13 @@ public class Planet {
 
 	/** values for calculating an orbit follow */
 	private BigDecimal orbitSemiMajorAxis;
+	private BigDecimal orbitAnomaly;
 	private double orbitEccentricity;
-	private double orbitAngle;
 
-	public Planet(final StarDate birthDate){
+
+	public Planet(final StarDate birthDate, final Star parentStar){
+		this.parentStar = parentStar;
+
 		this.seed = VictusLudus.rand.nextInt()/2;
 
 		this.planetType = this.calcPlanetType();
@@ -95,9 +99,9 @@ public class Planet {
 		double rand = Cosmology.triangleNoise((int) this.seed, 4392872);
 
 		if(rand < 0){
-			return Cosmology.EARTH_ROTATIONAL_PERIOD.multiply(BigDecimal.valueOf(1.0F - Math.abs(rand)), Planet.PLANET_RND);
+			return Cosmology.EARTH_ROTATIONAL_PERIOD.multiply(BigDecimal.valueOf(1.1F - Math.abs(rand)), Planet.PLANET_RND);
 		} else {
-			return Cosmology.EARTH_ROTATIONAL_PERIOD.divide(BigDecimal.valueOf(1.0F - Math.abs(rand)), Planet.PLANET_RND);
+			return Cosmology.EARTH_ROTATIONAL_PERIOD.divide(BigDecimal.valueOf(1.1F - Math.abs(rand)), Planet.PLANET_RND);
 		}
 	}
 
@@ -116,10 +120,10 @@ public class Planet {
 	/**
 	 * Finds the distance from the star
 	 * 
-	 * @return distance from the star in kilometers
+	 * @return distance from the star in meters
 	 */
 	private BigDecimal getDistanceFromStar(){
-		return this.orbitSemiMajorAxis.multiply(new BigDecimal(1.0D - Math.pow(this.orbitEccentricity, 2)), Planet.PLANET_RND).divide(new BigDecimal(1.0D + this.orbitEccentricity * Math.cos(this.orbitAngle)), Planet.PLANET_RND);
+		return Cosmology.calculateKeplerDistance(this.orbitSemiMajorAxis, this.orbitEccentricity, this.orbitAnomaly);
 	}
 
 	/**
@@ -130,13 +134,14 @@ public class Planet {
 
 		/* set the long radius of the orbit */
 		rand = Cosmology.randomNoise((int)this.seed, 2918);
-		this.orbitSemiMajorAxis = Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, Cosmology.AU.multiply(new BigDecimal("80"), Planet.PLANET_RND), BigDecimal.valueOf(rand), new BigDecimal("5")).add(new BigDecimal("0.05"));
+		this.orbitSemiMajorAxis = Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.AU.multiply(new BigDecimal("0.10")), Cosmology.AU.multiply(new BigDecimal("80"), Planet.PLANET_RND), BigDecimal.valueOf(rand), new BigDecimal("5"));
 
 		/* set the eccentricity of the orbit */
 		this.orbitEccentricity = (1.0F + Cosmology.randomNoise((int)this.seed, 34998)) / 6.6F;
 
 		/* set the orbit's angle */
-		this.orbitAngle = (1.0F + Cosmology.randomNoise((int)this.seed, 48735)) * 180.0F;
+		//this.orbitAnomaly = new BigDecimal((1.0F + Cosmology.randomNoise((int)this.seed, 48735)) * 180.0F);
+		this.orbitAnomaly = BigDecimal.ZERO;
 	}
 
 	/**
@@ -226,13 +231,6 @@ public class Planet {
 		return 1.0F - (h * (h * h * 4019  + 39916801) + 1073807359 & 0x7fffffff) / 1073741824.0F;
 	}
 
-	/*
-	 * Calculates the gravitational force of the planet
-	 */
-	private BigDecimal calculateGravity(){
-		return Cosmology.GRAVITATIONAL_CONST.multiply(this.mass, Star.STELLAR_RND).divide(this.radius.pow(2), Star.STELLAR_RND);
-	}
-
 	/**
 	 * Gets a random planet name
 	 * 
@@ -247,21 +245,70 @@ public class Planet {
 	@Override
 	public String toString(){
 		return this.name.toUpperCase() + "\n"
-				+ " Planet type: " + this.planetType + "\n"
+				+ "Planet type: " + this.planetType + "\n"
 				+ "        age: " + Cosmology.getFormattedStellarAge(this.age) + "\n"
-				+ "     radius: " + this.radius.round(Planet.SCI_RND) + " m  =  " + this.radius.divide(Cosmology.EARTH_RADIUS, Star.STELLAR_RND).setScale(3, RoundingMode.HALF_EVEN) + " Earth radius\n"
-				+ "       mass: " + this.mass.round(Planet.SCI_RND) + " kg  =  " + this.mass.divide(Cosmology.EARTH_MASS, Star.STELLAR_RND).setScale(3, RoundingMode.HALF_EVEN) + " Earth mass\n"
-				+ "    gravity: " + this.calculateGravity().round(Planet.SCI_RND) + " m/s^2  =  " + this.calculateGravity().divide(Cosmology.EARTH_GRAVITY, Star.STELLAR_RND).setScale(3, RoundingMode.HALF_EVEN) + " Earth gravity\n\n"
-				+ "   true day: " + this.rotationalPeriod.round(Planet.SCI_RND) + " s  =  " + this.rotationalPeriod.divide(Cosmology.EARTH_ROTATIONAL_PERIOD, Star.STELLAR_RND).setScale(3, RoundingMode.HALF_EVEN) + " Earth days \n"
+				+ "     radius: " + Precision.roundTwo(this.radius) + " m  =  " + Precision.roundFive(this.radius.divide(Cosmology.EARTH_RADIUS, Star.STELLAR_RND)) + " Earth radius\n"
+				+ "       mass: " + Precision.roundTwo(this.mass) + " kg  =  " + Precision.roundFive(this.mass.divide(Cosmology.EARTH_MASS, Star.STELLAR_RND)) + " Earth mass\n"
+				+ "    gravity: " + Precision.roundTwo(Cosmology.calculateGravity(this.mass, this.radius)) + " m/s^2  =  " + Precision.roundFive(Cosmology.calculateGravity(this.mass, this.radius).divide(Cosmology.EARTH_GRAVITY, Star.STELLAR_RND)) + " Earth gravity\n\n"
+				+ "   true day: " + Precision.roundTwo(this.rotationalPeriod) + " s  =  " + Precision.roundFive(this.rotationalPeriod.divide(Cosmology.EARTH_ROTATIONAL_PERIOD, Star.STELLAR_RND)) + " Earth days \n"
 				+ " approx day: " + this.getHourLength().multiply(new BigInteger("24")) + "\n"
-				+ "  leap time: " + "off by " + this.getExtraSecondsPerDay().round(Planet.SCI_RND) + " s per day\n"
-				+ "             " + this.rotationalPeriod.divide(this.getExtraSecondsPerDay(), Planet.PLANET_RND).round(Planet.SCI_RND) + " days until leap day is needed\n"
+				+ "  leap time: " + "off by " + Precision.roundTwo(this.getExtraSecondsPerDay()) + " s per day\n"
+				+ "             " + Precision.roundFive(this.rotationalPeriod.divide(this.getExtraSecondsPerDay(), Planet.PLANET_RND)) + " days until leap day is needed\n"
 				+ "hour length: " + this.getHourLength() + " s\n"
 				+ " min length: " + this.getMinuteLength() + " s\n\n"
-				+ " axial tilt: " + this.axialTilt.round(Planet.SCI_RND) + " degrees from ecliptic\n"
-				+ "  orbit SMA: " + this.orbitSemiMajorAxis.round(Planet.SCI_RND) + " km    " + this.orbitSemiMajorAxis.divide(Cosmology.AU, Star.STELLAR_RND).setScale(5, RoundingMode.HALF_EVEN) + " AU\n"
+				+ " axial tilt: " + Precision.roundTwo(this.axialTilt) + " degrees from ecliptic\n"
+				+ "  orbit SMA: " + Precision.roundTwo(this.orbitSemiMajorAxis) + " m    " + Precision.roundFive(this.orbitSemiMajorAxis.divide(Cosmology.AU, Star.STELLAR_RND)) + " AU\n"
 				+ "  orbit ecc: " + this.orbitEccentricity + "\n"
-				+ "orbit angle: " + this.orbitAngle + " degrees\n"
-				+ "       dist: " + this.getDistanceFromStar().round(Planet.SCI_RND) + " km    " + this.getDistanceFromStar().divide(Cosmology.AU, Star.STELLAR_RND).setScale(5, RoundingMode.HALF_EVEN) + " AU\n";
+				+ "orbit angle: " + this.orbitAnomaly + " degrees\n"
+				+ "       dist: " + Precision.roundTwo(this.getDistanceFromStar()) + " m    " + Precision.roundFive(this.getDistanceFromStar().divide(Cosmology.AU, Star.STELLAR_RND))+ " AU\n"
+				+ " orbit time: " + Precision.roundTwo(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis)) + " s    " + Precision.roundFive(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis).divide(Cosmology.EARTH_DAY_LENGTH, Star.STELLAR_RND))+ " earth days\n";
+	}
+
+	public Star getParentStar() {
+		return this.parentStar;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public StarDate getBirthDate() {
+		return this.birthDate;
+	}
+
+	public BigDecimal getMass() {
+		return this.mass;
+	}
+
+	public BigDecimal getAge() {
+		return this.age;
+	}
+
+	public BigDecimal getRadius() {
+		return this.radius;
+	}
+
+	public BigDecimal getRotationalPeriod() {
+		return this.rotationalPeriod;
+	}
+
+	public EnumPlanetType getPlanetType() {
+		return this.planetType;
+	}
+
+	public BigDecimal getAxialTilt() {
+		return this.axialTilt;
+	}
+
+	public BigDecimal getOrbitSemiMajorAxis() {
+		return this.orbitSemiMajorAxis;
+	}
+
+	public BigDecimal getOrbitAnomaly() {
+		return this.orbitAnomaly;
+	}
+
+	public double getOrbitEccentricity() {
+		return this.orbitEccentricity;
 	}
 }
