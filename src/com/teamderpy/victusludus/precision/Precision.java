@@ -3,7 +3,7 @@ package com.teamderpy.victusludus.precision;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.teamderpy.victusludus.game.starcluster.Star;
+import com.teamderpy.victusludus.game.cosmos.Star;
 
 public class Precision {
 

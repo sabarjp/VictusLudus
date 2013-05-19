@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.game.starcluster;
+package com.teamderpy.victusludus.game.cosmos;
 
 public enum EnumStarType {
 	DUST,

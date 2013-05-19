@@ -1,5 +1,6 @@
 package com.teamderpy.victusludus.data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,31 +15,36 @@ import com.teamderpy.victusludus.parts.Material;
  * The Class ResourceBin.
  */
 public class ResourceBin {
-	
+
 	/** The material hash. */
 	private Map<String, Material> materialHash;
-	
+
 	/** The creature hash. */
 	private Map<String, Creature> creatureHash;
-	
+
 	/** The font hash. */
 	private Map<String, FontFile> fontHash;
-	
+
 	/** The backgrounds hash. */
 	private Map<String, PlayerBackground> backgroundsHash;
-	
+
 	/** The entity hash. */
 	private Map<String, EntityDefinition> entityHash;
+
+	/** The celestial name array */
+	private ArrayList<String> celestialNameArray;
 
 	/**
 	 * Instantiates a new resource bin.
 	 */
 	public ResourceBin(){
-		this.materialHash 	  = new HashMap<String, Material>();
+		this.materialHash 	 = new HashMap<String, Material>();
 		this.creatureHash     = new HashMap<String, Creature>();
 		this.fontHash         = new HashMap<String, FontFile>();
 		this.backgroundsHash  = new HashMap<String, PlayerBackground>();
 		this.entityHash       = new HashMap<String, EntityDefinition>();
+
+		this.celestialNameArray = new ArrayList<String>();
 	}
 
 	/**
@@ -85,4 +91,14 @@ public class ResourceBin {
 	public Map<String, EntityDefinition> getEntityHash() {
 		return this.entityHash;
 	}
+
+	/**
+	 * Gets the celestial name array
+	 * 
+	 * @return the name array
+	 */
+	public ArrayList<String> getCelestialNameArray() {
+		return this.celestialNameArray;
+	}
+
 }

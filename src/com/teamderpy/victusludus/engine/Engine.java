@@ -2,6 +2,8 @@ package com.teamderpy.victusludus.engine;
 
 
 import java.awt.Toolkit;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 import org.lwjgl.LWJGLException;
@@ -18,6 +20,10 @@ import com.teamderpy.victusludus.data.DataReader;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.GameSettings;
+import com.teamderpy.victusludus.game.cosmos.Cosmology;
+import com.teamderpy.victusludus.game.cosmos.Planet;
+import com.teamderpy.victusludus.game.cosmos.Star;
+import com.teamderpy.victusludus.game.cosmos.StarDate;
 import com.teamderpy.victusludus.gui.DialogBox;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
@@ -163,6 +169,42 @@ public class Engine{
 
 		this.globalListener = new GlobalListener();
 		this.globalListener.registerListeners();
+
+		/********************************************************************************************/
+
+		StarDate starDate = new StarDate(new BigInteger("23463645346"));
+		Star sun = new Star(starDate, Cosmology.SOLAR_MASS.multiply(new BigDecimal("1"), Star.STELLAR_RND));
+
+		BigDecimal delta = BigDecimal.valueOf(100000000L);
+
+		for(int i=1; i<20; i++){
+			sun.tick(delta);
+			starDate.addYears(delta.toBigInteger());
+		}
+
+		Planet planet = new Planet(starDate, sun);
+
+		for(int i=1; i<20; i++){
+			sun.tick(delta);
+			planet.tick(delta);
+			starDate.addYears(delta.toBigInteger());
+		}
+
+		System.err.println(sun.getHistory());
+		System.err.println(planet);
+
+
+		//System.err.println(Cosmology.calculateEccentricAnomaly(0.5, new BigDecimal(27)).toPlainString());
+		//System.err.println(Cosmology.calculateTrueAnomaly(0.5, new BigDecimal("48.43417991487915")).toPlainString());
+		//System.err.println(Cosmology.calculateKeplerDistanceAtTime(sun.getMass(), planet.getMass(), planet.getOrbitSemiMajorAxis(), new BigDecimal(222222), planet.getOrbitEccentricity()).toPlainString());
+		//System.err.println(Cosmology.calculateKeplerCoordinateAtTime(sun.getMass(), planet.getMass(), planet.getOrbitSemiMajorAxis(), new BigDecimal(222222), planet.getOrbitEccentricity())[0]);
+		//System.err.println(Cosmology.calculateKeplerCoordinateAtTime(sun.getMass(), planet.getMass(), planet.getOrbitSemiMajorAxis(), new BigDecimal(222222), planet.getOrbitEccentricity())[1]);
+
+		//System.err.println(Cosmology.calculateOrbitalPeriod(sun.getMass(), planet.getMass(), planet.getOrbitSemiMajorAxis()));
+
+		System.exit(0);
+
+		/********************************************************************************************/
 
 		this.start();
 	}

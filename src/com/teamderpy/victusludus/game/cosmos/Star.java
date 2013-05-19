@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.game.starcluster;
+package com.teamderpy.victusludus.game.cosmos;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -14,6 +14,9 @@ public class Star {
 	public static BigDecimal PROTOSTAR_START_TEMP = new BigDecimal("1500");
 
 	public static MathContext STELLAR_RND = MathContext.DECIMAL128;
+
+	/** the name of the star */
+	private String name;
 
 	/** the random seed for this star **/
 	private float seed;
@@ -48,6 +51,9 @@ public class Star {
 	/** star history log */
 	private ArrayList<String> historyLog;
 
+	/** planets of the star */
+	private ArrayList<Planet> planets;
+
 	public Star(final StarDate birthDate, final BigDecimal startingMass){
 		this.mass = startingMass;
 
@@ -63,6 +69,8 @@ public class Star {
 		this.seed = VictusLudus.rand.nextInt()/2;
 		this.historyLog = new ArrayList<String>();
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
+		this.planets = new ArrayList<Planet>();
+		this.name = Star.getRandomName();
 	}
 
 	public Star(final StarDate birthDate, final String startingMass){
@@ -80,6 +88,8 @@ public class Star {
 		this.seed = VictusLudus.rand.nextInt()/2;
 		this.historyLog = new ArrayList<String>();
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
+		this.planets = new ArrayList<Planet>();
+		this.name = Star.getRandomName();
 	}
 
 	/**
@@ -1431,6 +1441,15 @@ public class Star {
 		}
 	}
 
+	/**
+	 * Gets a random star name
+	 * 
+	 * @return a string with the random name
+	 */
+	public static String getRandomName(){
+		return VictusLudus.resources.getCelestialNameArray().get(VictusLudus.rand.nextInt(VictusLudus.resources.getCelestialNameArray().size()-1));
+	}
+
 	public StarDate getBirthDate() {
 		return this.birthDate;
 	}
@@ -1457,5 +1476,13 @@ public class Star {
 
 	public EnumStarType getStarType() {
 		return this.starType;
+	}
+
+	public ArrayList<Planet> getPlanets() {
+		return this.planets;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 }

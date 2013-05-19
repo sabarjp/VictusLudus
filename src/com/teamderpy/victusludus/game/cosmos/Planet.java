@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.game.starcluster;
+package com.teamderpy.victusludus.game.cosmos;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -6,14 +6,11 @@ import java.math.MathContext;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.precision.Precision;
 
-/** A planet in a solar system */
+/** A planet in a solar system orbiting a star */
 public class Planet {
 	public static MathContext PLANET_RND = MathContext.DECIMAL128;
 	public static BigDecimal MIN_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 / 400);
 	public static BigDecimal MAX_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 * 400);
-
-	private static String[] PLANET_NAME_ARRAY = {"Altair",
-		"Sol", "Orion", "Perseus", "Heracles", "Polaris", "Alpha Centauri", "Betelgeuse", "Ursa"};
 
 	private static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV", "V", "VI", "VII",
 		"VIII", "IX", "X", "XI", "XII"};
@@ -53,9 +50,17 @@ public class Planet {
 	private BigDecimal orbitAnomaly;
 	private double orbitEccentricity;
 
+	/**
+	 *  the degrees that the planet is rotated against the eccliptical normal with
+	 *  respect to where the north pole is oriented.  In other words, the
+	 *  rotational aspect of the axial tilt vector, which by default is 0
+	 *  degrees, causing an equinox at periapsis and apoapsis.
+	 */
+	private BigDecimal periapsisAxialRotationOffset;
 
 	public Planet(final StarDate birthDate, final Star parentStar){
 		this.parentStar = parentStar;
+		this.parentStar.getPlanets().add(this);
 
 		this.seed = VictusLudus.rand.nextInt()/2;
 
@@ -67,8 +72,9 @@ public class Planet {
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
 		this.rotationalPeriod = this.getRandomRotation();
 		this.axialTilt = this.getRandomAxialTilt();
+		this.periapsisAxialRotationOffset = this.getRandomAngle();
 
-		this.name = Planet.getRandomName();
+		this.name = this.getRandomName();
 		this.createRandomOrbit();
 	}
 
@@ -115,6 +121,17 @@ public class Planet {
 		double rand = Cosmology.gaussianNoise((int)this.seed, 27162233);
 
 		return Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, new BigDecimal("359.99999"), BigDecimal.valueOf(rand), new BigDecimal("3"));
+	}
+
+	/**
+	 * Generates a random angle greater than or equal to 0 and less than 360 degrees.
+	 * 
+	 * @return rotation in degrees, greater than or equal to 0 but less than 360.0
+	 */
+	private BigDecimal getRandomAngle(){
+		double rand = Cosmology.randomNoise((int)this.seed, 32123);
+
+		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, new BigDecimal("359.99999"), BigDecimal.valueOf(rand));
 	}
 
 	/**
@@ -186,6 +203,60 @@ public class Planet {
 	}
 
 	/**
+	 * Gets the true anomaly angle where the planet will be at the first equinox after periapsis.
+	 * 
+	 * @return the true anomaly angle where the planet will be at the first equinox after periapsis
+	 */
+	private BigDecimal getEquinox1Angle(){
+		return this.periapsisAxialRotationOffset;
+	}
+
+	/**
+	 * Gets the true anomaly angle where the planet will be at the second equinox after periapsis.
+	 * 
+	 * @return the true anomaly angle where the planet will be at the second equinox after periapsis
+	 */
+	private BigDecimal getEquinox2Angle(){
+		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("180"));
+
+		if(angle.compareTo(new BigDecimal("360")) >= 0){
+			return angle.subtract(new BigDecimal("360"));
+		}
+
+		return angle;
+	}
+
+	/**
+	 * Gets the true anomaly angle where the planet will be at the first solstice after periapsis.
+	 * 
+	 * @return the true anomaly angle where the planet will be at the first solstice after periapsis
+	 */
+	private BigDecimal getSolstice1Angle(){
+		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("90"));
+
+		if(angle.compareTo(new BigDecimal("360")) >= 0){
+			return angle.subtract(new BigDecimal("360"));
+		}
+
+		return angle;
+	}
+
+	/**
+	 * Gets the true anomaly angle where the planet will be at the second solstice after periapsis.
+	 * 
+	 * @return the true anomaly angle where the planet will be at the second solstice after periapsis
+	 */
+	private BigDecimal getSolstice2Angle(){
+		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("270"));
+
+		if(angle.compareTo(new BigDecimal("360")) >= 0){
+			return angle.subtract(new BigDecimal("360"));
+		}
+
+		return angle;
+	}
+
+	/**
 	 * Calculates the radius of a planet
 	 * 
 	 * @return the new radius
@@ -236,8 +307,8 @@ public class Planet {
 	 * 
 	 * @return a string with the random name
 	 */
-	public static String getRandomName(){
-		return Planet.PLANET_NAME_ARRAY[VictusLudus.rand.nextInt(Planet.PLANET_NAME_ARRAY.length-1)]
+	public String getRandomName(){
+		return this.parentStar.getName()
 				+ " "
 				+ Planet.PLANET_SUFFIX_ARRAY[VictusLudus.rand.nextInt(Planet.PLANET_SUFFIX_ARRAY.length-1)];
 	}
@@ -256,12 +327,19 @@ public class Planet {
 				+ "             " + Precision.roundFive(this.rotationalPeriod.divide(this.getExtraSecondsPerDay(), Planet.PLANET_RND)) + " days until leap day is needed\n"
 				+ "hour length: " + this.getHourLength() + " s\n"
 				+ " min length: " + this.getMinuteLength() + " s\n\n"
-				+ " axial tilt: " + Precision.roundTwo(this.axialTilt) + " degrees from ecliptic\n"
+				+ " axial tilt: " + Precision.roundTwo(this.axialTilt) + " degrees from ecliptic plane\n"
+				+ " season rot: " + Precision.roundTwo(this.periapsisAxialRotationOffset) + " degrees from ecliptic normal\n"
+				+ " equinox 1 : " + Precision.roundTwo(this.getEquinox1Angle()) + " degrees\n"
+				+ " equinox 2 : " + Precision.roundTwo(this.getEquinox2Angle()) + " degrees\n"
+				+ "solstice 1 : " + Precision.roundTwo(this.getSolstice1Angle()) + " degrees\n"
+				+ "solstice 2 : " + Precision.roundTwo(this.getSolstice2Angle()) + " degrees\n\n"
 				+ "  orbit SMA: " + Precision.roundTwo(this.orbitSemiMajorAxis) + " m    " + Precision.roundFive(this.orbitSemiMajorAxis.divide(Cosmology.AU, Star.STELLAR_RND)) + " AU\n"
 				+ "  orbit ecc: " + this.orbitEccentricity + "\n"
 				+ "orbit angle: " + this.orbitAnomaly + " degrees\n"
 				+ "       dist: " + Precision.roundTwo(this.getDistanceFromStar()) + " m    " + Precision.roundFive(this.getDistanceFromStar().divide(Cosmology.AU, Star.STELLAR_RND))+ " AU\n"
-				+ " orbit time: " + Precision.roundTwo(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis)) + " s    " + Precision.roundFive(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis).divide(Cosmology.EARTH_DAY_LENGTH, Star.STELLAR_RND))+ " earth days\n";
+				+ " orbit time: " + Precision.roundTwo(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis)) + " s    "
+				+ Precision.roundFive(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis).divide(Cosmology.EARTH_DAY_LENGTH, Star.STELLAR_RND))+ " earth days    "
+				+ Precision.roundFive(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis).divide(this.rotationalPeriod, Star.STELLAR_RND))+ " planet days\n";
 	}
 
 	public Star getParentStar() {
