@@ -6,7 +6,10 @@ import java.math.MathContext;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.precision.Precision;
 
-/** A planet in a solar system orbiting a star */
+/**
+ * A planet in a solar system orbiting a star
+ * 
+ * */
 public class Planet {
 	public static MathContext PLANET_RND = MathContext.DECIMAL128;
 	public static BigDecimal MIN_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 / 400);

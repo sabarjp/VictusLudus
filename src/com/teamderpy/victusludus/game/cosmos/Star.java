@@ -7,7 +7,11 @@ import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.precision.Precision;
 
 
-/** A star in a solar system */
+/**
+ * Star with planets
+ * 
+ * @author Josh
+ */
 public class Star {
 	private static BigDecimal MAIN_SEQUENCE_START_MULT = new BigDecimal("0.80");
 	private static BigDecimal MAIN_SEQUENCE_END_MULT = new BigDecimal("1.60");
@@ -172,6 +176,10 @@ public class Star {
 				break;
 			default:
 				break;
+		}
+
+		for(Planet p:this.planets){
+			p.tick(delta);
 		}
 	}
 

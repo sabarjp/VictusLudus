@@ -24,6 +24,7 @@ import com.teamderpy.victusludus.game.cosmos.Cosmology;
 import com.teamderpy.victusludus.game.cosmos.Planet;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.game.cosmos.StarDate;
+import com.teamderpy.victusludus.game.cosmos.Universe;
 import com.teamderpy.victusludus.gui.DialogBox;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
@@ -173,9 +174,16 @@ public class Engine{
 		/********************************************************************************************/
 
 		StarDate starDate = new StarDate(new BigInteger("23463645346"));
+
+		Universe universe = new Universe();
+
 		Star sun = new Star(starDate, Cosmology.SOLAR_MASS.multiply(new BigDecimal("1"), Star.STELLAR_RND));
 
 		BigDecimal delta = BigDecimal.valueOf(100000000L);
+
+		for(int i=1; i<20; i++){
+			universe.tick(delta);
+		}
 
 		for(int i=1; i<20; i++){
 			sun.tick(delta);
