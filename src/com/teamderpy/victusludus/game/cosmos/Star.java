@@ -22,6 +22,13 @@ public class Star {
 	/** the name of the star */
 	private String name;
 
+	/** the galaxy this star belongs to */
+	private Galaxy parentGalaxy;
+
+	/** the position of the star in the universe */
+	private BigDecimal xPosition;
+	private BigDecimal yPosition;
+
 	/** the random seed for this star **/
 	private float seed;
 
@@ -58,7 +65,9 @@ public class Star {
 	/** planets of the star */
 	private ArrayList<Planet> planets;
 
-	public Star(final StarDate birthDate, final BigDecimal startingMass){
+	public Star(final StarDate birthDate, final Galaxy galaxy, final BigDecimal startingMass){
+		this.parentGalaxy = galaxy;
+
 		this.mass = startingMass;
 
 		this.startedPhaseMass = this.mass;
@@ -77,7 +86,9 @@ public class Star {
 		this.name = Star.getRandomName();
 	}
 
-	public Star(final StarDate birthDate, final String startingMass){
+	public Star(final StarDate birthDate, final Galaxy galaxy, final String startingMass){
+		this.parentGalaxy = galaxy;
+
 		this.mass = new BigDecimal(startingMass);
 
 		this.startedPhaseMass = this.mass;

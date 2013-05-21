@@ -7,6 +7,8 @@ import java.math.RoundingMode;
 import com.teamderpy.victusludus.precision.Precision;
 
 public class Cosmology {
+	public static MathContext COSMIC_RND = MathContext.DECIMAL128;
+
 	public static BigDecimal NEGATIVE_ONE = new BigDecimal("-1");
 
 	public static BigDecimal SOLAR_MASS = new BigDecimal("1.98855E30");
@@ -14,6 +16,8 @@ public class Cosmology {
 	public static BigDecimal SOLAR_RADIUS = new BigDecimal("6.955E8");
 	public static BigDecimal SOLAR_TEMPERATURE = new BigDecimal("5800");
 	public static BigDecimal AU = new BigDecimal("149.597870700E9");
+	public static BigDecimal LIGHT_YEAR = new BigDecimal("9460730472580800");
+	public static BigDecimal PARSEC = new BigDecimal("3.2615638").multiply(Cosmology.LIGHT_YEAR, Cosmology.COSMIC_RND);
 
 	public static BigDecimal EARTH_ROTATIONAL_PERIOD = new BigDecimal("86400");
 	public static BigDecimal EARTH_HOUR_LENGTH = new BigDecimal("3600");
@@ -40,8 +44,6 @@ public class Cosmology {
 	public static BigDecimal TOV_LIMIT = Cosmology.SOLAR_MASS.multiply(new BigDecimal("3.2"), MathContext.DECIMAL32);
 	public static BigDecimal GRAVITATIONAL_CONST = new BigDecimal("6.67384E-11");
 	public static BigDecimal LIGHT_SPEED = new BigDecimal("299792458");
-
-	public static MathContext COSMIC_RND = MathContext.DECIMAL128;
 
 	/**
 	 * Turns a number into a string for stellar age.

@@ -18,11 +18,15 @@ public class Universe {
 	/** the age of the universe in years */
 	private BigDecimal age;
 
+	/** the diameter of the universe in meters */
+	private BigDecimal diameter;
+
 	public Universe(){
 		this.cosmicDate = new StarDate();
 		this.age = BigDecimal.ZERO;
 
 		this.galaxies = new ArrayList<Galaxy>();
+		this.diameter = Cosmology.LIGHT_YEAR.multiply(new BigDecimal("56000000000"));
 	}
 
 	/**

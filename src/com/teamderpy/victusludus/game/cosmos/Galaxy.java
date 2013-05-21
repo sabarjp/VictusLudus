@@ -12,13 +12,23 @@ public class Galaxy {
 	/** list of stars in the galaxy */
 	private ArrayList<Star> stars;
 
+	/** the universe this galaxy belongs to */
+	private Universe parentUniverse;
+
 	/** the birth date of the star */
 	private StarDate birthDate;
 
 	/** the age of the galaxy in years */
 	private BigDecimal age;
 
-	public Galaxy(final StarDate birthDate){
+	/** the position of the galaxy in the universe */
+	private BigDecimal xPosition;
+	private BigDecimal yPosition;
+	private BigDecimal radius;
+
+	public Galaxy(final StarDate birthDate, final Universe universe){
+		this.parentUniverse = universe;
+
 		this.birthDate = birthDate;
 		this.age = BigDecimal.ZERO;
 
