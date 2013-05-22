@@ -32,6 +32,10 @@ public class StarDate {
 		return this.secondsSinceBigBang;
 	}
 
+	public BigInteger getYearsSinceBigBang() {
+		return this.secondsSinceBigBang.divide(StarDate.SECONDS_PER_YEAR);
+	}
+
 	public void setSecondsSinceBigBang(final BigInteger secondsSinceBigBang) {
 		this.secondsSinceBigBang = secondsSinceBigBang;
 	}
@@ -149,5 +153,13 @@ public class StarDate {
 	 */
 	public static String getFormattedStarDate(final StarDate starDate){
 		return starDate.getYear() + "." + starDate.getCentury() + "." + starDate.getMillennium() + ", " + starDate.getEpoch();
+	}
+
+	/**
+	 * Returns a clone of this object
+	 */
+	@Override
+	public StarDate clone(){
+		return new StarDate(this.secondsSinceBigBang);
 	}
 }

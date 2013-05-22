@@ -3,7 +3,6 @@ package com.teamderpy.victusludus.engine;
 
 import java.awt.Toolkit;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 import org.lwjgl.LWJGLException;
@@ -20,11 +19,6 @@ import com.teamderpy.victusludus.data.DataReader;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.GameSettings;
-import com.teamderpy.victusludus.game.cosmos.Cosmology;
-import com.teamderpy.victusludus.game.cosmos.Galaxy;
-import com.teamderpy.victusludus.game.cosmos.Planet;
-import com.teamderpy.victusludus.game.cosmos.Star;
-import com.teamderpy.victusludus.game.cosmos.StarDate;
 import com.teamderpy.victusludus.game.cosmos.Universe;
 import com.teamderpy.victusludus.gui.DialogBox;
 import com.teamderpy.victusludus.gui.GUI;
@@ -174,12 +168,12 @@ public class Engine{
 
 		/********************************************************************************************/
 
-		StarDate starDate = new StarDate(new BigInteger("23463645346"));
+		//StarDate starDate = new StarDate(new BigInteger("23463645346"));
 
 		Universe universe = new Universe();
-		Galaxy galaxy = new Galaxy(universe.getCosmicDate(), universe);
 
-		Star sun = new Star(universe.getCosmicDate(), galaxy, Cosmology.SOLAR_MASS.multiply(new BigDecimal("1"), Star.STELLAR_RND));
+		//Galaxy galaxy = new Galaxy(universe.getCosmicDate(), universe);
+		//Star sun = new Star(universe.getCosmicDate(), galaxy, Cosmology.SOLAR_MASS.multiply(new BigDecimal("1"), Star.STELLAR_RND));
 
 		BigDecimal delta = BigDecimal.valueOf(100000000L);
 
@@ -187,21 +181,21 @@ public class Engine{
 			universe.tick(delta);
 		}
 
-		for(int i=1; i<20; i++){
-			sun.tick(delta);
-			starDate.addYears(delta.toBigInteger());
-		}
+		//		for(int i=1; i<20; i++){
+		//			sun.tick(delta);
+		//			starDate.addYears(delta.toBigInteger());
+		//		}
+		//
+		//		Planet planet = new Planet(starDate, sun);
+		//
+		//		for(int i=1; i<20; i++){
+		//			sun.tick(delta);
+		//			planet.tick(delta);
+		//			starDate.addYears(delta.toBigInteger());
+		//		}
 
-		Planet planet = new Planet(starDate, sun);
-
-		for(int i=1; i<20; i++){
-			sun.tick(delta);
-			planet.tick(delta);
-			starDate.addYears(delta.toBigInteger());
-		}
-
-		System.err.println(sun.getHistory());
-		System.err.println(planet);
+		//System.err.println(sun.getHistory());
+		//System.err.println(planet);
 
 
 		//System.err.println(Cosmology.calculateEccentricAnomaly(0.5, new BigDecimal(27)).toPlainString());

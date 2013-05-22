@@ -1,6 +1,7 @@
 package com.teamderpy.victusludus.game.cosmos;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.ArrayList;
 import com.teamderpy.victusludus.data.VictusLudus;
@@ -15,6 +16,7 @@ import com.teamderpy.victusludus.precision.Precision;
 public class Star {
 	private static BigDecimal MAIN_SEQUENCE_START_MULT = new BigDecimal("0.80");
 	private static BigDecimal MAIN_SEQUENCE_END_MULT = new BigDecimal("1.60");
+	public static BigDecimal SOLAR_SYSTEM_RADIUS = Cosmology.AU.multiply(new BigDecimal("120"), Cosmology.COSMIC_RND);
 	public static BigDecimal PROTOSTAR_START_TEMP = new BigDecimal("1500");
 
 	public static MathContext STELLAR_RND = MathContext.DECIMAL128;
@@ -90,6 +92,27 @@ public class Star {
 		this.parentGalaxy = galaxy;
 
 		this.mass = new BigDecimal(startingMass);
+
+		this.startedPhaseMass = this.mass;
+		this.age = BigDecimal.ZERO;
+		this.startedPhaseAge = this.age;
+		this.starType = EnumStarType.DUST;
+		this.surfaceTemperature = Star.PROTOSTAR_START_TEMP;
+		this.startedPhaseTemperature = this.surfaceTemperature;
+		this.luminosity = this.calcBirthLuminosity();
+		this.startedPhaseLuminosity = this.luminosity;
+		this.radius = this.calcMainSequenceRadius();
+		this.seed = VictusLudus.rand.nextInt()/2;
+		this.historyLog = new ArrayList<String>();
+		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
+		this.planets = new ArrayList<Planet>();
+		this.name = Star.getRandomName();
+	}
+
+	public Star(final StarDate birthDate, final Galaxy galaxy){
+		this.parentGalaxy = galaxy;
+
+		this.mass = this.getRandomMass();
 
 		this.startedPhaseMass = this.mass;
 		this.age = BigDecimal.ZERO;
@@ -205,13 +228,13 @@ public class Star {
 		this.addHistory(this.birthDate, BigDecimal.ZERO, this.age, "Coalesed into a protostar");
 
 		this.tick(delta);
-
 	}
 
 
 	/**
 	 * The idea is that the star slowly progresses towards the main sequence.
-	 * Note that very massive and very tiny stars should fail.
+	 * Note that very massive and very tiny stars should fail.  Planets will come
+	 * into their own here.
 	 * 
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
@@ -221,6 +244,30 @@ public class Star {
 		BigDecimal targetTemperature = this.getMainSequenceTemperatureFromLuminosity(targetLuminosity);
 		BigDecimal nextDate = this.age.add(delta);
 		BigDecimal rolloverDelta = BigDecimal.ZERO;
+
+		//make planets
+		if(this.planets.size() < 1){
+			double rand = Cosmology.leftNoise((int) this.seed, 102023);
+
+			System.err.println(rand);
+
+			int planetCount = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal("0"), new BigDecimal("12"), new BigDecimal(rand)).intValue();
+
+			System.err.println(planetCount);
+
+			for(int i=0; i<planetCount; i++){
+				StarDate planetBirthDate = this.getParentGalaxy().getParentUniverse().getCosmicDate().clone();
+				planetBirthDate.addYears(this.age.toBigInteger());
+				BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, delta, new BigDecimal(VictusLudus.rand.nextFloat())).toBigInteger();
+
+				planetBirthDate.addYears(years);
+
+				Planet p = new Planet(planetBirthDate, this);
+				this.planets.add(p);
+
+				System.err.println("adding planet to " + this.hashCode());
+			}
+		}
 
 		//is this a failure star?
 		if(this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.08")) < 0){
@@ -951,6 +998,15 @@ public class Star {
 	}
 
 	/**
+	 * Gets a random mass for a new star
+	 * 
+	 * @return random amount of mass
+	 */
+	private BigDecimal getRandomMass(){
+		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.02"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("150"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.leftNoise((int) this.seed, 545411)));
+	}
+
+	/**
 	 * Calculates the luminosity of a white dwarf in watts from its current phase luminosity
 	 * 
 	 * @return the mass in kilograms
@@ -1009,7 +1065,7 @@ public class Star {
 	 * @return the temperature in kelvin
 	 */
 	private BigDecimal getWolfRayetTemperature(){
-		return this.startedPhaseTemperature.multiply(BigDecimal.valueOf((1.0F + this.randomNoise(1234)) * 2));
+		return this.startedPhaseTemperature.multiply(BigDecimal.valueOf((2.0F + this.randomNoise(1234)) * 2));
 	}
 
 	/**
@@ -1503,5 +1559,25 @@ public class Star {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public BigDecimal getxPosition() {
+		return this.xPosition;
+	}
+
+	public BigDecimal getyPosition() {
+		return this.yPosition;
+	}
+
+	public Galaxy getParentGalaxy() {
+		return this.parentGalaxy;
+	}
+
+	public void setxPosition(final BigDecimal xPosition) {
+		this.xPosition = xPosition;
+	}
+
+	public void setyPosition(final BigDecimal yPosition) {
+		this.yPosition = yPosition;
 	}
 }

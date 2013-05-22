@@ -28,7 +28,11 @@ public class Precision {
 		// Calculate big part of the power using context -
 		// bigger range and performance but lower accuracy
 		BigDecimal intPow = n1.pow(n2IntPart.intValueExact());
-		BigDecimal doublePow = new BigDecimal(Math.pow(dn1, remainderOf2.doubleValue()));
+
+		double remain = remainderOf2.doubleValue();
+		double smallPow = Math.pow(dn1, remain);
+
+		BigDecimal doublePow = new BigDecimal(smallPow);
 		result = intPow.multiply(doublePow);
 
 		// Fix negative power

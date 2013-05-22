@@ -96,6 +96,38 @@ public class Cosmology {
 	}
 
 	/**
+	 * Random noise with a left gaussian distribution
+	 * 
+	 * @return a double between -1.0 and 1.0
+	 */
+	static public double leftNoise(final int seed, final int modifier){
+		return Math.max(Cosmology.randomNoise(seed, 3395532+modifier)
+				+ Cosmology.randomNoise(seed, 44+modifier)
+				+ Cosmology.randomNoise(seed, 21313+modifier)
+				+ Cosmology.randomNoise(seed, 12312+modifier)
+				+ Cosmology.randomNoise(seed, 2+modifier)
+				+ Cosmology.randomNoise(seed, 3456+modifier)
+				- Cosmology.randomNoise(seed, 2346+modifier)
+				- Cosmology.randomNoise(seed, 2144+modifier), -6.0) / 6.0F;
+	}
+
+	/**
+	 * Random noise with a right gaussian distribution
+	 * 
+	 * @return a double between -1.0 and 1.0
+	 */
+	static public double rightNoise(final int seed, final int modifier){
+		return Math.min(Cosmology.randomNoise(seed, 11345+modifier)
+				+ Cosmology.randomNoise(seed, 123213+modifier)
+				+ Cosmology.randomNoise(seed, 546+modifier)
+				+ Cosmology.randomNoise(seed, 333+modifier)
+				+ Cosmology.randomNoise(seed, 2123+modifier)
+				+ Cosmology.randomNoise(seed, 56780+modifier)
+				+ Cosmology.randomNoise(seed, 7234+modifier)
+				+ Cosmology.randomNoise(seed, 2112444+modifier), 6.0) / 6.0F;
+	}
+
+	/**
 	 * Random noise with a triangle distribution
 	 * 
 	 * @return a double between -1.0 and 1.0

@@ -153,8 +153,8 @@ public class Planet {
 		double rand;
 
 		/* set the long radius of the orbit */
-		rand = Cosmology.randomNoise((int)this.seed, 2918);
-		this.orbitSemiMajorAxis = Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.AU.multiply(new BigDecimal("0.10")), Cosmology.AU.multiply(new BigDecimal("80"), Planet.PLANET_RND), BigDecimal.valueOf(rand), new BigDecimal("5"));
+		rand = Cosmology.leftNoise((int)this.seed, 2918);
+		this.orbitSemiMajorAxis = Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.AU.multiply(new BigDecimal("0.10")), Cosmology.AU.multiply(new BigDecimal("80"), Planet.PLANET_RND), BigDecimal.valueOf(rand), new BigDecimal("2"));
 
 		/* set the eccentricity of the orbit */
 		this.orbitEccentricity = (1.0F + Cosmology.randomNoise((int)this.seed, 34998)) / 6.6F;
