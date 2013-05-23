@@ -42,7 +42,7 @@ public class Universe {
 	}
 
 	/**
-	 * A tick of time
+	 * A tick of time in years
 	 * 
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
