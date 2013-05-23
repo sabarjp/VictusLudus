@@ -10,13 +10,13 @@ import com.teamderpy.victusludus.precision.Precision;
  * A planet in a solar system orbiting a star
  * 
  * */
-public class Planet {
+public class Planet implements Comparable<Planet>{
 	public static MathContext PLANET_RND = MathContext.DECIMAL128;
 	public static BigDecimal MIN_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 / 400);
 	public static BigDecimal MAX_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 * 400);
 
-	private static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV", "V", "VI", "VII",
-		"VIII", "IX", "X", "XI", "XII"};
+	public static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV", "V", "VI", "VII",
+		"VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
 
 	/** the star that this planet orbits */
 	private Star parentStar;
@@ -63,7 +63,6 @@ public class Planet {
 
 	public Planet(final StarDate birthDate, final Star parentStar){
 		this.parentStar = parentStar;
-		this.parentStar.getPlanets().add(this);
 
 		this.seed = VictusLudus.rand.nextInt()/2;
 
@@ -77,7 +76,7 @@ public class Planet {
 		this.axialTilt = this.getRandomAxialTilt();
 		this.periapsisAxialRotationOffset = this.getRandomAngle();
 
-		this.name = this.getRandomName();
+		this.name = this.getParentStarName();
 		this.createRandomOrbit();
 	}
 
@@ -310,10 +309,8 @@ public class Planet {
 	 * 
 	 * @return a string with the random name
 	 */
-	public String getRandomName(){
-		return this.parentStar.getName()
-				+ " "
-				+ Planet.PLANET_SUFFIX_ARRAY[VictusLudus.rand.nextInt(Planet.PLANET_SUFFIX_ARRAY.length-1)];
+	public String getParentStarName(){
+		return this.parentStar.getName();
 	}
 
 	@Override
@@ -391,5 +388,14 @@ public class Planet {
 
 	public double getOrbitEccentricity() {
 		return this.orbitEccentricity;
+	}
+
+	@Override
+	public int compareTo(final Planet arg0) {
+		return this.orbitSemiMajorAxis.compareTo(arg0.getOrbitSemiMajorAxis());
+	}
+
+	public void setName(final String name) {
+		this.name = name;
 	}
 }

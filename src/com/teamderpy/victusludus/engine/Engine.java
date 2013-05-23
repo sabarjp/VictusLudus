@@ -177,7 +177,7 @@ public class Engine{
 
 		BigDecimal delta = BigDecimal.valueOf(100000000L);
 
-		for(int i=1; i<20; i++){
+		for(int i=1; i<12; i++){
 			universe.tick(delta);
 		}
 

@@ -265,7 +265,15 @@ public class Star {
 				Planet p = new Planet(planetBirthDate, this);
 				this.planets.add(p);
 
-				System.err.println("adding planet to " + this.hashCode());
+				System.err.println("adding planet " + p.hashCode() + " to " + this.hashCode());
+			}
+
+			//done adding planets, so determine their order and names
+			//Collections.sort(this.planets);
+
+			for(int i=0; i < this.planets.size(); i++){
+				this.planets.get(i).setName(this.planets.get(i).getName() + " " + Planet.PLANET_SUFFIX_ARRAY[i]);
+				System.err.println(i + " " + this.planets.get(i).hashCode() + " " + this.planets.get(i).getName());
 			}
 		}
 
