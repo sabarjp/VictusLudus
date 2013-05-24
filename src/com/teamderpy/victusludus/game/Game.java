@@ -9,6 +9,8 @@ import org.newdawn.slick.Color;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.GameException;
+import com.teamderpy.victusludus.engine.ISettings;
+import com.teamderpy.victusludus.engine.IView;
 import com.teamderpy.victusludus.engine.InputPoller;
 import com.teamderpy.victusludus.engine.MousePointer;
 import com.teamderpy.victusludus.game.entity.GameEntity;
@@ -30,7 +32,7 @@ import com.teamderpy.victusludus.gui.eventhandler.event.RenderEvent;
 /**
  * The Class Game.
  */
-public class Game implements KeyboardListener, MouseListener{
+public class Game implements IView, KeyboardListener, MouseListener{
 	//size of the viewable field
 	/** The current depth. */
 	private int currentDepth = 0;
@@ -93,10 +95,13 @@ public class Game implements KeyboardListener, MouseListener{
 	 * Initializes the game
 	 * @throws GameException
 	 */
-	public void init(final GameSettings requestedSettings) throws GameException{
-		if(requestedSettings == null){
+	@Override
+	public void init(final ISettings settings) throws GameException{
+		if(settings == null){
 			throw new GameException();
 		}
+
+		GameSettings requestedSettings = (GameSettings) settings;
 
 		this.ambientLightColor = Color.white;
 
@@ -108,11 +113,11 @@ public class Game implements KeyboardListener, MouseListener{
 
 		this.registerListeners();
 
-		this.map = new Map(requestedSettings);
+		this.map = new Map(requestedSettings, this);
 		this.currentDepth = this.map.getHighestPoint()-1;
 
 		//setup GUI
-		this.changeGUI(new com.teamderpy.victusludus.gui.GUIGameHUD());
+		this.changeGUI(new com.teamderpy.victusludus.gui.GUIGameHUD(this));
 		((GUIGameHUD) this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 
 		this.gameCamera = new GameCamera();
@@ -128,6 +133,7 @@ public class Game implements KeyboardListener, MouseListener{
 	/**
 	 * Render.
 	 */
+	@Override
 	public void render(){
 		if(this.isRunning){
 			this.gameRenderer.renderGameLayer(this.map, this.currentDepth);
@@ -278,9 +284,10 @@ public class Game implements KeyboardListener, MouseListener{
 	/**
 	 * Tick.
 	 */
+	@Override
 	public void tick(){
 		if(this.quitSignal){
-			VictusLudus.e.terminateGame();
+			VictusLudus.e.terminateView();
 		} else if(this.isRunning){
 			if(this.currentGUI != null) {
 				this.currentGUI.tick();
@@ -322,7 +329,7 @@ public class Game implements KeyboardListener, MouseListener{
 					if (this.buildMode == EnumBuildMode.LINE){
 						//mark the starting position if it is in-bounds
 						this.buildBeginCoord = null;
-						WorldCoordSelection temp = RenderUtil.screenCoordToWorldCoord(mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
+						WorldCoordSelection temp = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
 
 						if(temp.x >= 0 && temp.y >= 0){
 							if(temp.x < this.map.getLayer(this.currentDepth).length && temp.y <this.map.getLayer(this.currentDepth)[0].length){
@@ -338,7 +345,7 @@ public class Game implements KeyboardListener, MouseListener{
 					if (this.buildMode == EnumBuildMode.LINE){
 						//complete the line
 						if(this.buildBeginCoord != null){
-							WorldCoordSelection wcs = RenderUtil.screenCoordToWorldCoord(mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
+							WorldCoordSelection wcs = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
 							ArrayList<WorldCoord> temp = AStarSearch.search(this.map, new WorldCoord(this.buildBeginCoord.x, this.buildBeginCoord.y, this.currentDepth), new WorldCoord(wcs.x, wcs.y, this.currentDepth));
 
 							if(temp != null){
@@ -352,7 +359,7 @@ public class Game implements KeyboardListener, MouseListener{
 						}
 
 					} else {
-						WorldCoordSelection c = RenderUtil.screenCoordToWorldCoord(mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
+						WorldCoordSelection c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
 
 						if(c.x >= 0 && c.y >= 0){
 							if(c.x < this.map.getLayer(this.currentDepth).length && c.y <this.map.getLayer(this.currentDepth)[0].length){
@@ -387,13 +394,13 @@ public class Game implements KeyboardListener, MouseListener{
 
 			if(this.interactionMode == EnumInteractionMode.MODE_QUERY_TILE){
 				//highlight tile under cursor
-				c = RenderUtil.screenCoordToWorldCoord(mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
+				c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
 			} else if(this.interactionMode == EnumInteractionMode.MODE_QUERY_WALL) {
 				//highlight tile and wall under cursor
-				c = RenderUtil.screenCoordToWorldCoord(mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, true);
+				c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, true);
 			} else if(this.interactionMode == EnumInteractionMode.MODE_BUILD){
 				//highlight tile under cursor
-				c = RenderUtil.screenCoordToWorldCoord(mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
+				c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
 
 				//we are in the middle of a build so draw stuff
 				if (this.buildMode == EnumBuildMode.LINE && this.buildBeginCoord != null){
@@ -401,7 +408,7 @@ public class Game implements KeyboardListener, MouseListener{
 
 					if(temp != null){
 						for(WorldCoord wc:temp){
-							this.map.getTileOverlayList().add(new GameTile(GameTile.ID_PATH_GOOD, wc.getX(), wc.getY(), wc.getZ()));
+							this.map.getTileOverlayList().add(new GameTile(GameTile.ID_PATH_GOOD, wc.getX(), wc.getY(), wc.getZ(), this.map));
 						}
 					}
 
@@ -415,7 +422,7 @@ public class Game implements KeyboardListener, MouseListener{
 			if(c.x >= 0 && c.y >= 0){
 				if(c.x < this.map.getLayer(this.currentDepth).length && c.y < this.map.getLayer(this.currentDepth)[0].length){
 					//this.gameRenderer.setHighlightedTile(c);
-					this.map.getTileOverlayList().add(new GameTile(GameTile.ID_GRID, c.x, c.y, this.currentDepth));
+					this.map.getTileOverlayList().add(new GameTile(GameTile.ID_GRID, c.x, c.y, this.currentDepth, this.map));
 					((GUIGameHUD) this.currentGUI).setCurrentTileText(c.x + "," + c.y);
 				} else {
 					this.map.getTileOverlayList().clear();
@@ -461,6 +468,7 @@ public class Game implements KeyboardListener, MouseListener{
 	/**
 	 * Register listeners.
 	 */
+	@Override
 	public void registerListeners() {
 		VictusLudus.e.eventHandler.mouseHandler.registerPlease(this);
 		VictusLudus.e.eventHandler.keyboardHandler.registerPlease(this);
@@ -469,6 +477,7 @@ public class Game implements KeyboardListener, MouseListener{
 	/**
 	 * Unregister listeners.
 	 */
+	@Override
 	public void unregisterListeners() {
 		VictusLudus.e.eventHandler.mouseHandler.unregisterPlease(this);
 		VictusLudus.e.eventHandler.keyboardHandler.unregisterPlease(this);
@@ -633,7 +642,7 @@ public class Game implements KeyboardListener, MouseListener{
 			}
 		}
 
-		this.map.addEntity(new GameEntity(objectID, x, y, z));
+		this.map.addEntity(new GameEntity(objectID, x, y, z, this.map));
 	}
 
 	/**
@@ -641,6 +650,7 @@ public class Game implements KeyboardListener, MouseListener{
 	 *
 	 * @return true, if is running
 	 */
+	@Override
 	public boolean isRunning() {
 		return this.isRunning;
 	}
@@ -650,6 +660,7 @@ public class Game implements KeyboardListener, MouseListener{
 	 *
 	 * @param isRunning the new running
 	 */
+	@Override
 	public void setRunning(final boolean isRunning) {
 		this.isRunning = isRunning;
 	}
@@ -659,6 +670,7 @@ public class Game implements KeyboardListener, MouseListener{
 	 *
 	 * @return true, if is quit signal
 	 */
+	@Override
 	public boolean isQuitSignal() {
 		return this.quitSignal;
 	}
@@ -668,6 +680,7 @@ public class Game implements KeyboardListener, MouseListener{
 	 *
 	 * @param quitSignal the new quit signal
 	 */
+	@Override
 	public void setQuitSignal(final boolean quitSignal) {
 		this.quitSignal = quitSignal;
 	}

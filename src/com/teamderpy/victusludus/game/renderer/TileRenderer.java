@@ -80,13 +80,13 @@ public class TileRenderer implements RenderListener{
 			z = 0;
 		}
 
-		int X1 = RenderUtil.worldCoordToRawUnscaledScreenCoord(0, this.gameRenderer.game.getMap().getHeight()+zdeep, layer)[0];
-		int Y1 = RenderUtil.worldCoordToRawUnscaledScreenCoord(0, 0, layer)[1];
+		int X1 = RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game, 0, this.gameRenderer.game.getMap().getHeight()+zdeep, layer)[0];
+		int Y1 = RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game, 0, 0, layer)[1];
 
 		int X2 = this.gameRenderer.game.getGameDimensions().getTileWidth() +
-				RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game.getMap().getWidth()+zdeep, 0, layer)[0];
+				RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game, this.gameRenderer.game.getMap().getWidth()+zdeep, 0, layer)[0];
 		int Y2 = this.gameRenderer.game.getGameDimensions().getTileHeight() +
-				RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game.getMap().getWidth()+zdeep, this.gameRenderer.game.getMap().getHeight()+zdeep, layer)[1];
+				RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game, this.gameRenderer.game.getMap().getWidth()+zdeep, this.gameRenderer.game.getMap().getHeight()+zdeep, layer)[1];
 
 		int xStep = this.gameRenderer.game.getGameDimensions().getTileWidth()/2;
 		int yStep = this.gameRenderer.game.getGameDimensions().getTileHeight()/2;
@@ -100,7 +100,7 @@ public class TileRenderer implements RenderListener{
 				//locate the first tile that covers this spot
 				//System.err.println("check " + i + "," + j);
 				for(int k=layer; k>z; k--){
-					int[] wc = RenderUtil.screenCoordToRawUnscaledWorldCoord(i, j, k);
+					int[] wc = RenderUtil.screenCoordToRawUnscaledWorldCoord(this.gameRenderer.game, i, j, k);
 					GameTile t = null;
 
 					if(wc[0] >= 0 && wc[1] >= 0 && wc[0] < tileArray[k].length && wc[1] < tileArray[k][0].length){
@@ -136,15 +136,15 @@ public class TileRenderer implements RenderListener{
 	public void cullRender(final ArrayList<GameTile> overlayList, final int layer){
 		this.tileSheet.startUse();
 
-		int rightBound =  VictusLudus.e.currentGame.getGameDimensions().getWidth() - this.gameRenderer.game.getTileWidthS();
-		int bottomBound = VictusLudus.e.currentGame.getGameDimensions().getHeight() - this.gameRenderer.game.getTileHeightS();
+		int rightBound =  this.gameRenderer.game.getGameDimensions().getWidth() - this.gameRenderer.game.getTileWidthS();
+		int bottomBound = this.gameRenderer.game.getGameDimensions().getHeight() - this.gameRenderer.game.getTileHeightS();
 		int zdeep = GameRenderer.getMaxVisibleDepth();
 
 		//render tile list
 		for (GameTile t : this.culledTileList) {
 			boolean showHidden = false; //whether or not the tile is hidden
 
-			int[] sc = RenderUtil.worldCoordToRawScreenCoord(t.getPos().getX(), t.getPos().getY(), t.getPos().getZ());
+			int[] sc = RenderUtil.worldCoordToRawScreenCoord(this.gameRenderer.game, t.getPos().getX(), t.getPos().getY(), t.getPos().getZ());
 
 			//skip tiles not on the screen
 			if(sc[0] < 0 || sc[1] < 0 || sc[0] > rightBound || sc[1] > bottomBound){
@@ -166,11 +166,11 @@ public class TileRenderer implements RenderListener{
 
 			if (showHidden){
 				this.tileSheet.renderInUse(sc[0], sc[1],
-						VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
+						this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
 						GameTile.getSpriteSheetCol(GameTile.ID_HIDDEN), GameTile.getSpriteSheetRow(GameTile.ID_HIDDEN));
 			} else {
 				this.tileSheet.renderInUse(sc[0], sc[1],
-						VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
+						this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
 						t.getSpriteSheetCol(), t.getSpriteSheetRow());
 			}
 		}
@@ -178,10 +178,10 @@ public class TileRenderer implements RenderListener{
 		//render tile overlays
 		for(GameTile gt:overlayList){
 			if(gt.getPos().getZ() == layer){
-				int[] c = RenderUtil.worldCoordToRawScreenCoord(gt.getPos().getX(), gt.getPos().getY(), layer);
+				int[] c = RenderUtil.worldCoordToRawScreenCoord(this.gameRenderer.game, gt.getPos().getX(), gt.getPos().getY(), layer);
 
 				this.tileSheet.renderInUse(c[0], c[1],
-						VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
+						this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
 						gt.getSpriteSheetCol(), gt.getSpriteSheetRow());
 			}
 		}

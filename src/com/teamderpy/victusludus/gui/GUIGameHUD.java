@@ -11,6 +11,7 @@ import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.game.EnumFlags;
+import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 import com.teamderpy.victusludus.gui.element.GUIImageButton;
 import com.teamderpy.victusludus.gui.element.GUIText;
@@ -56,6 +57,15 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 
 	/** The side menu. */
 	private ButtonMenu sideMenu;
+
+	/** The game this hud belongs to */
+	private Game game;
+
+	public GUIGameHUD(final Game game){
+		super();
+
+		this.game = game;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.teamderpy.victusludus.gui.GUI#create()
@@ -115,7 +125,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		this.queryButton.setPressedAction(new Actionable() {
 			@Override
 			public void act() {
-				VictusLudus.e.currentGame.enterQueryMode();
+				GUIGameHUD.this.game.enterQueryMode();
 			}
 		});
 		this.queryButton.setTooltip("Get more information about something on the map");
@@ -132,7 +142,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		this.buildButton.setPressedAction(new Actionable() {
 			@Override
 			public void act() {
-				VictusLudus.e.currentGame.enterBuildMode();
+				GUIGameHUD.this.game.enterBuildMode();
 			}
 		});
 		this.buildButton.setTooltip("Build rooms and items");
@@ -149,7 +159,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		this.peopleButton.setPressedAction(new Actionable() {
 			@Override
 			public void act() {
-				VictusLudus.e.currentGame.enterPeopleMode();
+				GUIGameHUD.this.game.enterPeopleMode();
 			}
 		});
 		this.peopleButton.setTooltip("Hire, fire, or manage people");
@@ -168,7 +178,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		this.quitButton.setPressedAction(new Actionable() {
 			@Override
 			public void act() {
-				VictusLudus.e.quitGame();
+				VictusLudus.e.quitView();
 			}
 		});
 		this.quitButton.setTooltip("Exits the application");
@@ -185,8 +195,8 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 				btn.setPressedAction(new Actionable(){
 					@Override
 					public void act() {
-						VictusLudus.e.currentGame.setBuildModeObjectID(entity.getId());
-						VictusLudus.e.currentGame.setBuildMode(entity.getBuildMode());
+						GUIGameHUD.this.game.setBuildModeObjectID(entity.getId());
+						GUIGameHUD.this.game.setBuildMode(entity.getBuildMode());
 					}
 				});
 				this.sideMenu.add(btn, entity.getParentButtonNode(), entity.getId());

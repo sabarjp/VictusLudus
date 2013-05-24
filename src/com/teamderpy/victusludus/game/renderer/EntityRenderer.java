@@ -58,7 +58,7 @@ public class EntityRenderer implements RenderListener{
 		}
 
 		//check if a ray of light can hit the base of this entity
-		int[] sc = RenderUtil.worldCoordToRawUnscaledScreenCoord(gameEntity.getPos().getX(), gameEntity.getPos().getY(), gameEntity.getPos().getZ());
+		int[] sc = RenderUtil.worldCoordToRawUnscaledScreenCoord(this.gameRenderer.game, gameEntity.getPos().getX(), gameEntity.getPos().getY(), gameEntity.getPos().getZ());
 		//System.err.println("base of entity is " + gameEntity.getPos() + "  " + sc[0] + "," + sc[1]);
 		//int[] rrr = RenderUtil.screenCoordToRawUnscaledWorldCoord(sc[0], sc[1], gameEntity.getPos().getZ());
 		//System.err.println("   confirm at " + sc[0] + "," + sc[1] +  " for the layer " + gameEntity.getPos().getZ() + " the potential tile is " + rrr[0] + "," + rrr[1] + "," + rrr[2]);
@@ -90,7 +90,7 @@ public class EntityRenderer implements RenderListener{
 			//System.err.println("    looping through layers");
 			for(int k=layer; k>=z+i+1; k--){
 				//a certain offset can only be blocked by certain tiles
-				int[] wc = RenderUtil.screenCoordToRawUnscaledWorldCoord(sc[0], yOffsets[i], k);
+				int[] wc = RenderUtil.screenCoordToRawUnscaledWorldCoord(this.gameRenderer.game, sc[0], yOffsets[i], k);
 				//System.err.println("    at " + sc[0] + "," + yOffsets[i] +  " for the layer " + k + " the potential tile is " + wc[0] + "," + wc[1] + "," + wc[2]);
 
 				GameTile t = null;
@@ -150,19 +150,19 @@ public class EntityRenderer implements RenderListener{
 		Collections.sort(this.culledEntityList, new EuclideanComparator());
 
 		for (GameEntity gameEntity : this.culledEntityList) {
-			ScreenCoord c = RenderUtil.worldCoordToScreenCoord(gameEntity.getPos().getX(), gameEntity.getPos().getY(), gameEntity.getPos().getZ());
+			ScreenCoord c = RenderUtil.worldCoordToScreenCoord(this.gameRenderer.game, gameEntity.getPos().getX(), gameEntity.getPos().getY(), gameEntity.getPos().getZ());
 
-			if(c.x < 0 || c.y < 0 || c.x > VictusLudus.e.currentGame.getGameDimensions().getWidth() || c.y > VictusLudus.e.currentGame.getGameDimensions().getHeight()){
+			if(c.x < 0 || c.y < 0 || c.x > this.gameRenderer.game.getGameDimensions().getWidth() || c.y > this.gameRenderer.game.getGameDimensions().getHeight()){
 				continue;  //do not render entities off the screen!
 			}
 
 			Animation a = gameEntity.getCurrentAnimation();
 			if(a != null){
-				c.y -= a.getHeight()*VictusLudus.e.currentGame.getGameCamera().getZoom();
-				c.y += VictusLudus.e.currentGame.getTileHeightS();
+				c.y -= a.getHeight()*this.gameRenderer.game.getGameCamera().getZoom();
+				c.y += this.gameRenderer.game.getTileHeightS();
 
 				a.draw(c.x, c.y,
-						a.getWidth()*VictusLudus.e.currentGame.getGameCamera().getZoom(), a.getHeight()*VictusLudus.e.currentGame.getGameCamera().getZoom());
+						a.getWidth()*this.gameRenderer.game.getGameCamera().getZoom(), a.getHeight()*this.gameRenderer.game.getGameCamera().getZoom());
 			}
 
 			//gameEntity.getEntity().getEntitySpriteSheet().endUse();

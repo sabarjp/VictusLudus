@@ -8,6 +8,7 @@ import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.Vec2i;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.light.LightEmitter;
+import com.teamderpy.victusludus.game.map.Map;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -29,49 +30,58 @@ public class GameEntity extends EuclideanObject{
 	/** The animation that is playing */
 	private Animation currentAnimation;
 
+	/** The map this entity belongs to */
+	private Map map;
+
 	/**
 	 * Instantiates a new game entity.
 	 *
 	 * @param entity the entity
 	 * @param pos the pos
+	 * @param map the map the entity is a part of
 	 */
-	public GameEntity(final EntityDefinition entity, final WorldCoord pos){
+	public GameEntity(final EntityDefinition entity, final WorldCoord pos, final Map map){
 		super(pos);
+
+		this.map = map;
 
 		this.e = entity;
 
 		if(this.e.getLight() != null){
 			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord().getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
 			this.entityLight.setBrightness(this.e.getLight().getBrightness());
-			VictusLudus.e.currentGame.getMap().getLightMap().add(this.entityLight);
+			this.map.getLightMap().add(this.entityLight);
 		}
 
 		this.creationTime = VictusLudus.e.getTickCount();
 		this.movementVector = new Vec2i(0, 0);
 		this.playAnimation("idle");
-		VictusLudus.e.currentGame.getGameRenderer().getEntityRenderer().calculateCulledEntity(this, VictusLudus.e.currentGame.getCurrentDepth());
+		this.map.getGame().getGameRenderer().getEntityRenderer().calculateCulledEntity(this, this.map.getGame().getCurrentDepth());
 	}
 
 	/**
 	 * Instantiates a new game entity.
 	 *
 	 * @param entityID the entity id
+	 * @param map the map the entity is a part of
 	 */
-	public GameEntity(final String entityID){
+	public GameEntity(final String entityID, final Map map){
 		super();
+
+		this.map = map;
 
 		this.e = VictusLudus.resources.getEntityHash().get(entityID);
 
 		if(this.e.getLight() != null){
 			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord().getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
 			this.entityLight.setBrightness(this.e.getLight().getBrightness());
-			VictusLudus.e.currentGame.getMap().getLightMap().add(this.entityLight);
+			this.map.getLightMap().add(this.entityLight);
 		}
 
 		this.creationTime = VictusLudus.e.getTickCount();
 		this.movementVector = new Vec2i(0, 0);
 		this.playAnimation("idle");
-		VictusLudus.e.currentGame.getGameRenderer().getEntityRenderer().calculateCulledEntity(this, VictusLudus.e.currentGame.getCurrentDepth());
+		this.map.getGame().getGameRenderer().getEntityRenderer().calculateCulledEntity(this, this.map.getGame().getCurrentDepth());
 	}
 
 	/**
@@ -81,22 +91,25 @@ public class GameEntity extends EuclideanObject{
 	 * @param x the x
 	 * @param y the y
 	 * @param z the z
+	 * @param map the map the entity is a part of
 	 */
-	public GameEntity(final String entityID, final int x, final int y, final int z){
+	public GameEntity(final String entityID, final int x, final int y, final int z, final Map map){
 		super(x, y, z);
+
+		this.map = map;
 
 		this.e = VictusLudus.resources.getEntityHash().get(entityID);
 
 		if(this.e.getLight() != null){
 			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord().getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
 			this.entityLight.setBrightness(this.e.getLight().getBrightness());
-			VictusLudus.e.currentGame.getMap().getLightMap().add(this.entityLight);
+			this.map.getLightMap().add(this.entityLight);
 		}
 
 		this.movementVector = new Vec2i(0, 0);
 		this.creationTime = VictusLudus.e.getTickCount();
 		this.playAnimation("idle");
-		VictusLudus.e.currentGame.getGameRenderer().getEntityRenderer().calculateCulledEntity(this, VictusLudus.e.currentGame.getCurrentDepth());
+		this.map.getGame().getGameRenderer().getEntityRenderer().calculateCulledEntity(this, this.map.getGame().getCurrentDepth());
 	}
 
 	/**
@@ -139,7 +152,7 @@ public class GameEntity extends EuclideanObject{
 	 * Tick.
 	 */
 	public void tick(){
-		this.getEntity().tick(this);
+		this.getEntity().tick(this, this.map);
 	}
 
 	/**

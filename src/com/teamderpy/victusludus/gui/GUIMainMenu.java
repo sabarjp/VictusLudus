@@ -24,19 +24,19 @@ import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
  * The Class GUIMainMenu.
  */
 public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener, TooltipListener{
-	
+
 	/** The new world button. */
 	private GUITextButton newWorldButton;
-	
+
 	/** The options button. */
 	private GUITextButton optionsButton;
-	
+
 	/** The quit button. */
 	private GUITextButton quitButton;
-	
+
 	/** The tooltip text. */
 	private GUIText tooltipText;
-	
+
 	/** The title text. */
 	private GUIText titleText;
 
@@ -69,15 +69,15 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 		 * NEW GAME
 		 */
 
-		this.newWorldButton = new GUITextButton(0, 0, "New organism", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 14);
+		this.newWorldButton = new GUITextButton(0, 0, "New universe", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 14);
 		this.newWorldButton.setCentered(true);
 		this.newWorldButton.setPressedAction(new Actionable() {
 			@Override
 			public void act() {
-				new com.teamderpy.victusludus.gui.GUINewGameMenu().show();
+				new com.teamderpy.victusludus.gui.GUINewUniverseMenu().show();
 			}
 		});
-		this.newWorldButton.setTooltip("Generates a new organism to play in");
+		this.newWorldButton.setTooltip("Generates a new universe to play in");
 		this.elementList.add(this.newWorldButton);
 		this.menuList.add(this.newWorldButton);
 

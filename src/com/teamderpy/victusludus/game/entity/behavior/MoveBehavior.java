@@ -10,6 +10,7 @@ import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.Vec2i;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.entity.GameEntity;
+import com.teamderpy.victusludus.game.map.Map;
 
 // TODO: Auto-generated Javadoc
 /* This behavior creates an entity on an adjacent tile */
@@ -40,7 +41,7 @@ public class MoveBehavior extends EntityBehavior{
 	 * @see com.teamderpy.victusludus.game.entity.behavior.EntityBehavior#tick(com.teamderpy.victusludus.game.entity.GameEntity)
 	 */
 	@Override
-	public void tick(final GameEntity ge){
+	public void tick(final GameEntity ge, final Map map){
 		if(this.isRandom){
 			if(VictusLudus.rand.nextInt(this.rarity) != 0){
 				return;
@@ -81,7 +82,7 @@ public class MoveBehavior extends EntityBehavior{
 		}
 
 		for(WorldCoord actionCoord:adjacentCoords){
-			List<GameEntity> entityList = VictusLudus.e.currentGame.getMap().getEntityManager().getEntityListAtPos(actionCoord);
+			List<GameEntity> entityList = map.getEntityManager().getEntityListAtPos(actionCoord);
 
 			if(entityList != null){
 				//skip this tile if we are not stackable and there is a non-walkable entity on the tile
@@ -104,7 +105,7 @@ public class MoveBehavior extends EntityBehavior{
 					if(entity.getEntity().getFlagSet().contains(EnumFlags.WALKABLE) &&
 							(this.restrictionList.contains(entity.getId()) || this.restrictionList.contains("any"))){
 						ge.setMovementVector(new Vec2i(actionCoord.getX()-ge.getPos().getX(), actionCoord.getY()-ge.getPos().getY()));
-						VictusLudus.e.currentGame.getMap().getEntityManager().move(actionCoord, ge);
+						map.getEntityManager().move(actionCoord, ge);
 						didMoveEntity = true;
 						break;
 					}

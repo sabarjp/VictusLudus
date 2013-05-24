@@ -2,7 +2,6 @@ package com.teamderpy.victusludus.game.renderer;
 
 import org.newdawn.slick.SpriteSheet;
 
-import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.EnumWallFacing;
 import com.teamderpy.victusludus.game.ScreenCoord;
 import com.teamderpy.victusludus.game.tile.GameTile;
@@ -50,9 +49,9 @@ public class WallRenderer {
 			y = 0;
 
 			while(y < tileArray[layer][x].length){
-				ScreenCoord c = RenderUtil.worldCoordToScreenCoord(x, y, VictusLudus.e.currentGame.getCurrentDepth());
+				ScreenCoord c = RenderUtil.worldCoordToScreenCoord(this.gameRenderer.game, x, y, this.gameRenderer.game.getCurrentDepth());
 
-				if(c.x < 0 || c.y < 0 || c.x > VictusLudus.e.currentGame.getGameDimensions().getWidth() || c.y > VictusLudus.e.currentGame.getGameDimensions().getHeight()){
+				if(c.x < 0 || c.y < 0 || c.x > this.gameRenderer.game.getGameDimensions().getWidth() || c.y > this.gameRenderer.game.getGameDimensions().getHeight()){
 					y++;
 					continue;  //do not render walls off the screen!
 				}
@@ -61,17 +60,17 @@ public class WallRenderer {
 
 				if(t != null){
 					if(t.getNorthEastWall() != null){
-						ScreenCoord wallCoord = RenderUtil.screenCoordOffsetForWall(c.x, c.y, EnumWallFacing.NORTH_EAST);
+						ScreenCoord wallCoord = RenderUtil.screenCoordOffsetForWall(this.gameRenderer.game, c.x, c.y, EnumWallFacing.NORTH_EAST);
 						this.wallSheet.renderInUse(wallCoord.x,  wallCoord.y,
-								VictusLudus.e.currentGame.getWallWidthS(), VictusLudus.e.currentGame.getWallHeightS(),
+								this.gameRenderer.game.getWallWidthS(), this.gameRenderer.game.getWallHeightS(),
 								t.getNorthEastWall().getSpriteSheetCol(), t.getNorthEastWall().getSpriteSheetRow());
 					}
 
 
 					if(t.getNorthWestWall() != null){
-						ScreenCoord wallCoord = RenderUtil.screenCoordOffsetForWall(c.x, c.y, EnumWallFacing.NORTH_WEST);
+						ScreenCoord wallCoord = RenderUtil.screenCoordOffsetForWall(this.gameRenderer.game, c.x, c.y, EnumWallFacing.NORTH_WEST);
 						this.wallSheet.renderInUse(wallCoord.x,  wallCoord.y,
-								VictusLudus.e.currentGame.getWallWidthS(), VictusLudus.e.currentGame.getWallHeightS(),
+								this.gameRenderer.game.getWallWidthS(), this.gameRenderer.game.getWallHeightS(),
 								t.getNorthWestWall().getSpriteSheetCol(), t.getNorthWestWall().getSpriteSheetRow());
 					}
 				}

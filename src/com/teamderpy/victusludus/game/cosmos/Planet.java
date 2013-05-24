@@ -15,8 +15,13 @@ public class Planet implements Comparable<Planet>{
 	public static BigDecimal MIN_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 / 400);
 	public static BigDecimal MAX_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 * 400);
 
-	public static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV", "V", "VI", "VII",
-		"VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
+	//public static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV", "V", "VI", "VII",
+	//	"VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
+	// "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI"};
+
+	public static String[] PLANET_SUFFIX_ARRAY = {"b", "c", "d", "e", "f", "g", "h",
+		"i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x",
+		"y", "z"};
 
 	/** the star that this planet orbits */
 	private Star parentStar;

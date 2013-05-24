@@ -12,6 +12,7 @@ import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
 import com.teamderpy.victusludus.game.light.LightEmitter;
+import com.teamderpy.victusludus.game.map.Map;
 import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 
 // TODO: Auto-generated Javadoc
@@ -163,12 +164,13 @@ public class EntityDefinition {
 	/**
 	 * Tick.
 	 *
-	 * @param ge the ge
+	 * @param ge the GameEntity to tick
+	 * @param map the map to tick against
 	 */
-	public void tick(final GameEntity ge){
+	public void tick(final GameEntity ge, final Map map){
 		if(this.behaviorList != null){
 			for(EntityBehavior eb:this.behaviorList){
-				eb.tick(ge);
+				eb.tick(ge, map);
 			}
 		}
 	}

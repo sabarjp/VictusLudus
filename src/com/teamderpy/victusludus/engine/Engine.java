@@ -2,7 +2,6 @@ package com.teamderpy.victusludus.engine;
 
 
 import java.awt.Toolkit;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.lwjgl.LWJGLException;
@@ -17,8 +16,6 @@ import org.newdawn.slick.SlickException;
 
 import com.teamderpy.victusludus.data.DataReader;
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.game.Game;
-import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.game.cosmos.Universe;
 import com.teamderpy.victusludus.gui.DialogBox;
 import com.teamderpy.victusludus.gui.GUI;
@@ -82,8 +79,11 @@ public class Engine{
 	/** The current dialog. */
 	public DialogBox currentDialog = null;
 
-	/** The current game. */
-	public Game currentGame = null;
+	/** The current view. */
+	public IView currentView = null;
+
+	/** The current universe. */
+	public Universe currentUniverse = null;
 
 	/** The mouse pointer. */
 	public MousePointer mousePointer = null;
@@ -170,16 +170,16 @@ public class Engine{
 
 		//StarDate starDate = new StarDate(new BigInteger("23463645346"));
 
-		Universe universe = new Universe();
+		//		Universe universe = new Universe();
 
 		//Galaxy galaxy = new Galaxy(universe.getCosmicDate(), universe);
 		//Star sun = new Star(universe.getCosmicDate(), galaxy, Cosmology.SOLAR_MASS.multiply(new BigDecimal("1"), Star.STELLAR_RND));
 
-		BigDecimal delta = BigDecimal.valueOf(100000000L);
-
-		for(int i=1; i<12; i++){
-			universe.tick(delta);
-		}
+		//		BigDecimal delta = BigDecimal.valueOf(100000000L);
+		//
+		//		for(int i=1; i<12; i++){
+		//			universe.tick(delta);
+		//		}
 
 		//		for(int i=1; i<20; i++){
 		//			sun.tick(delta);
@@ -206,7 +206,7 @@ public class Engine{
 
 		//System.err.println(Cosmology.calculateOrbitalPeriod(sun.getMass(), planet.getMass(), planet.getOrbitSemiMajorAxis()));
 
-		System.exit(0);
+		//		System.exit(0);
 
 		/********************************************************************************************/
 
@@ -534,8 +534,8 @@ public class Engine{
 			System.err.println(this.eventHandler.getListenerList());
 		}
 
-		if(this.currentGame != null) {
-			this.currentGame.tick();
+		if(this.currentView != null) {
+			this.currentView.tick();
 		}
 
 		// GUI
@@ -561,8 +561,8 @@ public class Engine{
 			this.setGLView();
 		}
 
-		if(this.currentGame != null) {
-			this.currentGame.render();
+		if(this.currentView != null) {
+			this.currentView.render();
 		}
 
 		// GUI
@@ -686,20 +686,20 @@ public class Engine{
 	}
 
 	/**
-	 * Change the game, or remove the running one if passed a null value.
+	 * Change the view, or remove the running one if passed a null value.
 	 *
-	 * @param game the game, or null to not run the current game
-	 * @param requestedSettings the requested settings to start the game with (not used if game passed is null)
+	 * @param view the view, or null to not run the current view
+	 * @param requestedSettings the requested settings to start the view with (not used if view passed is null)
 	 */
-	public void changeGame(final Game game, final GameSettings requestedSettings){
-		if (this.currentGame != null){
-			this.currentGame.unregisterListeners();
+	public void changeView(final IView view, final ISettings requestedSettings){
+		if (this.currentView != null){
+			this.currentView.unregisterListeners();
 		}
-		this.currentGame = game;
+		this.currentView = view;
 
-		if(game != null){
+		if(view != null){
 			try {
-				this.currentGame.init(requestedSettings);
+				this.currentView.init(requestedSettings);
 			} catch (GameException e) {
 				e.printStackTrace();
 			}
@@ -711,12 +711,12 @@ public class Engine{
 	/**
 	 * Actually terminate the game
 	 */
-	public void terminateGame(){
+	public void terminateView(){
 		VictusLudus.e.changeGUI(new com.teamderpy.victusludus.gui.GUIMainMenu());
 
-		if (this.currentGame != null){
-			this.currentGame.setRunning(false);
-			this.changeGame(null, null);
+		if (this.currentView != null){
+			this.currentView.setRunning(false);
+			this.changeView(null, null);
 		}
 
 		VictusLudus.e.mousePointer.loadPointer(MousePointer.DEFAULT_CURSOR);
@@ -725,9 +725,9 @@ public class Engine{
 	/**
 	 * A request to stop the game.  Send signal to game.
 	 */
-	public void quitGame(){
-		if (this.currentGame != null){
-			this.currentGame.setQuitSignal(true);
+	public void quitView(){
+		if (this.currentView != null){
+			this.currentView.setQuitSignal(true);
 		}
 	}
 

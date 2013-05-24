@@ -2,10 +2,10 @@ package com.teamderpy.victusludus.game.light;
 
 import org.newdawn.slick.Color;
 
-import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.ScreenCoord;
 import com.teamderpy.victusludus.game.WorldCoord;
+import com.teamderpy.victusludus.game.map.Map;
 import com.teamderpy.victusludus.game.renderer.RenderUtil;
 
 // TODO: Auto-generated Javadoc
@@ -129,21 +129,22 @@ public class LightEmitter extends EuclideanObject{
 	 *
 	 * @param x the x
 	 * @param y the y
+	 * @param map the map this is being done on
 	 * @return the float
 	 */
-	public float calculateLightTo(final double x, final double y){
-		ScreenCoord sc = RenderUtil.worldCoordToScreenCoord(this.getPos().getX(), this.getPos().getY(), this.getPos().getZ());
+	public float calculateLightTo(final double x, final double y, final Map map){
+		ScreenCoord sc = RenderUtil.worldCoordToScreenCoord(map.getGame(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ());
 
 		//center the light on the tile
-		sc.x = sc.x + VictusLudus.e.currentGame.getTileWidthS()/2;
+		sc.x = sc.x + map.getGame().getTileWidthS()/2;
 
 		//put the light at the correct height
-		sc.y = sc.y + VictusLudus.e.currentGame.getTileHeightS()/2;
+		sc.y = sc.y + map.getGame().getTileHeightS()/2;
 
 		double d1 = x-sc.x;
 		double d2 = 2*(y-sc.y);
 
-		double dist = Math.sqrt(d1*d1 + d2*d2) / VictusLudus.e.currentGame.getGameCamera().getZoom();
+		double dist = Math.sqrt(d1*d1 + d2*d2) / map.getGame().getGameCamera().getZoom();
 
 		float alpha = (float) Math.max(0.0F ,1.0F - dist/this.getStrength());
 

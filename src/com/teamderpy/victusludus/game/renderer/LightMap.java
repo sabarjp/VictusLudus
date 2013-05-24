@@ -7,6 +7,7 @@ import org.newdawn.slick.ImageBuffer;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.ScreenCoord;
 import com.teamderpy.victusludus.game.light.LightEmitter;
+import com.teamderpy.victusludus.game.map.Map;
 import com.teamderpy.victusludus.gui.eventhandler.RenderListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.EnumRenderEventType;
 import com.teamderpy.victusludus.gui.eventhandler.event.RenderEvent;
@@ -32,12 +33,17 @@ public class LightMap implements RenderListener{
 	/** A dirty sight map needs to be recalculated on the next pass before rendering */
 	private boolean isDirty = true;
 
+	/** The map this belongs to */
+	private Map map;
+
 	/**
 	 * Instantiates a new light map.
+	 * @param map
 	 *
 	 * @param depth the depth
 	 */
-	public LightMap(final int depth){
+	public LightMap(final Map map, final int depth){
+		this.map = map;
 		this.lightList = new ArrayList<LightEmitter>();
 		this.sightMapBuffer = new ImageBuffer(this.sightMapResolution, this.sightMapResolution);
 		this.staticSightMap = new Image[depth];
@@ -57,7 +63,7 @@ public class LightMap implements RenderListener{
 		}
 
 		if(this.staticSightMap[layer] != null){
-			this.staticSightMap[layer].draw(0, 0, VictusLudus.e.currentGame.getGameDimensions().getWidth(), VictusLudus.e.currentGame.getGameDimensions().getHeight());
+			this.staticSightMap[layer].draw(0, 0, this.map.getGame().getGameDimensions().getWidth(), this.map.getGame().getGameDimensions().getHeight());
 		}
 	}
 
@@ -86,21 +92,21 @@ public class LightMap implements RenderListener{
 			sightMapByteArray[i+3] = (byte)128;
 		}
 
-		float xblock = (float)VictusLudus.e.currentGame.getGameDimensions().getWidth()/this.sightMapResolution;
-		float yblock = (float)VictusLudus.e.currentGame.getGameDimensions().getHeight()/this.sightMapResolution;
+		float xblock = (float)this.map.getGame().getGameDimensions().getWidth()/this.sightMapResolution;
+		float yblock = (float)this.map.getGame().getGameDimensions().getHeight()/this.sightMapResolution;
 
 		for(LightEmitter l:this.lightList){
 			if(l.getPos().getZ() == layer){
-				ScreenCoord lsc = RenderUtil.worldCoordToScreenCoord(l.getPos().getX(), l.getPos().getY(), l.getPos().getZ());
-				lsc.x += VictusLudus.e.currentGame.getTileWidthS()/2;
+				ScreenCoord lsc = RenderUtil.worldCoordToScreenCoord(this.map.getGame(), l.getPos().getX(), l.getPos().getY(), l.getPos().getZ());
+				lsc.x += this.map.getGame().getTileWidthS()/2;
 
-				int realStrength = (int) (l.getStrength()*VictusLudus.e.currentGame.getGameCamera().getZoom());
+				int realStrength = (int) (l.getStrength()*this.map.getGame().getGameCamera().getZoom());
 
 				//the light map pixels to change, bounded to the screen
 				int imin = (int) (Math.max(0, lsc.x - realStrength) / xblock);
-				int imax = (int) (Math.min(VictusLudus.e.currentGame.getGameDimensions().getWidth(), lsc.x + realStrength) / xblock);
+				int imax = (int) (Math.min(this.map.getGame().getGameDimensions().getWidth(), lsc.x + realStrength) / xblock);
 				int jmin = (int) (Math.max(0, lsc.y - realStrength) / yblock);
-				int jmax = (int) (Math.min(VictusLudus.e.currentGame.getGameDimensions().getHeight(), lsc.y + realStrength) / yblock);
+				int jmax = (int) (Math.min(this.map.getGame().getGameDimensions().getHeight(), lsc.y + realStrength) / yblock);
 
 				for(int i=imin; i < imax; i++){
 					for(int j=jmin; j < jmax; j++){
@@ -120,7 +126,7 @@ public class LightMap implements RenderListener{
 						 */
 						byte lastPassAlpha = sightMapByteArray[pos+3];
 
-						Float alpha = l.calculateLightTo(mapx, mapy);
+						Float alpha = l.calculateLightTo(mapx, mapy, this.map);
 
 						int newAlpha = (int) ((lastPassAlpha & 0xFF) - alpha*255);
 
@@ -227,7 +233,7 @@ public class LightMap implements RenderListener{
 		if(renderEvent.getEventType() == EnumRenderEventType.CHANGE_DEPTH ||
 				renderEvent.getEventType() == EnumRenderEventType.ZOOM ||
 				renderEvent.getEventType() == EnumRenderEventType.SCROLL_MAP){
-			this.calculateLightMap(VictusLudus.e.currentGame.getCurrentDepth());
+			this.calculateLightMap(this.map.getGame().getCurrentDepth());
 		}
 	}
 }

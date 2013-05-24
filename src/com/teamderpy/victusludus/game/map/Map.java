@@ -3,6 +3,7 @@ package com.teamderpy.victusludus.game.map;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.entity.GameEntity;
@@ -43,13 +44,17 @@ public class Map {
 	/** The highest point. */
 	private int highestPoint;
 
+	/** The game this is a part of */
+	private Game game;
+
 	/**
 	 * Instantiates a new map.
 	 *
 	 * @param width the width
 	 * @param height the height
 	 */
-	public Map(final GameSettings requestedSettings){
+	public Map(final GameSettings requestedSettings, final Game game){
+		this.game = game;
 		this.width = requestedSettings.getRequestedMapWidth();
 		this.height = requestedSettings.getRequestedMapHeight();
 		this.depth = Map.MAXIMUM_DEPTH;
@@ -85,7 +90,7 @@ public class Map {
 		for (int i=0; i<mapArray.length; i++) {
 			for (int j=0; j<mapArray[i].length; j++) {
 				for(int k=0; k<mapArray[i][j]; k++){
-					this.tiles[k][i][j] = new GameTile(GameTile.ID_GRASS, i, j, k);
+					this.tiles[k][i][j] = new GameTile(GameTile.ID_GRASS, i, j, k, this);
 					if(mapArray[i][j] > this.highestPoint){
 						this.highestPoint = mapArray[i][j];
 					}
@@ -95,11 +100,11 @@ public class Map {
 
 		//this.fillTilesInLayer(0, GameTile.ID_AGAR);
 
-		this.entityManager = new GameEntityManager();
+		this.entityManager = new GameEntityManager(this);
 
 		this.tileOverlayList = new ArrayList<GameTile>();
 
-		this.lightMap = new LightMap(this.depth);
+		this.lightMap = new LightMap(this, this.depth);
 	}
 
 	/**
@@ -120,7 +125,7 @@ public class Map {
 	public void fillTilesInLayer(final int depth, final byte tileID){
 		for(int i=0;i<this.tiles[depth].length;i++){
 			for(int j=0;j<this.tiles[depth][i].length;j++){
-				this.tiles[depth][i][j] = new GameTile(tileID, i, j, depth);
+				this.tiles[depth][i][j] = new GameTile(tileID, i, j, depth, this);
 			}
 		}
 	}
@@ -262,5 +267,9 @@ public class Map {
 	 */
 	public void unregisterListeners() {
 		this.lightMap.unregisterListeners();
+	}
+
+	public Game getGame() {
+		return this.game;
 	}
 }

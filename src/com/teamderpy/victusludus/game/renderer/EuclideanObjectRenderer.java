@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.newdawn.slick.Animation;
-import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.tile.GameTile;
@@ -33,8 +32,8 @@ public class EuclideanObjectRenderer {
 	 * @param layer
 	 */
 	public void render(final ArrayList<GameTile> tiles, final ArrayList<GameEntity> entities, final ArrayList<GameTile> overlayTiles, final int layer){
-		int rightBound =  VictusLudus.e.currentGame.getGameDimensions().getWidth() - this.gameRenderer.game.getTileWidthS();
-		int bottomBound = VictusLudus.e.currentGame.getGameDimensions().getHeight() - this.gameRenderer.game.getTileHeightS();
+		int rightBound =  this.gameRenderer.game.getGameDimensions().getWidth() - this.gameRenderer.game.getTileWidthS();
+		int bottomBound = this.gameRenderer.game.getGameDimensions().getHeight() - this.gameRenderer.game.getTileHeightS();
 
 		//master list
 		this.culledObjectList.clear();
@@ -48,7 +47,7 @@ public class EuclideanObjectRenderer {
 
 		//render everything
 		for (EuclideanObject o : this.culledObjectList) {
-			int[] sc = RenderUtil.worldCoordToRawScreenCoord(o.getWorldCoord().getX(), o.getWorldCoord().getY(), o.getWorldCoord().getZ());
+			int[] sc = RenderUtil.worldCoordToRawScreenCoord(this.gameRenderer.game, o.getWorldCoord().getX(), o.getWorldCoord().getY(), o.getWorldCoord().getZ());
 
 			//skip objects not on the screen
 			if(sc[0] < 0 || sc[1] < 0 || sc[0] > rightBound || sc[1] > bottomBound){
@@ -77,7 +76,7 @@ public class EuclideanObjectRenderer {
 				}
 
 				this.gameRenderer.getTileRenderer().getTileSheet().renderInUse(sc[0], sc[1],
-						VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
+						this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
 						GameTile.getSpriteSheetCol(GameTile.ID_HIDDEN), GameTile.getSpriteSheetRow(GameTile.ID_HIDDEN));
 			} else {
 				if(o instanceof GameTile){
@@ -97,7 +96,7 @@ public class EuclideanObjectRenderer {
 					t.getTileLight().getColor().bind();
 
 					this.gameRenderer.getTileRenderer().getTileSheet().renderInUse(sc[0], sc[1],
-							VictusLudus.e.currentGame.getTileWidthS(), VictusLudus.e.currentGame.getTileHeightS()*2,
+							this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
 							t.getSpriteSheetCol(), t.getSpriteSheetRow());
 				}else if(o instanceof GameEntity){
 					/**
@@ -115,11 +114,11 @@ public class EuclideanObjectRenderer {
 
 					Animation a = ge.getCurrentAnimation();
 					if(a != null){
-						sc[1] -= (a.getHeight()+1)*VictusLudus.e.currentGame.getGameCamera().getZoom();
-						sc[1] += VictusLudus.e.currentGame.getTileHeightS();
+						sc[1] -= (a.getHeight()+1)*this.gameRenderer.game.getGameCamera().getZoom();
+						sc[1] += this.gameRenderer.game.getTileHeightS();
 
 						a.draw(sc[0], sc[1],
-								a.getWidth()*VictusLudus.e.currentGame.getGameCamera().getZoom(), a.getHeight()*VictusLudus.e.currentGame.getGameCamera().getZoom());
+								a.getWidth()*this.gameRenderer.game.getGameCamera().getZoom(), a.getHeight()*this.gameRenderer.game.getGameCamera().getZoom());
 					}
 				}
 			}

@@ -1,10 +1,12 @@
 package com.teamderpy.victusludus.game;
 
+import com.teamderpy.victusludus.engine.ISettings;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class GameSettings.
  */
-public class GameSettings {
+public class GameSettings implements ISettings{
 
 	/** The requested map height. */
 	private int requestedMapHeight;

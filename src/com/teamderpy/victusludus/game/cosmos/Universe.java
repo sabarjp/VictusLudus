@@ -5,13 +5,16 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.engine.GameException;
+import com.teamderpy.victusludus.engine.ISettings;
+import com.teamderpy.victusludus.engine.IView;
 
 /**
  * Has lots of galaxies
  * 
  * @author Josh
  */
-public class Universe {
+public class Universe implements IView{
 	private static int MAX_GALAXY_COUNT = 20;
 	private static BigDecimal MIN_AGE_FOR_STARS = new BigDecimal("400E6");
 	private static BigDecimal MAX_AGE_FOR_STARS = new BigDecimal("10E14");
@@ -125,5 +128,59 @@ public class Universe {
 
 	public BigDecimal getDiameter() {
 		return this.diameter;
+	}
+
+	@Override
+	public void init(final ISettings settings) throws GameException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void render() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void tick() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void registerListeners() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void unregisterListeners() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isRunning() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setRunning(final boolean isRunning) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isQuitSignal() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setQuitSignal(final boolean isQutting) {
+		// TODO Auto-generated method stub
+
 	}
 }

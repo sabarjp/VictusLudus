@@ -3,8 +3,8 @@ package com.teamderpy.victusludus.game.entity;
 import java.util.Vector;
 
 import com.teamderpy.victusludus.data.MultiMap;
-import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.WorldCoord;
+import com.teamderpy.victusludus.game.map.Map;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -15,17 +15,23 @@ public class GameEntityManager {
 	/** The game entity list. */
 	MultiMap<WorldCoord, GameEntity> gameEntityList;
 
+	/** The map this belongs to */
+	Map map;
+
 	/**
 	 * Instantiates a new game entity manager.
+	 * @param map
 	 */
-	public GameEntityManager(){
+	public GameEntityManager(final Map map){
+		this.map = map;
 		this.gameEntityList = new MultiMap<WorldCoord, GameEntity>();
 	}
 
 	/**
-	 * Adds the.
+	 * Adds the game entity to the list
 	 *
-	 * @param ge the ge
+	 * @param ge the GameEntity
+	 * @param map the map the entity belongs to
 	 */
 	public void add(final GameEntity ge){
 		this.gameEntityList.add(ge.getPos(), ge);
@@ -66,11 +72,11 @@ public class GameEntityManager {
 		if(ge.getEntityLight() != null){
 			ge.getEntityLight().setPos(coord);
 			//we will need to re-calculate the light map
-			VictusLudus.e.currentGame.getMap().getLightMap().setDirty(true);
+			this.map.getLightMap().setDirty(true);
 		}
 
 		/* re-check culling of entity */
 		//NOOOO WE HAVE NO LINK TO THE RENDERING ENGINE, THIS SHALL BE UGLY
-		VictusLudus.e.currentGame.getGameRenderer().getEntityRenderer().calculateCulledEntity(ge, VictusLudus.e.currentGame.getCurrentDepth());
+		this.map.getGame().getGameRenderer().getEntityRenderer().calculateCulledEntity(ge, this.map.getGame().getCurrentDepth());
 	}
 }

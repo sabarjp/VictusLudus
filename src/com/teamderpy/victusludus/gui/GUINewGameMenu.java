@@ -232,7 +232,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 					requestedSettings.setRequestedMapPlateauFactor(GUINewGameMenu.this.worldPlateauFactor.getCurrentSliderValue());
 
 					VictusLudus.e.changeGUI(null);
-					VictusLudus.e.changeGame(new Game(), requestedSettings);
+					VictusLudus.e.changeView(new Game(), requestedSettings);
 				} else {
 					final DialogBox db = new DialogBox(1);
 					db.setTitleText("Organism name?");

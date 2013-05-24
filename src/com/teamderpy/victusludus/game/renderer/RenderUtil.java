@@ -1,6 +1,5 @@
 package com.teamderpy.victusludus.game.renderer;
 
-import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.EnumWallFacing;
 import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.ScreenCoord;
@@ -11,23 +10,16 @@ import com.teamderpy.victusludus.game.WorldCoordSelection;
  * The Class RenderUtil.
  */
 public final class RenderUtil {
-
-	/**
-	 * Instantiates a new render util.
-	 */
-	private RenderUtil(){};
-
 	/**
 	 * Screen coord offset for wall.
 	 *
+	 * @param game the game
 	 * @param x the x
 	 * @param y the y
 	 * @param facing the facing
 	 * @return the screen coord
 	 */
-	public static ScreenCoord screenCoordOffsetForWall(final int x, final int y, final EnumWallFacing facing){
-		Game game = VictusLudus.e.currentGame;
-
+	public static ScreenCoord screenCoordOffsetForWall(final Game game, final int x, final int y, final EnumWallFacing facing){
 		ScreenCoord c = new ScreenCoord(x,y);
 
 		if(facing == EnumWallFacing.NORTH_EAST){
@@ -49,14 +41,13 @@ public final class RenderUtil {
 	 * Gets a world coordinate for a tile at x,y and returns the starting position on the screen of where to start the render
 	 * This is scaled and correctly offset
 	 *
+	 * @param game the game
 	 * @param x the x
 	 * @param y the y
 	 * @param layer the layer
 	 * @return the screen coord
 	 */
-	public static ScreenCoord worldCoordToScreenCoord(final int x, final int y, final int layer){
-		Game game = VictusLudus.e.currentGame;
-
+	public static ScreenCoord worldCoordToScreenCoord(final Game game, final int x, final int y, final int layer){
 		float actualX = x*(game.getTileWidthS()/2)-y*(game.getTileWidthS()/2)+game.getGameCamera().getOffsetX();
 		float actualY = y*(game.getTileHeightS()/2)+x*(game.getTileHeightS()/2)+game.getGameCamera().getOffsetY()-layer*game.getLayerHeightS();
 
@@ -67,14 +58,13 @@ public final class RenderUtil {
 	 * Gets a world coordinate for a tile at x,y and returns the starting position on the screen of where to start the render
 	 * This returns an array with the x and y positions to avoid object overhead
 	 *
+	 * @param game the game
 	 * @param x the x
 	 * @param y the y
 	 * @param layer the layer
 	 * @return the screen coord as an array with 2 elements, x and y
 	 */
-	public static int[] worldCoordToRawScreenCoord(final int x, final int y, final int layer){
-		Game game = VictusLudus.e.currentGame;
-
+	public static int[] worldCoordToRawScreenCoord(final Game game, final int x, final int y, final int layer){
 		float actualX = x*(game.getTileWidthS()/2)-y*(game.getTileWidthS()/2)+game.getGameCamera().getOffsetX();
 		float actualY = y*(game.getTileHeightS()/2)+x*(game.getTileHeightS()/2)+game.getGameCamera().getOffsetY()-layer*game.getLayerHeightS();
 
@@ -86,14 +76,13 @@ public final class RenderUtil {
 	 * This returns an array with the x and y positions to avoid object overhead
 	 * This function has no camera offset or scaling applied!
 	 *
+	 * @param game the game
 	 * @param x the x
 	 * @param y the y
 	 * @param layer the layer
 	 * @return the screen coord as an array with 2 elements, x and y
 	 */
-	public static int[] worldCoordToRawUnscaledScreenCoord(final int x, final int y, final int layer){
-		Game game = VictusLudus.e.currentGame;
-
+	public static int[] worldCoordToRawUnscaledScreenCoord(final Game game, final int x, final int y, final int layer){
 		float actualX = x*(game.getGameDimensions().getTileWidth()/2)-y*(game.getGameDimensions().getTileWidth()/2);
 		float actualY = y*(game.getGameDimensions().getTileHeight()/2)+x*(game.getGameDimensions().getTileHeight()/2)-layer*game.getGameDimensions().getLayerHeight();
 
@@ -104,15 +93,14 @@ public final class RenderUtil {
 	 * gets screen coordinates and current z layer and returns the world coordinate for a tile at x,y
 	 * This returns an array with the x, y, and z positions to avoid object overhead
 	 *
+	 * @param game the game
 	 * @param x the x
 	 * @param y the y
 	 * @param layer the layer
 	 * @param calculateWallFacing the calculate wall facing
 	 * @return the world coord as an array with 3 elements, x y and z
 	 */
-	public static int[] screenCoordToRawWorldCoord(final float x, final float y, final float layer){
-		Game game = VictusLudus.e.currentGame;
-
+	public static int[] screenCoordToRawWorldCoord(final Game game, final float x, final float y, final float layer){
 		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthS();
 		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer*game.getLayerHeightS())) / game.getTileHeightS();
 		int isoTileX, isoTileY;
@@ -128,15 +116,14 @@ public final class RenderUtil {
 	 * This returns an array with the x, y, and z positions to avoid object overhead
 	 * This function has no camera offset or scaling applied!
 	 *
+	 * @param game the game
 	 * @param x the x
 	 * @param y the y
 	 * @param layer the layer
 	 * @param calculateWallFacing the calculate wall facing
 	 * @return the world coord as an array with 3 elements, x y and z
 	 */
-	public static int[] screenCoordToRawUnscaledWorldCoord(final float x, final float y, final float layer){
-		Game game = VictusLudus.e.currentGame;
-
+	public static int[] screenCoordToRawUnscaledWorldCoord(final Game game, final float x, final float y, final float layer){
 		float virtualTileX = x / game.getGameDimensions().getTileWidth();
 		float virtualTileY = (y + layer*game.getGameDimensions().getLayerHeight()) / game.getGameDimensions().getTileHeight();
 
@@ -152,15 +139,14 @@ public final class RenderUtil {
 	 * gets screen coordinates and current z layer and returns the world coordinate for a tile at x,y
 	 * along with the wall that is being faced
 	 *
+	 * @param game the game
 	 * @param x the x
 	 * @param y the y
 	 * @param layer the layer
 	 * @param calculateWallFacing the calculate wall facing
 	 * @return the world coord selection
 	 */
-	public static WorldCoordSelection screenCoordToWorldCoord(final float x, final float y, final int layer, final boolean calculateWallFacing){
-		Game game = VictusLudus.e.currentGame;
-
+	public static WorldCoordSelection screenCoordToWorldCoord(final Game game, final float x, final float y, final int layer, final boolean calculateWallFacing){
 		WorldCoordSelection w = new WorldCoordSelection(0,0);
 
 		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthS();
