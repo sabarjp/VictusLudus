@@ -133,7 +133,7 @@ public class Game implements IView, KeyboardListener, MouseListener{
 	 * Render.
 	 */
 	@Override
-	public void render(){
+	public void render(final float deltaT){
 		if(this.isRunning){
 			this.gameRenderer.renderGameLayer(this.map, this.currentDepth);
 

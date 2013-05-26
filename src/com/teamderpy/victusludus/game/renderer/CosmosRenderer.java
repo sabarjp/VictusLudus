@@ -1,6 +1,5 @@
 package com.teamderpy.victusludus.game.renderer;
 
-import org.newdawn.slick.Color;
 import com.teamderpy.victusludus.game.cosmos.Cosmos;
 
 // TODO: Auto-generated Javadoc
@@ -28,7 +27,7 @@ public class CosmosRenderer{
 	public CosmosRenderer(final Cosmos cosmos){
 		this.cosmos = cosmos;
 
-		this.bgRenderer = new BackgroundRenderer(cosmos.getGameDimensions(), new Color(13,5,28));
+		this.bgRenderer = new BackgroundRenderer(cosmos.getGameDimensions(), "res/sprites/universe.png");
 		this.debugRenderer = new DebugRenderer(cosmos.getGameDimensions());
 		this.universeRenderer = new UniverseRenderer(this);
 	}
@@ -37,11 +36,11 @@ public class CosmosRenderer{
 	/**
 	 * Render the cosmos
 	 */
-	public void render(){
+	public void render(final float deltaT){
 		this.bgRenderer.render();
 		this.debugRenderer.render();
 
-		this.universeRenderer.render(this.cosmos.getUniverse());
+		this.universeRenderer.render(this.cosmos.getUniverse(), deltaT);
 	}
 
 

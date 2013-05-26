@@ -74,9 +74,9 @@ public class Cosmos implements IView, MouseListener{
 	}
 
 	@Override
-	public void render() {
+	public void render(final float deltaT) {
 		if(this.isRunning){
-			this.cosmosRenderer.render();
+			this.cosmosRenderer.render(deltaT);
 
 			// GUI
 			if(this.currentGUI != null) {

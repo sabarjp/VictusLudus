@@ -64,6 +64,9 @@ public class Engine{
 	/** The last frame reset time. */
 	private long lastFrameResetTime;
 
+	/** The last frame draw time. */
+	private long lastFrameDrawTime;
+
 	/** The last tick time. */
 	private long lastTickTime;
 
@@ -553,8 +556,10 @@ public class Engine{
 	/**
 	 * Render.
 	 */
-	private void render() {
+	private void render(final float deltaT) {
 		this.clearGL();
+
+		this.lastFrameDrawTime = Time.getTime();
 
 		if(Display.wasResized()){
 			this.eventHandler.signal(new ResizeEvent(this.currentDisplayMode, Display.getWidth(), Display.getHeight()));
@@ -562,7 +567,7 @@ public class Engine{
 		}
 
 		if(this.currentView != null) {
-			this.currentView.render();
+			this.currentView.render(deltaT);
 		}
 
 		// GUI
@@ -581,6 +586,7 @@ public class Engine{
 	public void run() {
 		this.lastFrameResetTime = Time.getTime();
 		this.lastTickTime = Time.getTime();
+		this.lastFrameDrawTime = Time.getTime();
 
 		if (this.IS_DEBUGGING) {
 			VictusLudus.LOGGER.info("running");
@@ -595,7 +601,7 @@ public class Engine{
 			this.tickIfPermitted();
 
 			//draw as fast as possible
-			this.render();
+			this.render((Time.getTime() - this.lastFrameDrawTime)/1000.0F);
 
 			//take input as fast as possible
 			InputPoller.pollInput();

@@ -19,7 +19,7 @@ public interface IView {
 	/**
 	 * Renders the view and the GUI over it
 	 */
-	public void render();
+	public void render(float deltaT);
 
 	/**
 	 * Does a tick

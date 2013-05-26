@@ -34,6 +34,7 @@ public class Galaxy {
 
 	/** degrees rotated */
 	private double rotation;
+	private double angularVelocity;
 
 	/** the position of the galaxy in the universe */
 	private double xPosition;
@@ -49,6 +50,7 @@ public class Galaxy {
 		this.stars = new ArrayList<Star>();
 		this.galaxyType = this.getRandomGalaxyType();
 		this.rotation = this.getRandomGalaxyRotation();
+		this.angularVelocity = this.getRandomAngularVelocity();
 	}
 
 	/**
@@ -120,6 +122,10 @@ public class Galaxy {
 		return Math.random()*360;
 	}
 
+	private double getRandomAngularVelocity(){
+		return Math.random()*10;
+	}
+
 	public ArrayList<Star> getStars() {
 		return this.stars;
 	}
@@ -166,5 +172,13 @@ public class Galaxy {
 
 	public double getRotation() {
 		return this.rotation;
+	}
+
+	public void setRotation(final double rotation) {
+		this.rotation = rotation;
+	}
+
+	public double getAngularVelocity() {
+		return this.angularVelocity;
 	}
 }
