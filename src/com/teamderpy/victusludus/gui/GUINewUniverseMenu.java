@@ -7,6 +7,7 @@ import org.lwjgl.input.Keyboard;
 
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.engine.Actionable;
+import com.teamderpy.victusludus.game.cosmos.Cosmos;
 import com.teamderpy.victusludus.game.cosmos.UniverseSettings;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 import com.teamderpy.victusludus.gui.element.GUISliderHorizontal;
@@ -108,9 +109,9 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 
 		this.universeAgeSlider = new GUISliderHorizontal(0, 0, "Universe age", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
 		this.universeAgeSlider.setCentered(true);
-		this.universeAgeSlider.setMinSliderValue(0.0F);
-		this.universeAgeSlider.setMaxSliderValue(10.0F);
-		this.universeAgeSlider.setCurrentSliderValue(2.0F);
+		this.universeAgeSlider.setMinSliderValue(3.0F);
+		this.universeAgeSlider.setMaxSliderValue(33.0F);
+		this.universeAgeSlider.setCurrentSliderValue(12.0F);
 		this.universeAgeSlider.setSteppingFactor(10.0F);
 		this.universeAgeSlider.setOptionalMinText("Young");
 		this.universeAgeSlider.setOptionalMaxText("Old");
@@ -147,8 +148,8 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 					requestedSettings.setRequestedUniAge(GUINewUniverseMenu.this.universeAgeSlider.getCurrentSliderValue());
 					requestedSettings.setRequestedUniDensity(GUINewUniverseMenu.this.universeDensitySlider.getCurrentSliderValue());
 
-					VictusLudus.e.changeGUI(new GUINewGameMenu());
-					//VictusLudus.e.changeView(new Universe(), requestedSettings);
+					VictusLudus.e.changeGUI(null);
+					VictusLudus.e.changeView(new Cosmos(), requestedSettings);
 				} else {
 					final DialogBox db = new DialogBox(1);
 					db.setTitleText("Universe name?");

@@ -45,8 +45,8 @@ public class GameRenderer{
 		this.wallRenderer = new WallRenderer(this);
 		this.entityRenderer = new EntityRenderer(this);
 		this.objectRenderer = new EuclideanObjectRenderer(this);
-		this.bgRenderer = new BackgroundRenderer(this, new Color(13,5,28));
-		this.debugRenderer = new DebugRenderer(this);
+		this.bgRenderer = new BackgroundRenderer(game.getGameDimensions(), new Color(13,5,28));
+		this.debugRenderer = new DebugRenderer(game.getGameDimensions());
 	}
 
 	/**

@@ -28,8 +28,8 @@ public class Star {
 	private Galaxy parentGalaxy;
 
 	/** the position of the star in the universe */
-	private BigDecimal xPosition;
-	private BigDecimal yPosition;
+	private double xPosition;
+	private double yPosition;
 
 	/** the random seed for this star **/
 	private float seed;
@@ -249,11 +249,11 @@ public class Star {
 		if(this.planets.size() < 1){
 			double rand = Cosmology.leftNoise((int) this.seed, 102023);
 
-			System.err.println(rand);
+			//System.err.println(rand);
 
 			int planetCount = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal("0"), new BigDecimal("12"), new BigDecimal(rand)).intValue();
 
-			System.err.println(planetCount);
+			//System.err.println(planetCount);
 
 			for(int i=0; i<planetCount; i++){
 				StarDate planetBirthDate = this.getParentGalaxy().getParentUniverse().getCosmicDate().clone();
@@ -265,7 +265,7 @@ public class Star {
 				Planet p = new Planet(planetBirthDate, this);
 				this.planets.add(p);
 
-				System.err.println("adding planet " + p.hashCode() + " to " + this.hashCode());
+				//System.err.println("adding planet " + p.hashCode() + " to " + this.hashCode());
 			}
 
 			//done adding planets, so determine their order and names
@@ -273,7 +273,7 @@ public class Star {
 
 			for(int i=0; i < this.planets.size(); i++){
 				this.planets.get(i).setName(this.planets.get(i).getName() + " " + Planet.PLANET_SUFFIX_ARRAY[i]);
-				System.err.println(i + " " + this.planets.get(i).hashCode() + " " + this.planets.get(i).getName());
+				//System.err.println(i + " " + this.planets.get(i).hashCode() + " " + this.planets.get(i).getName());
 			}
 		}
 
@@ -1569,11 +1569,11 @@ public class Star {
 		return this.name;
 	}
 
-	public BigDecimal getxPosition() {
+	public double getxPosition() {
 		return this.xPosition;
 	}
 
-	public BigDecimal getyPosition() {
+	public double getyPosition() {
 		return this.yPosition;
 	}
 
@@ -1581,11 +1581,11 @@ public class Star {
 		return this.parentGalaxy;
 	}
 
-	public void setxPosition(final BigDecimal xPosition) {
+	public void setxPosition(final double xPosition) {
 		this.xPosition = xPosition;
 	}
 
-	public void setyPosition(final BigDecimal yPosition) {
+	public void setyPosition(final double yPosition) {
 		this.yPosition = yPosition;
 	}
 }

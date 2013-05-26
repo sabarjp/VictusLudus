@@ -4,7 +4,6 @@ import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.light.LightLevel;
 import com.teamderpy.victusludus.game.map.Map;
-import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 import com.teamderpy.victusludus.game.wall.GameWall;
 
 // TODO: Auto-generated Javadoc
@@ -176,42 +175,6 @@ public class GameTile extends EuclideanObject{
 	 */
 	public void setSouthWestWall(final GameWall southWestWall) {
 		this.southWestWall = southWestWall;
-	}
-
-	/**
-	 * Gets the sprite sheet col.
-	 *
-	 * @return the sprite sheet col
-	 */
-	public int getSpriteSheetCol(){
-		return this.getId() % BitmapHandler.SPRITE_SHEET_SIZE;
-	}
-
-	/**
-	 * Gets the sprite sheet row.
-	 *
-	 * @return the sprite sheet row
-	 */
-	public int getSpriteSheetRow(){
-		return this.getId() / BitmapHandler.SPRITE_SHEET_SIZE;
-	}
-
-	/**
-	 * Gets the sprite sheet col.
-	 *
-	 * @return the sprite sheet col
-	 */
-	public static int getSpriteSheetCol(final int id){
-		return id % BitmapHandler.SPRITE_SHEET_SIZE;
-	}
-
-	/**
-	 * Gets the sprite sheet row.
-	 *
-	 * @return the sprite sheet row
-	 */
-	public static int getSpriteSheetRow(final int id){
-		return id / BitmapHandler.SPRITE_SHEET_SIZE;
 	}
 
 	/**

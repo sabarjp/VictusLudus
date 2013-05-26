@@ -99,10 +99,10 @@ public class GUISliderHorizontal extends GUIElement implements Actionable, Selec
 	private SitchedGUIImage sliderNubImg;
 
 	/** The min slider value. */
-	private float minSliderValue = -1.0F;
+	private float minSliderValue = -1.0F * Float.MAX_VALUE;
 
 	/** The max slider value. */
-	private float maxSliderValue = 1.0F;
+	private float maxSliderValue = Float.MAX_VALUE;
 
 	/** The current slider value. */
 	private float currentSliderValue = 0.0F;

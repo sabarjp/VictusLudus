@@ -167,11 +167,11 @@ public class TileRenderer implements RenderListener{
 			if (showHidden){
 				this.tileSheet.renderInUse(sc[0], sc[1],
 						this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
-						GameTile.getSpriteSheetCol(GameTile.ID_HIDDEN), GameTile.getSpriteSheetRow(GameTile.ID_HIDDEN));
+						BitmapHandler.getSpriteSheetCol(GameTile.ID_HIDDEN, this.tileSheet), BitmapHandler.getSpriteSheetRow(GameTile.ID_HIDDEN, this.tileSheet));
 			} else {
 				this.tileSheet.renderInUse(sc[0], sc[1],
 						this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
-						t.getSpriteSheetCol(), t.getSpriteSheetRow());
+						BitmapHandler.getSpriteSheetCol(t.getId(), this.tileSheet), BitmapHandler.getSpriteSheetRow(t.getId(), this.tileSheet));
 			}
 		}
 
@@ -182,7 +182,7 @@ public class TileRenderer implements RenderListener{
 
 				this.tileSheet.renderInUse(c[0], c[1],
 						this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
-						gt.getSpriteSheetCol(), gt.getSpriteSheetRow());
+						BitmapHandler.getSpriteSheetCol(gt.getId(), this.tileSheet), BitmapHandler.getSpriteSheetRow(gt.getId(), this.tileSheet));
 			}
 		}
 

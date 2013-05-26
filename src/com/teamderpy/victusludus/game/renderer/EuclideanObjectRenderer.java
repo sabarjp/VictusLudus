@@ -77,7 +77,7 @@ public class EuclideanObjectRenderer {
 
 				this.gameRenderer.getTileRenderer().getTileSheet().renderInUse(sc[0], sc[1],
 						this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
-						GameTile.getSpriteSheetCol(GameTile.ID_HIDDEN), GameTile.getSpriteSheetRow(GameTile.ID_HIDDEN));
+						BitmapHandler.getSpriteSheetCol(GameTile.ID_HIDDEN, this.gameRenderer.getTileRenderer().getTileSheet()), BitmapHandler.getSpriteSheetRow(GameTile.ID_HIDDEN, this.gameRenderer.getTileRenderer().getTileSheet()));
 			} else {
 				if(o instanceof GameTile){
 					/**
@@ -97,7 +97,7 @@ public class EuclideanObjectRenderer {
 
 					this.gameRenderer.getTileRenderer().getTileSheet().renderInUse(sc[0], sc[1],
 							this.gameRenderer.game.getTileWidthS(), this.gameRenderer.game.getTileHeightS()*2,
-							t.getSpriteSheetCol(), t.getSpriteSheetRow());
+							BitmapHandler.getSpriteSheetCol(t.getId(), this.gameRenderer.getTileRenderer().getTileSheet()), BitmapHandler.getSpriteSheetRow(t.getId(), this.gameRenderer.getTileRenderer().getTileSheet()));
 				}else if(o instanceof GameEntity){
 					/**
 					 * 

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.opengl.Texture;
@@ -62,6 +63,7 @@ public class BitmapHandler {
 			VictusLudus.LOGGER.info("Loading " + path + " of " + tileWidth + "x" + tileHeight);
 
 			tileSheet = new SpriteSheet(path, tileWidth, tileHeight, BitmapHandler.TRANSPARENT_COLOR);
+			tileSheet.setFilter(Image.FILTER_NEAREST);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -94,5 +96,23 @@ public class BitmapHandler {
 		Animation a = new Animation(ss, firstX, firstY, lastX, lastY, true, speed, true);
 
 		return a;
+	}
+
+	/**
+	 * Gets the sprite sheet col.
+	 *
+	 * @return the sprite sheet col
+	 */
+	public static int getSpriteSheetCol(final int id, final SpriteSheet spriteSheet){
+		return id % spriteSheet.getHorizontalCount();
+	}
+
+	/**
+	 * Gets the sprite sheet row.
+	 *
+	 * @return the sprite sheet row
+	 */
+	public static int getSpriteSheetRow(final int id, final SpriteSheet spriteSheet){
+		return id / spriteSheet.getHorizontalCount();
 	}
 }

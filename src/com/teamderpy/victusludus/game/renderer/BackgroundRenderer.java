@@ -4,16 +4,14 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Rectangle;
 
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.game.GameDimensions;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class BackgroundRenderer.
  */
 public class BackgroundRenderer {
-
-	/** The game renderer. */
-	@SuppressWarnings("unused")
-	private GameRenderer gameRenderer;
+	private GameDimensions dimensions;
 
 	/** The bg color. */
 	private Color bgColor;
@@ -24,8 +22,8 @@ public class BackgroundRenderer {
 	 * @param gameRenderer the game renderer
 	 * @param bgColor the bg color
 	 */
-	public BackgroundRenderer(final GameRenderer gameRenderer, final Color bgColor){
-		this.gameRenderer = gameRenderer;
+	public BackgroundRenderer(final GameDimensions dimensions, final Color bgColor){
+		this.dimensions = dimensions;
 		this.bgColor = bgColor;
 	}
 
@@ -34,7 +32,7 @@ public class BackgroundRenderer {
 	 */
 	public void render(){
 		VictusLudus.e.graphics.setColor(this.bgColor);
-		VictusLudus.e.graphics.fill(new Rectangle(0, 0, VictusLudus.e.X_RESOLUTION(), VictusLudus.e.Y_RESOLUTION()));
+		VictusLudus.e.graphics.fill(new Rectangle(0, 0, this.dimensions.getWidth(), this.dimensions.getHeight()));
 	}
 
 	/**

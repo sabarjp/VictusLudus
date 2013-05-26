@@ -29,10 +29,16 @@ public class Galaxy {
 	/** the age of the galaxy in years */
 	private BigDecimal age;
 
+	/** the type of galaxy */
+	private EnumGalaxyType galaxyType;
+
+	/** degrees rotated */
+	private double rotation;
+
 	/** the position of the galaxy in the universe */
-	private BigDecimal xPosition;
-	private BigDecimal yPosition;
-	private BigDecimal radius;
+	private double xPosition;
+	private double yPosition;
+	private double radius;
 
 	public Galaxy(final StarDate birthDate, final Universe universe){
 		this.parentUniverse = universe;
@@ -41,6 +47,8 @@ public class Galaxy {
 		this.age = BigDecimal.ZERO;
 
 		this.stars = new ArrayList<Star>();
+		this.galaxyType = this.getRandomGalaxyType();
+		this.rotation = this.getRandomGalaxyRotation();
 	}
 
 	/**
@@ -65,18 +73,18 @@ public class Galaxy {
 					boolean lookingForEmptySpace = true;
 					int placementAttemptNum = 100;
 
-					BigDecimal xPos = null;
-					BigDecimal yPos = null;
+					double xPos = -1;
+					double yPos = -1;
 
 					while(lookingForEmptySpace && placementAttemptNum > 0){
 						placementAttemptNum--;
 
 						//pick a spot with nothing else in the area
-						xPos   = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, this.xPosition.add(this.radius), this.xPosition.subtract(this.radius), new BigDecimal(VictusLudus.rand.nextFloat()));
-						yPos   = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, this.yPosition.add(this.radius), this.yPosition.subtract(this.radius), new BigDecimal(VictusLudus.rand.nextFloat()));
+						xPos   = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal(this.xPosition - this.radius), new BigDecimal(this.xPosition + this.radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
+						yPos   = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal(this.yPosition - this.radius), new BigDecimal(this.yPosition + this.radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
 
 						for(Star s:this.stars){
-							if (xPos.subtract(s.getxPosition()).pow(2).add(yPos.subtract(s.getyPosition()).pow(2)).compareTo(Star.SOLAR_SYSTEM_RADIUS.pow(2)) < 0){
+							if (xPos - Math.pow(s.getxPosition(), 2) + yPos - Math.pow(s.getyPosition(), 2) < Math.pow(Star.SOLAR_SYSTEM_RADIUS.doubleValue(), 2)){
 								continue;
 							}
 						}
@@ -90,7 +98,7 @@ public class Galaxy {
 
 						this.stars.add(star);
 
-						System.err.println("adding star to " + this.hashCode());
+						//System.err.println("adding star to " + this.hashCode());
 					}
 				}
 			}
@@ -102,6 +110,14 @@ public class Galaxy {
 		}
 
 		this.age = this.age.add(delta);
+	}
+
+	private EnumGalaxyType getRandomGalaxyType(){
+		return EnumGalaxyType.values()[VictusLudus.rand.nextInt(EnumGalaxyType.values().length)];
+	}
+
+	private double getRandomGalaxyRotation(){
+		return Math.random()*360;
 	}
 
 	public ArrayList<Star> getStars() {
@@ -116,15 +132,15 @@ public class Galaxy {
 		return this.age;
 	}
 
-	public BigDecimal getxPosition() {
+	public double getxPosition() {
 		return this.xPosition;
 	}
 
-	public BigDecimal getyPosition() {
+	public double getyPosition() {
 		return this.yPosition;
 	}
 
-	public BigDecimal getRadius() {
+	public double getRadius() {
 		return this.radius;
 	}
 
@@ -132,15 +148,23 @@ public class Galaxy {
 		return this.parentUniverse;
 	}
 
-	public void setxPosition(final BigDecimal xPosition) {
+	public void setxPosition(final double xPosition) {
 		this.xPosition = xPosition;
 	}
 
-	public void setyPosition(final BigDecimal yPosition) {
+	public void setyPosition(final double yPosition) {
 		this.yPosition = yPosition;
 	}
 
-	public void setRadius(final BigDecimal radius) {
+	public void setRadius(final double radius) {
 		this.radius = radius;
+	}
+
+	public EnumGalaxyType getGalaxyType() {
+		return this.galaxyType;
+	}
+
+	public double getRotation() {
+		return this.rotation;
 	}
 }

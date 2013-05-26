@@ -5,16 +5,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 import com.teamderpy.victusludus.data.VictusLudus;
-import com.teamderpy.victusludus.engine.GameException;
-import com.teamderpy.victusludus.engine.ISettings;
-import com.teamderpy.victusludus.engine.IView;
 
 /**
  * Has lots of galaxies
  * 
  * @author Josh
  */
-public class Universe implements IView{
+public class Universe{
 	private static int MAX_GALAXY_COUNT = 20;
 	private static BigDecimal MIN_AGE_FOR_STARS = new BigDecimal("400E6");
 	private static BigDecimal MAX_AGE_FOR_STARS = new BigDecimal("10E14");
@@ -33,7 +30,7 @@ public class Universe implements IView{
 	private BigDecimal age;
 
 	/** the diameter of the universe in meters */
-	private BigDecimal diameter;
+	private double diameter;
 
 	public Universe(){
 		this.cosmicDate = new StarDate();
@@ -41,7 +38,7 @@ public class Universe implements IView{
 		this.seed = VictusLudus.rand.nextInt()/2;
 
 		this.galaxies = new ArrayList<Galaxy>();
-		this.diameter = Cosmology.LIGHT_YEAR.multiply(new BigDecimal("56000000000"));
+		this.diameter = Cosmology.LIGHT_YEAR.multiply(new BigDecimal("56000000000")).doubleValue();
 	}
 
 	/**
@@ -65,20 +62,20 @@ public class Universe implements IView{
 					boolean lookingForEmptySpace = true;
 					int placementAttemptNum = 100;
 
-					BigDecimal xPos = null;
-					BigDecimal yPos = null;
-					BigDecimal radius = null;
+					double xPos = -1;
+					double yPos = -1;
+					double radius = -1;
 
 					while(lookingForEmptySpace && placementAttemptNum > 0){
 						placementAttemptNum--;
 
-						//pick a spot with nothing else in the area
-						xPos   = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, this.diameter, new BigDecimal(VictusLudus.rand.nextFloat()));
-						yPos   = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, this.diameter, new BigDecimal(VictusLudus.rand.nextFloat()));
-						radius = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Galaxy.MIN_GALAXY_RADIUS, Galaxy.MAX_GALAXY_RADIUS, new BigDecimal(VictusLudus.rand.nextFloat()));
+						//pick a spot with nothing else in the area, should be easy
+						radius = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, Galaxy.MIN_GALAXY_RADIUS, Galaxy.MAX_GALAXY_RADIUS, new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
+						xPos   = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO, new BigDecimal(this.diameter - radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
+						yPos   = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO, new BigDecimal(this.diameter - radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
 
 						for(Galaxy g:this.galaxies){
-							if (xPos.subtract(g.getxPosition()).pow(2).add(yPos.subtract(g.getyPosition()).pow(2)).compareTo(g.getRadius().pow(2)) < 0){
+							if (xPos - Math.pow(g.getxPosition(), 2) + yPos - Math.pow(g.getyPosition(), 2) < Math.pow(g.getRadius(), 2)){
 								continue;
 							}
 						}
@@ -93,7 +90,7 @@ public class Universe implements IView{
 
 						this.galaxies.add(galaxy);
 
-						System.err.println("adding galaxy");
+						//System.err.println("adding galaxy " + galaxy.getGalaxyType());
 					}
 				}
 			}
@@ -126,61 +123,7 @@ public class Universe implements IView{
 		return this.age;
 	}
 
-	public BigDecimal getDiameter() {
+	public double getDiameter() {
 		return this.diameter;
-	}
-
-	@Override
-	public void init(final ISettings settings) throws GameException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void tick() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void registerListeners() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void unregisterListeners() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isRunning() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setRunning(final boolean isRunning) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isQuitSignal() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setQuitSignal(final boolean isQutting) {
-		// TODO Auto-generated method stub
-
 	}
 }

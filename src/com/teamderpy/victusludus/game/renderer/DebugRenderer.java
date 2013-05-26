@@ -6,17 +6,14 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
-import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.game.GameDimensions;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class DebugRenderer.
  */
 public class DebugRenderer {
-
-	/** The game renderer. */
-	@SuppressWarnings("unused")
-	private GameRenderer gameRenderer;
+	private GameDimensions dimensions;
 
 	/** The overlay image */
 	private Image debugImage = null;
@@ -26,11 +23,11 @@ public class DebugRenderer {
 	 *
 	 * @param gameRenderer the game renderer
 	 */
-	public DebugRenderer(final GameRenderer gameRenderer){
-		this.gameRenderer = gameRenderer;
+	public DebugRenderer(final GameDimensions dimensions){
+		this.dimensions = dimensions;
 
 		try {
-			this.debugImage = Image.createOffscreenImage(VictusLudus.e.X_RESOLUTION(), VictusLudus.e.Y_RESOLUTION());
+			this.debugImage = Image.createOffscreenImage(this.dimensions.getWidth(), this.dimensions.getHeight());
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}

@@ -51,13 +51,12 @@ public class Game implements IView, KeyboardListener, MouseListener{
 	/** The game camera. */
 	private GameCamera gameCamera;
 
+	/** The game dimensions. */
+	private GameDimensions gameDimensions;
+
 	//edit tiles or walls
 	/** The interaction mode. */
 	private byte interactionMode = EnumInteractionMode.MODE_QUERY_TILE;
-
-	//grid and tile sizes
-	/** The game dimensions. */
-	private GameDimensions gameDimensions;
 
 	/** The map. */
 	private Map map;

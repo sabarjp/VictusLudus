@@ -62,5 +62,5 @@ public interface IView {
 	 * 
 	 * @param isQutting whether or not the view should quit as soon as possible
 	 */
-	public void setQuitSignal(boolean isQutting);
+	public void setQuitSignal(boolean isQuitting);
 }
