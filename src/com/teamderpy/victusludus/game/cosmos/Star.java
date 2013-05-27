@@ -68,6 +68,7 @@ public class Star {
 	private ArrayList<Planet> planets;
 
 	public Star(final StarDate birthDate, final Galaxy galaxy, final BigDecimal startingMass){
+		this.seed = VictusLudus.rand.nextInt()/2;
 		this.parentGalaxy = galaxy;
 
 		this.mass = startingMass;
@@ -81,7 +82,6 @@ public class Star {
 		this.luminosity = this.calcBirthLuminosity();
 		this.startedPhaseLuminosity = this.luminosity;
 		this.radius = this.calcMainSequenceRadius();
-		this.seed = VictusLudus.rand.nextInt()/2;
 		this.historyLog = new ArrayList<String>();
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
 		this.planets = new ArrayList<Planet>();
@@ -89,6 +89,8 @@ public class Star {
 	}
 
 	public Star(final StarDate birthDate, final Galaxy galaxy, final String startingMass){
+		this.seed = VictusLudus.rand.nextInt()/2;
+
 		this.parentGalaxy = galaxy;
 
 		this.mass = new BigDecimal(startingMass);
@@ -102,7 +104,7 @@ public class Star {
 		this.luminosity = this.calcBirthLuminosity();
 		this.startedPhaseLuminosity = this.luminosity;
 		this.radius = this.calcMainSequenceRadius();
-		this.seed = VictusLudus.rand.nextInt()/2;
+
 		this.historyLog = new ArrayList<String>();
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
 		this.planets = new ArrayList<Planet>();
@@ -110,6 +112,8 @@ public class Star {
 	}
 
 	public Star(final StarDate birthDate, final Galaxy galaxy){
+		this.seed = VictusLudus.rand.nextInt()/2;
+
 		this.parentGalaxy = galaxy;
 
 		this.mass = this.getRandomMass();
@@ -123,7 +127,6 @@ public class Star {
 		this.luminosity = this.calcBirthLuminosity();
 		this.startedPhaseLuminosity = this.luminosity;
 		this.radius = this.calcMainSequenceRadius();
-		this.seed = VictusLudus.rand.nextInt()/2;
 		this.historyLog = new ArrayList<String>();
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
 		this.planets = new ArrayList<Planet>();
@@ -1011,7 +1014,21 @@ public class Star {
 	 * @return random amount of mass
 	 */
 	private BigDecimal getRandomMass(){
-		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.02"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("150"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.leftNoise((int) this.seed, 545411)));
+		double noise = (1.0F + Cosmology.randomNoise((int) this.seed, 545411)) * 130.0F;
+
+		if(noise < 200.0F){
+			//return a mass between 0.02 and 0.5
+			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.02"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.randomNoise((int) this.seed, 2938)));
+		} else if(noise < 250.0F){
+			//return a mass between 0.5 and 2.0
+			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.randomNoise((int) this.seed, 2939)));
+		} else if(noise < 259.0F){
+			//return a mass between 2.0 and 10.0
+			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("10.0"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.randomNoise((int) this.seed, 2940)));
+		} else {
+			//return a mass between 10.0 and 150.0
+			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("10.0"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("150.0"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.leftNoise((int) this.seed, 2941)));
+		}
 	}
 
 	/**

@@ -9,25 +9,24 @@ import java.util.ArrayList;
  *
  */
 public class UniverseRenderer {
-	/** The parent of this object */
-	private CosmosRenderer cosmosRenderer;
-
-	/**
-	 * Instantiates a new universe renderer
-	 * 
-	 * @param cosmosRenderer the cosmos renderer that is the parent
-	 */
-	public UniverseRenderer(final CosmosRenderer cosmosRenderer){
-		this.cosmosRenderer = cosmosRenderer;
-	}
 
 	/**
 	 * Renders all the galaxies in a universe to the screen
 	 */
-	public void render(final ArrayList<GalaxyImage> galaxyList, final float deltaT){
+	public void renderGalaxies(final ArrayList<GalaxyImage> galaxyList, final float deltaT){
 		for(GalaxyImage galaxyImage:galaxyList){
-			galaxyImage.render(this.cosmosRenderer, deltaT);
+			galaxyImage.render(deltaT);
 		}
 	}
+
+	/**
+	 * Renders all the stars in a universe to the screen
+	 */
+	public void renderStars(final ArrayList<StarImage> starList, final float deltaT){
+		for(StarImage starImage:starList){
+			starImage.render(deltaT);
+		}
+	}
+
 
 }

@@ -122,7 +122,7 @@ public class LayeredGenerator implements INoiseGenerator {
 	 * @see com.teamderpy.victusludus.game.map.INoiseGenerator#generate(int, int)
 	 */
 	@Override
-	public int[][] generate(final int width, final int height) {
+	public int[][] generateInt(final int width, final int height, final boolean normalize) {
 		int[][] array = new int[width][height];
 		int highestPoint = 0;
 		int lowestPoint = 9999;
@@ -139,7 +139,11 @@ public class LayeredGenerator implements INoiseGenerator {
 
 			for(int i=0; i<array.length; i++){
 				for(int j=0; j<array[i].length; j++){
-					array[i][j] += 5 + 5 * Math.pow(this.persistence, this.passes-p) * this.gaussianNoise(i/p, j/p, blurMachine);
+					if(normalize){
+						array[i][j] += 5 + 5 * Math.pow(this.persistence, this.passes-p) * this.gaussianNoise(i/p, j/p, blurMachine);
+					} else {
+						array[i][j] += Math.pow(this.persistence, this.passes-p) * this.gaussianNoise(i/p, j/p, blurMachine);
+					}
 
 					if(p == this.passes){
 						if(array[i][j] > highestPoint) { highestPoint = array[i][j]; }
@@ -152,9 +156,55 @@ public class LayeredGenerator implements INoiseGenerator {
 		}
 
 		//normalize terrain
+		if(normalize){
+			for(int i=0; i<array.length; i++){
+				for(int j=0; j<array[i].length; j++){
+					array[i][j] -= lowestPoint - 15;
+				}
+			}
+		}
+
+		return array;
+	}
+
+	@Override
+	public float[][] generateFloat(final int width, final int height, final float minValue, final float maxValue, final boolean blur) {
+		float[][] array = new float[width][height];
+		float highestPoint = 0;
+		float lowestPoint = 9999;
+
 		for(int i=0; i<array.length; i++){
 			for(int j=0; j<array[i].length; j++){
-				array[i][j] -= lowestPoint - 15;
+				array[i][j] = 0;
+			}
+		}
+
+		//generate terrain
+		for(int p=1; p<this.passes+1; p++){
+			GaussianBlur blurMachine = new GaussianBlur(p, 1.5F);
+
+			for(int i=0; i<array.length; i++){
+				for(int j=0; j<array[i].length; j++){
+					if(blur){
+						array[i][j] += Math.pow(this.persistence, this.passes-p) * this.gaussianNoise(i/p, j/p, blurMachine);
+					} else {
+						array[i][j] += Math.pow(this.persistence, this.passes-p) * this.smoothNoise(i/p, j/p);
+					}
+
+					if(p == this.passes){
+						if(array[i][j] > highestPoint) { highestPoint = array[i][j]; }
+						if(array[i][j] < lowestPoint) { lowestPoint = array[i][j]; }
+					}
+				}
+			}
+
+			this.seed();
+		}
+
+		//normalize
+		for(int i=0; i<array.length; i++){
+			for(int j=0; j<array[i].length; j++){
+				array[i][j] = LayeredGenerator.linearInterpolation(lowestPoint, highestPoint, minValue, maxValue, array[i][j]);
 			}
 		}
 
@@ -195,6 +245,28 @@ public class LayeredGenerator implements INoiseGenerator {
 	 */
 	public void setPersistence(final float persistence) {
 		this.persistence = persistence;
+	}
+
+	/**
+	 * Linear interpolation between two known points
+	 * 
+	 * @param x1
+	 * @param x2
+	 * @param y1
+	 * @param y2
+	 * @param desiredX the x at which we desire an interpolated Y
+	 * @return the interpolated Y
+	 */
+	private static float linearInterpolation(final float x1, final float x2, final float y1, final float y2, final float desiredX){
+		float result = y1 + (y2 - y1) * (desiredX - x1 / (x2 - x1));
+
+		if(result < y1){
+			result = y1;
+		} else if(result > y2){
+			result = y2;
+		}
+
+		return result;
 	}
 
 }

@@ -558,6 +558,7 @@ public class Engine{
 	 */
 	private void render(final float deltaT) {
 		this.clearGL();
+		VictusLudus.e.graphics.clear();
 
 		this.lastFrameDrawTime = Time.getTime();
 

@@ -62,7 +62,7 @@ public class Map {
 		this.tiles = new GameTile[this.depth][this.width][this.height];
 
 		LayeredGenerator gen = new LayeredGenerator((int) requestedSettings.getRequestedMapScale(), requestedSettings.getRequestedMapRandomness());
-		int[][] mapArray = gen.generate(this.width, this.height);
+		int[][] mapArray = gen.generateInt(this.width, this.height, true);
 		Smoother.smooth(mapArray, (int) requestedSettings.getRequestedMapSmoothness());
 		HeightCapper.capMaxHeight(mapArray, this.depth-1);
 

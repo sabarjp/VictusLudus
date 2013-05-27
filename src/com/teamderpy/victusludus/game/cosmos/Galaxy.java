@@ -83,8 +83,8 @@ public class Galaxy {
 						placementAttemptNum--;
 
 						//pick a spot with nothing else in the area
-						xPos   = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal(this.xPosition - this.radius), new BigDecimal(this.xPosition + this.radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
-						yPos   = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal(this.yPosition - this.radius), new BigDecimal(this.yPosition + this.radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
+						xPos   = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, new BigDecimal(this.xPosition - this.radius), new BigDecimal(this.xPosition + this.radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
+						yPos   = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, new BigDecimal(this.yPosition - this.radius), new BigDecimal(this.yPosition + this.radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
 
 						for(Star s:this.stars){
 							if (xPos - Math.pow(s.getxPosition(), 2) + yPos - Math.pow(s.getyPosition(), 2) < Math.pow(Star.SOLAR_SYSTEM_RADIUS.doubleValue(), 2)){

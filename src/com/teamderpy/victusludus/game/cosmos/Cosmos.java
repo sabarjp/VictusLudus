@@ -19,6 +19,18 @@ public class Cosmos implements IView, MouseListener{
 	/** the universe */
 	private Universe universe;
 
+	/** the galaxy we drilled down to, if any */
+	private Galaxy galaxy = null;
+
+	/** the star we drilled down to, if any */
+	private Star star = null;
+
+	/** the planet we drilled down to, if any */
+	private Planet planet = null;
+
+	/** what view we are currently looking at */
+	private EnumCosmosMode currentPerspective = EnumCosmosMode.UNIVERSE_PERSPECTIVE;
+
 	/** Whether or not the game is actually running yet. */
 	private boolean isRunning = false;
 
@@ -196,5 +208,41 @@ public class Cosmos implements IView, MouseListener{
 
 	public Universe getUniverse() {
 		return this.universe;
+	}
+
+	public Star getStar() {
+		return this.star;
+	}
+
+	public void setStar(final Star star) {
+		this.star = star;
+	}
+
+	public Planet getPlanet() {
+		return this.planet;
+	}
+
+	public void setPlanet(final Planet planet) {
+		this.planet = planet;
+	}
+
+	public void setUniverse(final Universe universe) {
+		this.universe = universe;
+	}
+
+	public Galaxy getGalaxy() {
+		return this.galaxy;
+	}
+
+	public void setGalaxy(final Galaxy galaxy) {
+		this.galaxy = galaxy;
+	}
+
+	public EnumCosmosMode getCurrentPerspective() {
+		return this.currentPerspective;
+	}
+
+	public void setCurrentPerspective(final EnumCosmosMode currentPerspective) {
+		this.currentPerspective = currentPerspective;
 	}
 }

@@ -3,6 +3,7 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
+import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Universe;
 
@@ -14,6 +15,7 @@ import com.teamderpy.victusludus.game.cosmos.Universe;
 public class GalaxyImage {
 	private Galaxy galaxy;
 	private ActionArea2D actionArea;
+	private CosmosRenderer cosmosRenderer;
 
 	/**
 	 * Instantiates a new galaxy image, which is basically the galaxy
@@ -24,6 +26,7 @@ public class GalaxyImage {
 	 */
 	public GalaxyImage(final Galaxy galaxy, final CosmosRenderer cosmosRenderer){
 		this.galaxy = galaxy;
+		this.cosmosRenderer = cosmosRenderer;
 
 		Universe universe = cosmosRenderer.cosmos.getUniverse();
 
@@ -62,25 +65,26 @@ public class GalaxyImage {
 	 * 
 	 * @param deltaT the amount of time since the last render
 	 */
-	public void render(final CosmosRenderer cosmosRenderer, final float deltaT){
-		cosmosRenderer.spriteSheetGalaxy.startUse();
+	public void render(final float deltaT){
+		this.cosmosRenderer.spriteSheetGalaxy.startUse();
 
 		this.galaxy.setRotation(this.galaxy.getRotation() + deltaT * this.galaxy.getAngularVelocity());
 
-		cosmosRenderer.spriteSheetGalaxy.renderInUse(this.getActionArea().getX(), this.getActionArea().getY(),
+		this.cosmosRenderer.spriteSheetGalaxy.renderInUse(this.getActionArea().getX(), this.getActionArea().getY(),
 				this.getActionArea().getWidth(),
 				this.getActionArea().getHeight(),
 				(float) this.galaxy.getRotation(),
-				BitmapHandler.getSpriteSheetCol(this.galaxy.getGalaxyType().getSpriteIndex(), cosmosRenderer.spriteSheetGalaxy),
-				BitmapHandler.getSpriteSheetRow(this.galaxy.getGalaxyType().getSpriteIndex(), cosmosRenderer.spriteSheetGalaxy));
+				BitmapHandler.getSpriteSheetCol(this.galaxy.getGalaxyType().getSpriteIndex(), this.cosmosRenderer.spriteSheetGalaxy),
+				BitmapHandler.getSpriteSheetRow(this.galaxy.getGalaxyType().getSpriteIndex(), this.cosmosRenderer.spriteSheetGalaxy));
 
-		cosmosRenderer.spriteSheetGalaxy.endUse();
+		this.cosmosRenderer.spriteSheetGalaxy.endUse();
 	}
 
 	private class EnterAction implements Actionable{
 		@Override
 		public void act() {
 			System.err.println("enter galaxy " + GalaxyImage.this.getGalaxy());
+			System.err.println("num stars: " + GalaxyImage.this.getGalaxy().getStars().size());
 		}
 	}
 
@@ -95,6 +99,13 @@ public class GalaxyImage {
 		@Override
 		public void act() {
 			System.err.println("click " + GalaxyImage.this.getGalaxy());
+			GalaxyImage.this.cosmosRenderer.cosmos.setGalaxy(GalaxyImage.this.galaxy);
+			GalaxyImage.this.cosmosRenderer.changePerspective(EnumCosmosMode.GALAXY_PERSPECTIVE);
 		}
+	}
+
+	@Override
+	public void finalize(){
+		this.actionArea.unregisterListeners();
 	}
 }
