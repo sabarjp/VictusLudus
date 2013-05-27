@@ -7,13 +7,13 @@ import java.util.HashSet;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.SpriteSheet;
 
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.EnumBuildMode;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
 import com.teamderpy.victusludus.game.light.LightEmitter;
 import com.teamderpy.victusludus.game.map.Map;
-import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -1,8 +1,8 @@
 package com.teamderpy.victusludus.game.wall;
 
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.EnumWallFacing;
 import com.teamderpy.victusludus.game.WorldCoord;
-import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 
 // TODO: Auto-generated Javadoc
 /**

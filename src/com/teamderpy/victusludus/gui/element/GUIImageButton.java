@@ -22,36 +22,36 @@ import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
  * The Class GUIImageButton.
  */
 public class GUIImageButton extends GUIElement implements Actionable, Selectable, MouseListener, HoverListener, ButtonPressListener, SelectListener{
-	
+
 	/** The tooltip. */
 	private String tooltip = "";
-	
+
 	/** The action. */
 	private Actionable action;
-	
+
 	/** The img. */
 	private ImageButtonImage img;
-	
+
 	/** The is centered. */
 	private boolean isCentered = false;
-	
+
 	/** The is depressed. */
 	private boolean isDepressed = false;
 
 	/** The is selected. */
 	protected boolean isSelected = false;
-	
+
 	/** The is hovered on. */
 	protected boolean isHoveredOn = false;
-	
+
 	/** The original x. */
 	private int originalX = -1;
-	
+
 	/** The sprite sheet. */
 	private SpriteSheet spriteSheet;
 
 	/**
-	 * Instantiates a new gUI image button.
+	 * Instantiates a new GUI image button.
 	 *
 	 * @param x the x
 	 * @param y the y

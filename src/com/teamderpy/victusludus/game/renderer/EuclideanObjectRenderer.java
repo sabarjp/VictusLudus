@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.newdawn.slick.Animation;
+
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.tile.GameTile;

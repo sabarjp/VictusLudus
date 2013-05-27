@@ -53,6 +53,7 @@ public class Galaxy {
 		this.angularVelocity = this.getRandomAngularVelocity();
 	}
 
+
 	/**
 	 * A tick of time
 	 * 

@@ -7,12 +7,12 @@ import org.newdawn.slick.Color;
 
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.behavior.CreateAdjacentBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.MoveBehavior;
 import com.teamderpy.victusludus.game.light.LightEmitter;
-import com.teamderpy.victusludus.game.renderer.BitmapHandler;
 
 
 // TODO: Auto-generated Javadoc

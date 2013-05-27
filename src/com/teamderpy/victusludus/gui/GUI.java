@@ -12,7 +12,7 @@ import org.newdawn.slick.geom.Rectangle;
 
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.data.resources.FontFile;
-import com.teamderpy.victusludus.game.renderer.BitmapHandler;
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 
 

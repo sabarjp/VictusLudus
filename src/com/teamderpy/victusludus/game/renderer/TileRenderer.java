@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.SpriteSheet;
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.tile.GameTile;
 import com.teamderpy.victusludus.gui.eventhandler.RenderListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.EnumRenderEventType;

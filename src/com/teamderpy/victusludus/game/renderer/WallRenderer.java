@@ -2,6 +2,7 @@ package com.teamderpy.victusludus.game.renderer;
 
 import org.newdawn.slick.SpriteSheet;
 
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.EnumWallFacing;
 import com.teamderpy.victusludus.game.ScreenCoord;
 import com.teamderpy.victusludus.game.tile.GameTile;

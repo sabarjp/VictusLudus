@@ -9,7 +9,7 @@ import com.teamderpy.victusludus.engine.IView;
 import com.teamderpy.victusludus.engine.InputPoller;
 import com.teamderpy.victusludus.game.GameCamera;
 import com.teamderpy.victusludus.game.GameDimensions;
-import com.teamderpy.victusludus.game.renderer.CosmosRenderer;
+import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
 import com.teamderpy.victusludus.gui.DialogBox;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.eventhandler.MouseListener;
