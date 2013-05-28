@@ -4,6 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
+
+import com.teamderpy.victusludus.data.resources.StarColorTuple;
 import com.teamderpy.victusludus.readerwriter.BackgroundReader;
 import com.teamderpy.victusludus.readerwriter.CreatureReader;
 import com.teamderpy.victusludus.readerwriter.EntityReader;
@@ -39,6 +44,9 @@ public class DataReader {
 	/** The Constant CELESITAL_NAMES. */
 	public static final String CELESITAL_NAMES = "res/celestial/";
 
+	/** The Constant STAR_COLOR_CHART. */
+	public static final String STAR_COLOR_CHART = "res/sprites/starcolor.png";
+
 	/**
 	 * Read data.
 	 */
@@ -50,6 +58,29 @@ public class DataReader {
 		DataReader.ReadAndLoadAll(DataReader.PATH_ENTITIES, VictusLudus.resources.getEntityHash(), new EntityReader());
 
 		DataReader.SimpleReadAndLoad(DataReader.CELESITAL_NAMES, VictusLudus.resources.getCelestialNameArray(), new LineReader());
+		DataReader.ReadStarColorChart(DataReader.STAR_COLOR_CHART, VictusLudus.resources.getStarColorMap());
+	}
+
+	/**
+	 * Reads the star color chart and loads them into a hash
+	 * 
+	 * @param starColorChart
+	 * @param starColorMap
+	 */
+	private static void ReadStarColorChart(final String starColorChart, final ArrayList<StarColorTuple> starColorMap) {
+		int minColor = 0;
+		int maxColor = 33000;
+
+		try {
+			Image starColorImage = new Image(starColorChart, false, Image.FILTER_NEAREST, Color.magenta).getFlippedCopy(true, false);
+
+			for(int i=0; i<starColorImage.getWidth(); i += 5){
+				StarColorTuple tuple = new StarColorTuple((int) ((float)(starColorImage.getWidth()-i)/(float)starColorImage.getWidth()*(maxColor-minColor)), starColorImage.getColor(i, 0));
+				starColorMap.add(tuple);
+			}
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

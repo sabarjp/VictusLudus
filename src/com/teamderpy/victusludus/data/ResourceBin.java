@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.data.resources.FontFile;
+import com.teamderpy.victusludus.data.resources.StarColorTuple;
 import com.teamderpy.victusludus.game.PlayerBackground;
 import com.teamderpy.victusludus.parts.Creature;
 import com.teamderpy.victusludus.parts.Material;
@@ -34,6 +35,9 @@ public class ResourceBin {
 	/** The celestial name array */
 	private ArrayList<String> celestialNameArray;
 
+	/** Mappings of color temperatures to colors */
+	private ArrayList<StarColorTuple> starColorMap;
+
 	/**
 	 * Instantiates a new resource bin.
 	 */
@@ -45,6 +49,7 @@ public class ResourceBin {
 		this.entityHash       = new HashMap<String, EntityDefinition>();
 
 		this.celestialNameArray = new ArrayList<String>();
+		this.starColorMap       = new ArrayList<StarColorTuple>();
 	}
 
 	/**
@@ -100,5 +105,16 @@ public class ResourceBin {
 	public ArrayList<String> getCelestialNameArray() {
 		return this.celestialNameArray;
 	}
+
+	/**
+	 * Gets the star color map
+	 * 
+	 * @return the color map
+	 */
+	public ArrayList<StarColorTuple> getStarColorMap() {
+		return this.starColorMap;
+	}
+
+
 
 }

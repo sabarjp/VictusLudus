@@ -4,7 +4,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.ArrayList;
+
+import org.newdawn.slick.Color;
+
 import com.teamderpy.victusludus.data.VictusLudus;
+import com.teamderpy.victusludus.data.resources.StarColorTuple;
 import com.teamderpy.victusludus.precision.Precision;
 
 
@@ -1539,6 +1543,20 @@ public class Star {
 		}else{
 			return "dark brown";
 		}
+	}
+
+	/**
+	 * Returns the color of the star
+	 * @return the color of the star
+	 */
+	public Color getStarColor(){
+		for(StarColorTuple tuple:VictusLudus.resources.getStarColorMap()){
+			if(this.surfaceTemperature.doubleValue() > tuple.getTemperature()){
+				return tuple.getColor();
+			}
+		}
+
+		return null;
 	}
 
 	/**

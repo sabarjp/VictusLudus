@@ -30,8 +30,8 @@ public class GalaxyImage {
 
 		Universe universe = cosmosRenderer.cosmos.getUniverse();
 
-		int spriteWidth = cosmosRenderer.spriteSheetGalaxy.getWidth() / cosmosRenderer.spriteSheetGalaxy.getHorizontalCount();
-		int spriteHeight = cosmosRenderer.spriteSheetGalaxy.getHeight() / cosmosRenderer.spriteSheetGalaxy.getVerticalCount();
+		int spriteWidth = cosmosRenderer.spriteSheetGalaxy.getWidth() / cosmosRenderer.spriteSheetGalaxy.getHorizontalCount() * 2;
+		int spriteHeight = cosmosRenderer.spriteSheetGalaxy.getHeight() / cosmosRenderer.spriteSheetGalaxy.getVerticalCount() * 2;
 
 		int x = (int) ((cosmosRenderer.cosmos.getGameDimensions().getWidth() - spriteWidth) / universe.getDiameter() * (galaxy.getxPosition() - galaxy.getRadius()));
 		int y = (int) ((cosmosRenderer.cosmos.getGameDimensions().getHeight() - spriteHeight) / universe.getDiameter() * (galaxy.getyPosition() - galaxy.getRadius()));

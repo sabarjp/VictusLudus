@@ -7,6 +7,7 @@ import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.ISettings;
 import com.teamderpy.victusludus.engine.IView;
 import com.teamderpy.victusludus.engine.InputPoller;
+import com.teamderpy.victusludus.engine.SoundSystem;
 import com.teamderpy.victusludus.game.GameCamera;
 import com.teamderpy.victusludus.game.GameDimensions;
 import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
@@ -81,6 +82,8 @@ public class Cosmos implements IView, MouseListener{
 		this.gameCamera.setOffsetX(this.gameDimensions.getWidth()/2);
 
 		this.cosmosRenderer = new CosmosRenderer(this);
+
+		VictusLudus.e.soundSystem.setCurrentMusicTrack(SoundSystem.MUSIC_TRACK_TENSE);
 
 		this.isRunning = true;
 	}

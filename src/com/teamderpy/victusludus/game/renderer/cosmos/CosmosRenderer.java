@@ -107,7 +107,7 @@ public class CosmosRenderer{
 				s.getActionArea().unregisterListeners();
 			}
 
-			this.galaxyList = null;
+			this.starList = null;
 		}
 
 		//change perspectives

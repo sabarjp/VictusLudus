@@ -3,6 +3,7 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
+import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Star;
 
@@ -34,8 +35,8 @@ public class StarImage {
 		float galaxyStartY = (float) (galaxy.getyPosition() - galaxy.getRadius());
 		float galaxyEndY   = (float) (galaxy.getyPosition() + galaxy.getRadius());
 
-		int spriteWidth = cosmosRenderer.spriteSheetStar.getWidth() / cosmosRenderer.spriteSheetStar.getHorizontalCount();
-		int spriteHeight = cosmosRenderer.spriteSheetStar.getHeight() / cosmosRenderer.spriteSheetStar.getVerticalCount();
+		int spriteWidth = cosmosRenderer.spriteSheetStar.getWidth() / cosmosRenderer.spriteSheetStar.getHorizontalCount() * 2;
+		int spriteHeight = cosmosRenderer.spriteSheetStar.getHeight() / cosmosRenderer.spriteSheetStar.getVerticalCount() * 2;
 
 		int x = (int) ((cosmosRenderer.cosmos.getGameDimensions().getWidth() - spriteWidth) / ((galaxyEndX - galaxyStartX) / (star.getxPosition() - star.getRadius().doubleValue() - galaxyStartX)));
 		int y = (int) ((cosmosRenderer.cosmos.getGameDimensions().getHeight() - spriteHeight) / ((galaxyEndY - galaxyStartY) / (star.getyPosition() - star.getRadius().doubleValue() - galaxyStartY)));
@@ -74,6 +75,8 @@ public class StarImage {
 
 		//this.galaxy.setRotation(this.galaxy.getRotation() + deltaT * this.galaxy.getAngularVelocity());
 
+		this.getStar().getStarColor().bind();
+
 		this.cosmosRenderer.spriteSheetStar.renderInUse(this.getActionArea().getX(), this.getActionArea().getY(),
 				this.getActionArea().getWidth(),
 				this.getActionArea().getHeight(),
@@ -102,7 +105,8 @@ public class StarImage {
 		@Override
 		public void act() {
 			System.err.println("click " + StarImage.this.getStar());
-			//StarImage.this.cosmosRenderer.changePerspective(EnumCosmosMode.GALAXY_PERSPECTIVE);
+			StarImage.this.cosmosRenderer.cosmos.setGalaxy(null);
+			StarImage.this.cosmosRenderer.changePerspective(EnumCosmosMode.UNIVERSE_PERSPECTIVE);
 		}
 	}
 
