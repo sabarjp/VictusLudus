@@ -78,6 +78,8 @@ public class DataReader {
 				StarColorTuple tuple = new StarColorTuple((int) ((float)(starColorImage.getWidth()-i)/(float)starColorImage.getWidth()*(maxColor-minColor)), starColorImage.getColor(i, 0));
 				starColorMap.add(tuple);
 			}
+
+			starColorMap.add(new StarColorTuple(Integer.MIN_VALUE, starColorImage.getFlippedCopy(true, false).getColor(0, 0)));
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}

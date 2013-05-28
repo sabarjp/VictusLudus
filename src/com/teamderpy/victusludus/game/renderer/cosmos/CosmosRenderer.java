@@ -135,7 +135,7 @@ public class CosmosRenderer{
 				//this.bgRenderer = null;
 				//this.bgRenderer.setBgImage("res/sprites/nebulae.png");
 				//this.bgRenderer.setFlipTiling(true);
-				this.bgRenderer.createBackgroundNebula();
+				this.bgRenderer.createBackgroundNebula(this.cosmos.getGalaxy().getSeed());
 				this.bgRenderer.setStretchingImage(true);
 				//this.bgRenderer = new BackgroundRenderer(this.cosmos.getGameDimensions(), new Color(100,100,100));
 

@@ -126,19 +126,19 @@ public class BackgroundRenderer {
 		}
 	}
 
-	public void createBackgroundNebula(){
+	public void createBackgroundNebula(final float seed){
 		int modifier = 8;
 
-		MidpointGenerator noiseGenerator = new MidpointGenerator(0.56F);
+		MidpointGenerator noiseGenerator = new MidpointGenerator(0.56F, seed);
 		float[][] noiseArrayRed   = noiseGenerator.generateFloat(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier, 0F, 255F, true);
 
-		noiseGenerator.seed();
+		noiseGenerator.seed(seed + 234556);
 		float[][] noiseArrayGreen = noiseGenerator.generateFloat(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier, 0F, 255F, true);
 
-		noiseGenerator.seed();
+		noiseGenerator.seed(seed + 4353452);
 		float[][] noiseArrayBlue  = noiseGenerator.generateFloat(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier, 0F, 255F, true);
 
-		noiseGenerator.seed();
+		noiseGenerator.seed(seed + 345345);
 		float[][] noiseArrayAlpha  = noiseGenerator.generateFloat(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier, 0F, 255F, true);
 
 		ImageBuffer imageBuffer = new ImageBuffer(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier);

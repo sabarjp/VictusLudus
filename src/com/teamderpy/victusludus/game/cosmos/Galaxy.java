@@ -32,6 +32,9 @@ public class Galaxy {
 	/** the type of galaxy */
 	private EnumGalaxyType galaxyType;
 
+	/** the random seed for this galaxy **/
+	private float seed;
+
 	/** degrees rotated */
 	private double rotation;
 	private double angularVelocity;
@@ -42,6 +45,7 @@ public class Galaxy {
 	private double radius;
 
 	public Galaxy(final StarDate birthDate, final Universe universe){
+		this.seed = VictusLudus.rand.nextInt()/2;
 		this.parentUniverse = universe;
 
 		this.birthDate = birthDate;
@@ -181,5 +185,10 @@ public class Galaxy {
 
 	public double getAngularVelocity() {
 		return this.angularVelocity;
+	}
+
+
+	public float getSeed() {
+		return this.seed;
 	}
 }

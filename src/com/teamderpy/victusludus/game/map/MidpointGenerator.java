@@ -36,11 +36,27 @@ public class MidpointGenerator implements INoiseGenerator {
 	}
 
 	/**
+	 * Instantiates a new MidpointGenerator generator.
+	 */
+	public MidpointGenerator(final float persistence, final float seed){
+		this.persistence = persistence;
+		this.rand = new Random();
+		this.seed = (int) seed;
+	}
+
+	/**
 	 * Seed.
 	 */
 	public void seed(){
 		//this instance will have a new random seed
 		this.seed = this.rand.nextInt()/2;
+	}
+
+	/**
+	 * Seed.
+	 */
+	public void seed(final float seed){
+		this.seed = (int) seed;
 	}
 
 	/**
