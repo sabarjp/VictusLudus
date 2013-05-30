@@ -64,9 +64,9 @@ public class Cosmos implements IView, MouseListener{
 		this.universe = new Universe();
 
 		//tick away
-		BigDecimal delta = BigDecimal.valueOf(100000000L);
+		BigDecimal delta = BigDecimal.valueOf(10000000L);
 
-		for(float i = 0F; i < requestedSettings.getRequestedUniAge()*10; i++){
+		for(float i = 0F; i < requestedSettings.getRequestedUniAge()*100; i++){
 			this.universe.tick(delta);
 		}
 
@@ -128,6 +128,7 @@ public class Cosmos implements IView, MouseListener{
 	public void unregisterListeners() {
 		VictusLudus.e.eventHandler.mouseHandler.unregisterPlease(this);
 		this.gameDimensions.unregisterListeners();
+		this.cosmosRenderer.unregisterListeners();
 
 		this.changeGUI(null);
 		this.displayDialog(null);
@@ -170,7 +171,7 @@ public class Cosmos implements IView, MouseListener{
 	 *
 	 * @param newGUI the new gui
 	 */
-	private void changeGUI(final GUI newGUI) {
+	public void changeGUI(final GUI newGUI) {
 		if (this.currentGUI != null) {
 			this.currentGUI.unregisterListeners();
 		}
@@ -183,7 +184,7 @@ public class Cosmos implements IView, MouseListener{
 	 *
 	 * @param dialogGUI the dialog gui
 	 */
-	private void displayDialog(final DialogBox dialogGUI){
+	public void displayDialog(final DialogBox dialogGUI){
 		if (this.currentDialog != null){
 			this.currentDialog.unregisterListeners();
 		}
@@ -247,5 +248,9 @@ public class Cosmos implements IView, MouseListener{
 
 	public void setCurrentPerspective(final EnumCosmosMode currentPerspective) {
 		this.currentPerspective = currentPerspective;
+	}
+
+	public GUI getCurrentGUI() {
+		return this.currentGUI;
 	}
 }

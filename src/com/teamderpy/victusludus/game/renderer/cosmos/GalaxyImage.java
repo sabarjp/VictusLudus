@@ -6,6 +6,7 @@ import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Universe;
+import com.teamderpy.victusludus.gui.GUICosmosHUD;
 
 /**
  * A galaxy and its corresponding image to render
@@ -85,6 +86,8 @@ public class GalaxyImage {
 		public void act() {
 			System.err.println("enter galaxy " + GalaxyImage.this.getGalaxy());
 			System.err.println("num stars: " + GalaxyImage.this.getGalaxy().getStars().size());
+
+			((GUICosmosHUD) GalaxyImage.this.cosmosRenderer.cosmos.getCurrentGUI()).setSelectedGalaxyType(GalaxyImage.this.getGalaxy().getGalaxyType().name());
 		}
 	}
 

@@ -12,10 +12,10 @@ import com.teamderpy.victusludus.data.VictusLudus;
  * @author Josh
  */
 public class Universe{
-	private static int MAX_GALAXY_COUNT = 20;
+	private static int MAX_GALAXY_COUNT = 10;
 	private static BigDecimal MIN_AGE_FOR_STARS = new BigDecimal("400E6");
 	private static BigDecimal MAX_AGE_FOR_STARS = new BigDecimal("10E14");
-	private static BigDecimal GALAXY_RATIO = new BigDecimal("150E6");
+	private static BigDecimal GALAXY_RATIO = new BigDecimal("400E6");
 
 	/** list of galaxies in the universe */
 	private ArrayList<Galaxy> galaxies;
@@ -51,7 +51,7 @@ public class Universe{
 		//roughly one galaxy every 150 million years should be good...
 		if(this.galaxies.size() < Universe.MAX_GALAXY_COUNT && this.age.compareTo(Universe.MIN_AGE_FOR_STARS) > 0 && this.age.compareTo(Universe.MAX_AGE_FOR_STARS) < 0){
 			if(this.galaxies.size() < this.age.divideToIntegralValue(Universe.GALAXY_RATIO).doubleValue()){
-				if(VictusLudus.rand.nextBoolean()){
+				if(VictusLudus.rand.nextInt(3) == 0){
 					StarDate galaxyBirthDate = this.cosmicDate.clone();
 					BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, delta, new BigDecimal(VictusLudus.rand.nextFloat())).toBigInteger();
 

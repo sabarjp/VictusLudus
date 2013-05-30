@@ -44,6 +44,9 @@ public class GUIImageButton extends GUIElement implements Actionable, Selectable
 	/** The is hovered on. */
 	protected boolean isHoveredOn = false;
 
+	/** whether or not the tooltip is triggered when selected */
+	private boolean isTriggerTooltipOnSelect = false;
+
 	/** The original x. */
 	private int originalX = -1;
 
@@ -169,6 +172,14 @@ public class GUIImageButton extends GUIElement implements Actionable, Selectable
 		return this.isSelected;
 	}
 
+	public boolean isTriggerTooltipOnSelect() {
+		return this.isTriggerTooltipOnSelect;
+	}
+
+	public void setTriggerTooltipOnSelect(final boolean isTriggerTooltipOnSelect) {
+		this.isTriggerTooltipOnSelect = isTriggerTooltipOnSelect;
+	}
+
 	/* (non-Javadoc)
 	 * @see com.teamderpy.victusludus.gui.element.GUIElement#setX(int)
 	 */
@@ -258,7 +269,10 @@ public class GUIImageButton extends GUIElement implements Actionable, Selectable
 		if(!this.isDisabled() && this.isVisible()){
 			if(this.equals(selectEvent.getSource())){
 				this.isSelected = true;
-				VictusLudus.e.eventHandler.signal(new TooltipEvent(this, this.getTooltip()));
+
+				if(this.isTriggerTooltipOnSelect){
+					VictusLudus.e.eventHandler.signal(new TooltipEvent(this, this.getTooltip()));
+				}
 			}
 		}
 	}
@@ -296,6 +310,7 @@ public class GUIImageButton extends GUIElement implements Actionable, Selectable
 		if(!this.isDisabled() && this.isVisible()){
 			if(this.equals(hoverEvent.getSource())){
 				this.isHoveredOn = true;
+				VictusLudus.e.eventHandler.signal(new TooltipEvent(this, this.getTooltip()));
 			}
 		}
 	}
@@ -309,10 +324,6 @@ public class GUIImageButton extends GUIElement implements Actionable, Selectable
 			if(this.equals(hoverEvent.getSource())){
 				this.isHoveredOn = false;
 				VictusLudus.e.eventHandler.signal(new TooltipEvent(this, ""));
-			}else{
-				if(this.isSelected){
-					VictusLudus.e.eventHandler.signal(new TooltipEvent(this, this.getTooltip()));
-				}
 			}
 		}
 	}

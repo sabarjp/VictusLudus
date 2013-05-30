@@ -12,6 +12,7 @@ import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.game.renderer.BackgroundRenderer;
 import com.teamderpy.victusludus.game.renderer.DebugRenderer;
+import com.teamderpy.victusludus.gui.GUICosmosHUD;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -94,21 +95,7 @@ public class CosmosRenderer{
 	 */
 	public void changePerspective(final EnumCosmosMode newPerspective){
 		//clear out obsolete objects
-		if(this.galaxyList != null){
-			for(GalaxyImage g:this.galaxyList){
-				g.getActionArea().unregisterListeners();
-			}
-
-			this.galaxyList = null;
-		}
-
-		if(this.starList != null){
-			for(StarImage s:this.starList){
-				s.getActionArea().unregisterListeners();
-			}
-
-			this.starList = null;
-		}
+		this.unregisterListeners();
 
 		//change perspectives
 		switch (newPerspective){
@@ -123,6 +110,8 @@ public class CosmosRenderer{
 				this.bgRenderer.setFlipTiling(false);
 				this.bgRenderer.setStretchingImage(false);
 
+				this.cosmos.changeGUI(new GUICosmosHUD());
+
 				break;
 			case GALAXY_PERSPECTIVE:
 				this.starList = new ArrayList<StarImage>();
@@ -131,13 +120,10 @@ public class CosmosRenderer{
 					this.starList.add(new StarImage(s, this));
 				}
 
-				//this.bgRenderer.destroy();
-				//this.bgRenderer = null;
-				//this.bgRenderer.setBgImage("res/sprites/nebulae.png");
-				//this.bgRenderer.setFlipTiling(true);
-				this.bgRenderer.createBackgroundNebula(this.cosmos.getGalaxy().getSeed());
+				this.bgRenderer.setBgImage(NebulaGenerator.createBackgroundNebula(this.cosmos.getGalaxy().getSeed(), this.cosmos.getGameDimensions().getWidth(), this.cosmos.getGameDimensions().getHeight()));
 				this.bgRenderer.setStretchingImage(true);
-				//this.bgRenderer = new BackgroundRenderer(this.cosmos.getGameDimensions(), new Color(100,100,100));
+
+				this.cosmos.changeGUI(null);
 
 				break;
 			case STAR_PERSPECTIVE:
@@ -154,7 +140,26 @@ public class CosmosRenderer{
 	 * Unregister listeners.
 	 */
 	public void unregisterListeners() {
+		if(this.galaxyList != null){
+			for(GalaxyImage g:this.galaxyList){
+				g.getActionArea().unregisterListeners();
+			}
 
+			this.galaxyList = null;
+		}
+
+		if(this.starList != null){
+			for(StarImage s:this.starList){
+				s.getActionArea().unregisterListeners();
+			}
+
+			this.starList = null;
+		}
+	}
+
+	@Override
+	public void finalize(){
+		this.unregisterListeners();
 	}
 
 	public BackgroundRenderer getBgRenderer() {

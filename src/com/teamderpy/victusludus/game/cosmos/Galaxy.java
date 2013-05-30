@@ -12,10 +12,10 @@ import com.teamderpy.victusludus.data.VictusLudus;
  * @author Josh
  */
 public class Galaxy {
-	private static int MAX_STAR_COUNT = 100;
+	private static int MAX_STAR_COUNT = 20;
 	public static BigDecimal MIN_GALAXY_RADIUS = Cosmology.PARSEC.multiply(new BigDecimal("50"), Cosmology.COSMIC_RND);
 	public static BigDecimal MAX_GALAXY_RADIUS =	Cosmology.PARSEC.multiply(new BigDecimal("25000"), Cosmology.COSMIC_RND);
-	private static BigDecimal STAR_RATIO = new BigDecimal("10E6");
+	private static BigDecimal STAR_RATIO = new BigDecimal("80E6");
 
 	/** list of stars in the galaxy */
 	private ArrayList<Star> stars;
@@ -67,7 +67,7 @@ public class Galaxy {
 		//make stars
 		if(this.stars.size() < Galaxy.MAX_STAR_COUNT){
 			if(this.stars.size() < this.age.divideToIntegralValue(Galaxy.STAR_RATIO).doubleValue()){
-				if(VictusLudus.rand.nextBoolean()){
+				if(VictusLudus.rand.nextInt(4) == 0){
 					StarDate starBirthDate = this.getParentUniverse().getCosmicDate().clone();
 					starBirthDate.addYears(this.age.toBigInteger());
 
@@ -190,5 +190,11 @@ public class Galaxy {
 
 	public float getSeed() {
 		return this.seed;
+	}
+
+	@Override
+	public String toString(){
+		return "type: " + this.galaxyType + "\n" +
+				" age: " + Cosmology.getFormattedStellarAge(this.age);
 	}
 }

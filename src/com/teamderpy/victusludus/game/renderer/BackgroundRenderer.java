@@ -2,13 +2,11 @@ package com.teamderpy.victusludus.game.renderer;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.ImageBuffer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.game.GameDimensions;
-import com.teamderpy.victusludus.game.map.MidpointGenerator;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -126,44 +124,8 @@ public class BackgroundRenderer {
 		}
 	}
 
-	public void createBackgroundNebula(final float seed){
-		int modifier = 8;
-
-		MidpointGenerator noiseGenerator = new MidpointGenerator(0.56F, seed);
-		float[][] noiseArrayRed   = noiseGenerator.generateFloat(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier, 0F, 255F, true);
-
-		noiseGenerator.seed(seed + 234556);
-		float[][] noiseArrayGreen = noiseGenerator.generateFloat(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier, 0F, 255F, true);
-
-		noiseGenerator.seed(seed + 4353452);
-		float[][] noiseArrayBlue  = noiseGenerator.generateFloat(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier, 0F, 255F, true);
-
-		noiseGenerator.seed(seed + 345345);
-		float[][] noiseArrayAlpha  = noiseGenerator.generateFloat(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier, 0F, 255F, true);
-
-		ImageBuffer imageBuffer = new ImageBuffer(this.dimensions.getWidth()/modifier, this.dimensions.getHeight()/modifier);
-		byte[] imageBufferByteArray = imageBuffer.getRGBA();
-
-		//clear buffer
-		for(int i=0; i<imageBufferByteArray.length; i+=4){
-			imageBufferByteArray[i] = 0;
-			imageBufferByteArray[i+1] = 0;
-			imageBufferByteArray[i+2] = 0;
-			imageBufferByteArray[i+3] = (byte) 255;
-		}
-
-		for(int i=0; i<noiseArrayRed.length; i++){
-			for(int j=0; j<noiseArrayRed[i].length; j++){
-				int pos = 4 * (i + j*imageBuffer.getTexWidth());
-
-				imageBufferByteArray[pos+0] = (byte) noiseArrayRed[i][j];
-				imageBufferByteArray[pos+1] = (byte) noiseArrayGreen[i][j];
-				imageBufferByteArray[pos+2] = (byte) noiseArrayBlue[i][j];
-				imageBufferByteArray[pos+3] = (byte) noiseArrayAlpha[i][j];
-			}
-		}
-
-		this.bgImage = imageBuffer.getImage(Image.FILTER_NEAREST);
+	public void setBgImage(final Image bgImage) {
+		this.bgImage = bgImage;
 	}
 
 	public void destroy(){
