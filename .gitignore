@@ -1,6 +1,6 @@
 # binary data
 ##############
-bin
+bin/
 *.com
 *.exe
 *.app
@@ -10,7 +10,7 @@ bin
 # ide data
 ##############
 .metadata
-.settings
+.settings/
 .classpath
 .project
 
