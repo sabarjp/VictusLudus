@@ -72,10 +72,9 @@ public class Planet implements Comparable<Planet>{
 		this.seed = VictusLudus.rand.nextInt()/2;
 
 		this.planetType = this.calcPlanetType();
-		this.mass = this.calcBirthMass();
+		this.calcInitialValues();
 
 		this.age = BigDecimal.ZERO;
-		this.radius = this.calcRadius();
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
 		this.rotationalPeriod = this.getRandomRotation();
 		this.axialTilt = this.getRandomAxialTilt();
@@ -83,6 +82,11 @@ public class Planet implements Comparable<Planet>{
 
 		this.name = this.getParentStarName();
 		this.createRandomOrbit();
+	}
+	
+	public void calcInitialValues(){
+		this.mass = this.calcBirthMass();
+		this.radius = this.calcRadius();
 	}
 
 	/**
@@ -377,6 +381,10 @@ public class Planet implements Comparable<Planet>{
 
 	public EnumPlanetType getPlanetType() {
 		return this.planetType;
+	}
+
+	public void setPlanetType(EnumPlanetType planetType) {
+		this.planetType = planetType;
 	}
 
 	public BigDecimal getAxialTilt() {

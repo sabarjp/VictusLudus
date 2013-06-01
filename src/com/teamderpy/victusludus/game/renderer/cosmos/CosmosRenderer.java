@@ -12,7 +12,8 @@ import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.game.renderer.BackgroundRenderer;
 import com.teamderpy.victusludus.game.renderer.DebugRenderer;
-import com.teamderpy.victusludus.gui.GUICosmosHUD;
+import com.teamderpy.victusludus.gui.GUICosmosGalaxyHUD;
+import com.teamderpy.victusludus.gui.GUICosmosUniverseHUD;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -110,7 +111,7 @@ public class CosmosRenderer{
 				this.bgRenderer.setFlipTiling(false);
 				this.bgRenderer.setStretchingImage(false);
 
-				this.cosmos.changeGUI(new GUICosmosHUD());
+				this.cosmos.changeGUI(new GUICosmosUniverseHUD());
 
 				break;
 			case GALAXY_PERSPECTIVE:
@@ -123,7 +124,7 @@ public class CosmosRenderer{
 				this.bgRenderer.setBgImage(NebulaGenerator.createBackgroundNebula(this.cosmos.getGalaxy().getSeed(), this.cosmos.getGameDimensions().getWidth(), this.cosmos.getGameDimensions().getHeight()));
 				this.bgRenderer.setStretchingImage(true);
 
-				this.cosmos.changeGUI(null);
+				this.cosmos.changeGUI(new GUICosmosGalaxyHUD(this));
 
 				break;
 			case STAR_PERSPECTIVE:

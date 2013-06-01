@@ -7,6 +7,10 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.teamderpy.victusludus.data.VictusLudus;
 import com.teamderpy.victusludus.engine.Actionable;
+import com.teamderpy.victusludus.game.cosmos.Cosmos;
+import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
+import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
+import com.teamderpy.victusludus.game.renderer.cosmos.StarImage;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 import com.teamderpy.victusludus.gui.element.GUIImageButton;
 import com.teamderpy.victusludus.gui.element.GUIText;
@@ -20,27 +24,34 @@ import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GUICosmosHUD.
- */
-public class GUICosmosHUD extends GUI implements KeyboardListener, ResizeListener, TooltipListener{
+
+public class GUICosmosGalaxyHUD extends GUI implements KeyboardListener, ResizeListener, TooltipListener{
 	/** The tooltip text. */
 	private GUITextWithBox tooltipText;
 
-	/** The current galaxy type. */
-	private GUIText selectedGalaxyType;
+	/** The current star name. */
+	private GUIText selectedStarName;
+	
+	
+	/** The current star type. */
+	private GUIText selectedStarType;
+	
+	/** The age of the selected star */
+	private GUIText selectedStarAge;
+	
+	/** The number of planets in the selected star */
+	private GUIText selectedStarPlanetCount;
 
 	/** The quit button. */
 	private GUIImageButton quitButton;
 
-	/** The game this hud belongs to */
-	//private Game game;
+	/** The cosmos this hud belongs to */
+	private CosmosRenderer cosmosRenderer;
 
-	public GUICosmosHUD(/*final Game game*/){
+	public GUICosmosGalaxyHUD(final CosmosRenderer cosmosRenderer){
 		super();
 
-		//this.game = game;
+		this.cosmosRenderer = cosmosRenderer;
 	}
 
 	@Override
@@ -56,17 +67,7 @@ public class GUICosmosHUD extends GUI implements KeyboardListener, ResizeListene
 		this.tooltipText = new GUITextWithBox(0, 0, "",
 				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
 		this.tooltipText.setCentered(false);
-
-		/************
-		 * GALAXY TYPE
-		 */
-
-		this.selectedGalaxyType = new GUIText(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
-		this.selectedGalaxyType.setCentered(false);
-		this.elementList.add(this.selectedGalaxyType);
-
-
+		
 		/************
 		 * QUIT
 		 */
@@ -76,16 +77,54 @@ public class GUICosmosHUD extends GUI implements KeyboardListener, ResizeListene
 		this.quitButton.setPressedAction(new Actionable() {
 			@Override
 			public void act() {
-				VictusLudus.e.quitView();
+				cosmosRenderer.cosmos.setGalaxy(null);
+				cosmosRenderer.changePerspective(EnumCosmosMode.UNIVERSE_PERSPECTIVE);
 			}
 		});
-		this.quitButton.setTooltip("Exits the application");
+		this.quitButton.setTooltip("Return to galaxy select");
 		this.elementList.add(this.quitButton);
 		this.menuList.add(this.quitButton);
 
 		if(this.currentElement < 0 && !this.elementList.isEmpty()) {
 			this.currentElement = 0;
 		}
+		
+		/************
+		 * STAR NAME
+		 */
+
+		this.selectedStarName = new GUIText(0, 0, "",
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLT_FONT_ID));
+		this.selectedStarName.setCentered(false);
+		this.elementList.add(this.selectedStarName);
+
+		/************
+		 * STAR TYPE
+		 */
+
+		this.selectedStarType = new GUIText(0, 0, "",
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLT_FONT_ID));
+		this.selectedStarType.setCentered(false);
+		this.elementList.add(this.selectedStarType);
+		
+		/************
+		 * STAR AGE
+		 */
+
+		this.selectedStarAge = new GUIText(0, 0, "",
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLT_FONT_ID));
+		this.selectedStarAge.setCentered(false);
+		this.elementList.add(this.selectedStarAge);
+		
+		/************
+		 * STAR PLANET COUNT
+		 */
+
+		this.selectedStarPlanetCount = new GUIText(0, 0, "",
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLT_FONT_ID));
+		this.selectedStarPlanetCount.setCentered(false);
+		this.elementList.add(this.selectedStarPlanetCount);
+
 
 		if(!this.menuList.isEmpty()) {
 			VictusLudus.e.eventHandler.signal(new SelectEvent(this.menuList.get(this.currentElement), true));
@@ -100,14 +139,26 @@ public class GUICosmosHUD extends GUI implements KeyboardListener, ResizeListene
 
 		this.setNextElementPos(5);
 		this.setElementSpacing(5);
-
-		this.selectedGalaxyType.setX(5);
-		this.selectedGalaxyType.setY(this.getNextElementPos());
-		this.nextElementPosIncrement(this.selectedGalaxyType);
-
+		
 		this.quitButton.setX(5);
 		this.quitButton.setY(this.getNextElementPos());
 		this.nextElementPosIncrement(this.quitButton);
+
+		this.selectedStarName.setX(5);
+		this.selectedStarName.setY(this.getNextElementPos());
+		this.nextElementPosIncrement(this.selectedStarName);
+		
+		this.selectedStarType.setX(5);
+		this.selectedStarType.setY(this.getNextElementPos());
+		this.nextElementPosIncrement(this.selectedStarType);
+		
+		this.selectedStarAge.setX(5);
+		this.selectedStarAge.setY(this.getNextElementPos());
+		this.nextElementPosIncrement(this.selectedStarAge);
+		
+		this.selectedStarPlanetCount.setX(5);
+		this.selectedStarPlanetCount.setY(this.getNextElementPos());
+		this.nextElementPosIncrement(this.selectedStarPlanetCount);
 	}
 
 
@@ -173,14 +224,45 @@ public class GUICosmosHUD extends GUI implements KeyboardListener, ResizeListene
 	protected void finalize() {
 		this.unregisterListeners();
 	}
-
+	
 	/**
-	 * Sets the selected galaxy type
+	 * Sets the selected star name
 	 *
-	 * @param text the new selected galaxy type
+	 * @param text the new selected star name
 	 */
-	public void setSelectedGalaxyType(final String text){
-		this.selectedGalaxyType.setText("Galaxy type: " + text);
+	public void setSelectedStarName(final String text){
+		this.selectedStarName.setText(text);
 	}
 
+	/**
+	 * Sets the selected star type
+	 *
+	 * @param text the new selected star type
+	 */
+	public void setSelectedStarType(final String text){
+		this.selectedStarType.setText("type: " + text);
+	}
+	
+	/**
+	 * Sets the selected star age
+	 *
+	 * @param text the new selected star age
+	 */
+	public void setSelectedStarAge(final String text){
+		this.selectedStarAge.setText("age: " + text);
+	}
+
+	
+	/**
+	 * Sets the selected star planet count
+	 *
+	 * @param text the new selected star planet count
+	 */
+	public void setSelectedStarPlanetCount(final String text){
+		this.selectedStarPlanetCount.setText("planets: " + text);
+	}
+
+	public CosmosRenderer getCosmosRenderer() {
+		return cosmosRenderer;
+	}
 }

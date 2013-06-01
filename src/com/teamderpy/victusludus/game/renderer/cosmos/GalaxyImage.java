@@ -3,10 +3,11 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
+import com.teamderpy.victusludus.game.cosmos.Cosmology;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Universe;
-import com.teamderpy.victusludus.gui.GUICosmosHUD;
+import com.teamderpy.victusludus.gui.GUICosmosUniverseHUD;
 
 /**
  * A galaxy and its corresponding image to render
@@ -86,8 +87,13 @@ public class GalaxyImage {
 		public void act() {
 			System.err.println("enter galaxy " + GalaxyImage.this.getGalaxy());
 			System.err.println("num stars: " + GalaxyImage.this.getGalaxy().getStars().size());
+			
+			GUICosmosUniverseHUD gui = ((GUICosmosUniverseHUD) GalaxyImage.this.cosmosRenderer.cosmos.getCurrentGUI());
+			Galaxy galaxy = GalaxyImage.this.getGalaxy();
 
-			((GUICosmosHUD) GalaxyImage.this.cosmosRenderer.cosmos.getCurrentGUI()).setSelectedGalaxyType(GalaxyImage.this.getGalaxy().getGalaxyType().name());
+			gui.setSelectedGalaxyType(galaxy.getGalaxyType().getProperName());
+			gui.setSelectedGalaxyAge(Cosmology.getFormattedStellarAge(galaxy.getAge()));
+			gui.setSelectedGalaxyStarCount(Integer.toString(galaxy.getStars().size()));
 		}
 	}
 

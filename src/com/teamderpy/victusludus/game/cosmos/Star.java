@@ -12,8 +12,9 @@ import com.teamderpy.victusludus.data.resources.StarColorTuple;
 import com.teamderpy.victusludus.precision.Precision;
 
 
-/**
- * Star with planets
+/** 
+ * A giant ellipsoid ball of plasma that is powered by nuclear fusion during
+ * the primary stages of life.  May have planets orbiting.
  * 
  * @author Josh
  */
@@ -70,6 +71,9 @@ public class Star {
 
 	/** planets of the star */
 	private ArrayList<Planet> planets;
+	
+	/** the most planets this star can support */
+	private int maxPlanets;
 
 	public Star(final StarDate birthDate, final Galaxy galaxy, final BigDecimal startingMass){
 		this.seed = VictusLudus.rand.nextInt()/2;
@@ -90,6 +94,7 @@ public class Star {
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
 		this.planets = new ArrayList<Planet>();
 		this.name = Star.getRandomName();
+		this.maxPlanets = this.getRandomPlanetCount();
 	}
 
 	public Star(final StarDate birthDate, final Galaxy galaxy, final String startingMass){
@@ -113,6 +118,7 @@ public class Star {
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
 		this.planets = new ArrayList<Planet>();
 		this.name = Star.getRandomName();
+		this.maxPlanets = this.getRandomPlanetCount();
 	}
 
 	public Star(final StarDate birthDate, final Galaxy galaxy){
@@ -135,6 +141,7 @@ public class Star {
 		this.birthDate = new StarDate(birthDate.getSecondsSinceBigBang());
 		this.planets = new ArrayList<Planet>();
 		this.name = Star.getRandomName();
+		this.maxPlanets = this.getRandomPlanetCount();
 	}
 
 	/**
@@ -253,16 +260,8 @@ public class Star {
 		BigDecimal rolloverDelta = BigDecimal.ZERO;
 
 		//make planets
-		if(this.planets.size() < 1){
-			double rand = Cosmology.leftNoise((int) this.seed, 102023);
-
-			//System.err.println(rand);
-
-			int planetCount = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal("0"), new BigDecimal("12"), new BigDecimal(rand)).intValue();
-
-			//System.err.println(planetCount);
-
-			for(int i=0; i<planetCount; i++){
+		if(this.planets.size() < this.maxPlanets){
+			for(int i=0; i<maxPlanets; i++){
 				StarDate planetBirthDate = this.getParentGalaxy().getParentUniverse().getCosmicDate().clone();
 				planetBirthDate.addYears(this.age.toBigInteger());
 				BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, delta, new BigDecimal(VictusLudus.rand.nextFloat())).toBigInteger();
@@ -365,6 +364,7 @@ public class Star {
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
+		this.destroyPlanetsTooClose(this.radius.multiply(BigDecimal.valueOf(1.1), Cosmology.COSMIC_RND), true);
 
 		//age the star
 		this.age = nextDate;
@@ -431,6 +431,7 @@ public class Star {
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
+		this.destroyPlanetsTooClose(this.radius.multiply(BigDecimal.valueOf(1.2), Cosmology.COSMIC_RND), true);
 
 		//age the star
 		this.age = nextDate;
@@ -495,6 +496,7 @@ public class Star {
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
+		this.destroyPlanetsTooClose(this.radius.multiply(BigDecimal.valueOf(1.3), Cosmology.COSMIC_RND), true);
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -548,6 +550,7 @@ public class Star {
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
+		this.destroyPlanetsTooClose(this.radius.multiply(BigDecimal.valueOf(1.5), Cosmology.COSMIC_RND), true);
 
 		//age the star
 		this.age = nextDate;
@@ -624,6 +627,7 @@ public class Star {
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
+		this.destroyPlanetsTooClose(Cosmology.AU.multiply(new BigDecimal(3.0), Cosmology.COSMIC_RND), true);
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -674,6 +678,7 @@ public class Star {
 
 		//recalculate the radius
 		this.radius = this.calcMainSequenceRadius();
+		this.destroyPlanetsTooClose(Cosmology.AU.multiply(new BigDecimal(15), Cosmology.COSMIC_RND), true);
 
 		//proceed to next sequence
 		if(nextDate.compareTo(endOfLife) >= 0){
@@ -729,6 +734,7 @@ public class Star {
 
 		//recalculate the radius
 		this.radius = this.calcNeutronDegenerateRadius();
+		this.destroyPlanetsTooClose(this.radius, false);
 
 		//age the star
 		if(this.starType == EnumStarType.NEUTRON_STAR){
@@ -740,6 +746,7 @@ public class Star {
 		//proceed to next sequence of black hole or neutron star
 		if(this.mass.compareTo(Cosmology.TOV_LIMIT) > 0){
 			this.radius = this.calcSchwarzschildRadius();
+			this.destroyPlanetsTooClose(this.radius, false);
 			this.luminosity = BigDecimal.ZERO;
 			this.surfaceTemperature = BigDecimal.ZERO;
 
@@ -814,6 +821,7 @@ public class Star {
 
 		//recalculate the radius
 		this.radius = this.calcElectronDegenerateRadius();
+		this.destroyPlanetsTooClose(this.radius, false);
 
 		//age the star
 		this.age = nextDate;
@@ -862,6 +870,7 @@ public class Star {
 
 		//re-calculate radius
 		this.radius = this.calcElectronDegenerateRadius();
+		this.destroyPlanetsTooClose(this.radius, false);
 
 		//age the star
 		this.age = nextDate;
@@ -1020,13 +1029,13 @@ public class Star {
 	private BigDecimal getRandomMass(){
 		double noise = (1.0F + Cosmology.randomNoise((int) this.seed, 545411)) * 130.0F;
 
-		if(noise < 200.0F){
+		if(noise < 160.0F){
 			//return a mass between 0.02 and 0.5
 			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.02"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.randomNoise((int) this.seed, 2938)));
-		} else if(noise < 250.0F){
+		} else if(noise < 230.0F){
 			//return a mass between 0.5 and 2.0
 			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.randomNoise((int) this.seed, 2939)));
-		} else if(noise < 259.0F){
+		} else if(noise < 245.0F){
 			//return a mass between 2.0 and 10.0
 			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND), Cosmology.SOLAR_MASS.multiply(new BigDecimal("10.0"), Cosmology.COSMIC_RND), new BigDecimal(Cosmology.randomNoise((int) this.seed, 2940)));
 		} else {
@@ -1566,6 +1575,63 @@ public class Star {
 	 */
 	public static String getRandomName(){
 		return VictusLudus.resources.getCelestialNameArray().get(VictusLudus.rand.nextInt(VictusLudus.resources.getCelestialNameArray().size()-1));
+	}
+	
+	public int getRandomPlanetCount(){
+		double rand = Cosmology.leftNoise((int) this.seed, 102023);
+		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal("0"), new BigDecimal("12"), new BigDecimal(rand)).intValue();
+	}
+	
+	/**
+	 * Destroys all planets orbiting too close to the star
+	 * 
+	 * @param radius the radius around the star where to destroy planets
+	 * @param isCalcingHeatFactor whether or not to take into account heat affecting planets
+	 */
+	private void destroyPlanetsTooClose(BigDecimal radius, boolean isCalcingHeatFactor){
+		BigDecimal annihilateRadius = radius;
+		BigDecimal destroyRadius = radius.multiply(BigDecimal.valueOf(1.1), Cosmology.COSMIC_RND);
+		BigDecimal meltRadius = radius.multiply(BigDecimal.valueOf(1.2), Cosmology.COSMIC_RND);
+		BigDecimal charRadius = radius.multiply(BigDecimal.valueOf(1.5), Cosmology.COSMIC_RND);
+		
+		for(Planet p:this.planets){
+			if(p.getOrbitSemiMajorAxis().compareTo(annihilateRadius) <= 0){
+				//totally destroy planet
+				p = null;
+				this.planets.remove(p);
+				//System.err.println("destroyed planet");
+			} else if(p.getOrbitSemiMajorAxis().compareTo(destroyRadius) <= 0){
+				//smash the planet
+				if(p.getPlanetType().isGasGiant()){
+					p.setPlanetType(EnumPlanetType.METAL);
+					p.calcInitialValues();
+				} else {
+					p.setPlanetType(EnumPlanetType.ASTEROID_BELT);
+				}
+				//System.err.println("smashed planet");
+			} else if (isCalcingHeatFactor) {
+				if(p.getOrbitSemiMajorAxis().compareTo(meltRadius) <= 0){
+			
+				//melt the planet
+				if(p.getPlanetType().isGasGiant()){
+					p.setPlanetType(EnumPlanetType.GAS_GIANT);
+					p.calcInitialValues();
+				} else {
+					p.setPlanetType(EnumPlanetType.MOLTEN);
+				}
+				//System.err.println("melted planet");
+			} else if(p.getOrbitSemiMajorAxis().compareTo(charRadius) <= 0){
+				//char the planet
+				if(p.getPlanetType().isGasGiant()){
+					p.setPlanetType(EnumPlanetType.GAS_GIANT);
+					p.calcInitialValues();
+				} else {
+					p.setPlanetType(EnumPlanetType.BARREN);
+				}
+				//System.err.println("charred planet");
+			}
+			}
+		}
 	}
 
 	public StarDate getBirthDate() {

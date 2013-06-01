@@ -3,9 +3,12 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
+import com.teamderpy.victusludus.game.cosmos.Cosmology;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Star;
+import com.teamderpy.victusludus.gui.GUICosmosGalaxyHUD;
+import com.teamderpy.victusludus.gui.GUICosmosUniverseHUD;
 
 /**
  * A star and its corresponding image to render
@@ -91,6 +94,14 @@ public class StarImage {
 		@Override
 		public void act() {
 			System.err.println("enter star " + StarImage.this.getStar());
+			
+			GUICosmosGalaxyHUD gui = ((GUICosmosGalaxyHUD) StarImage.this.cosmosRenderer.cosmos.getCurrentGUI());
+			Star star = StarImage.this.getStar();
+
+			gui.setSelectedStarName(star.getName());
+			gui.setSelectedStarType(star.getStarType().getProperName() + " - " + star.getSpectralClass());
+			gui.setSelectedStarAge(Cosmology.getFormattedStellarAge(star.getAge()));
+			gui.setSelectedStarPlanetCount(Integer.toString(star.getPlanets().size()));
 		}
 	}
 
