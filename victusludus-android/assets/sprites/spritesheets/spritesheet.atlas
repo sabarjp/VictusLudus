@@ -1,0 +1,533 @@
+
+spritesheet.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cosmos/background/background_universe
+  rotate: false
+  xy: 0, 0
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+
+spritesheet2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cosmos/galaxy/galaxy_barred_spiral_sba
+  rotate: false
+  xy: 0, 64
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_barred_spiral_sbb
+  rotate: false
+  xy: 256, 64
+  size: 63, 64
+  orig: 63, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_barred_spiral_sbc
+  rotate: false
+  xy: 256, 0
+  size: 63, 64
+  orig: 63, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_elliptical_e0
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_elliptical_e4
+  rotate: false
+  xy: 64, 64
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_elliptical_e7
+  rotate: false
+  xy: 64, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_ring
+  rotate: false
+  xy: 128, 64
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_spiral_sa
+  rotate: false
+  xy: 128, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_spiral_sb
+  rotate: false
+  xy: 192, 64
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+cosmos/galaxy/galaxy_spiral_sc
+  rotate: false
+  xy: 192, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+
+spritesheet3.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cosmos/star/star_black_dwarf
+  rotate: false
+  xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_black_hole
+  rotate: false
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_blue_dwarf
+  rotate: false
+  xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_red_dwarf
+  rotate: false
+  xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_bright_giant
+  rotate: false
+  xy: 96, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_sub_giant
+  rotate: false
+  xy: 96, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_giant
+  rotate: false
+  xy: 96, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_brown_dwarf
+  rotate: false
+  xy: 128, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_proto_star
+  rotate: false
+  xy: 128, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_brown_dwarf_dead
+  rotate: false
+  xy: 128, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_dust
+  rotate: false
+  xy: 160, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_helium_white_dwarf
+  rotate: false
+  xy: 192, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_white_dwarf
+  rotate: false
+  xy: 192, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_hyper_giant
+  rotate: false
+  xy: 224, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_wolf_rayet
+  rotate: false
+  xy: 224, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_super_giant
+  rotate: false
+  xy: 224, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_main_sequence
+  rotate: false
+  xy: 256, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_neutron
+  rotate: false
+  xy: 288, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_pulsar
+  rotate: false
+  xy: 288, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_planetary_nebula
+  rotate: false
+  xy: 320, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_supernova_ic
+  rotate: false
+  xy: 320, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_supernova_ib
+  rotate: false
+  xy: 320, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_supernova_iil
+  rotate: false
+  xy: 320, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cosmos/star/star_supernova_iip
+  rotate: false
+  xy: 320, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+spritesheet4.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cosmos/utility/spectrum_starcolor
+  rotate: false
+  xy: 0, 0
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+
+spritesheet5.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+entities/alveolus
+  rotate: false
+  xy: 0, 32
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+entities/blood_vessel
+  rotate: false
+  xy: 0, 0
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+entities/fungus_t1
+  rotate: false
+  xy: 0, 448
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+entities/fungus_t2
+  rotate: false
+  xy: 0, 384
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+entities/fungus_t3
+  rotate: false
+  xy: 0, 320
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+entities/fungus_t4
+  rotate: false
+  xy: 0, 256
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+entities/fungus_t5
+  rotate: false
+  xy: 0, 192
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+entities/fungus_t6
+  rotate: false
+  xy: 0, 128
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+entities/fungus_t7
+  rotate: false
+  xy: 0, 64
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+
+spritesheet6.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+entities/bone_marrow
+  rotate: false
+  xy: 0, 128
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+entities/bush_t1
+  rotate: false
+  xy: 0, 96
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+entities/bush_t2
+  rotate: false
+  xy: 0, 64
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+entities/nodule
+  rotate: false
+  xy: 0, 32
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+entities/red_blood_cell
+  rotate: false
+  xy: 0, 0
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+
+spritesheet7.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+gui/button
+  rotate: false
+  xy: 128, 16
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+gui/field
+  rotate: false
+  xy: 128, 0
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+gui/field_hover
+  rotate: false
+  xy: 160, 16
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+gui/field_select
+  rotate: false
+  xy: 160, 0
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+gui/loading_text
+  rotate: false
+  xy: 0, 0
+  size: 128, 32
+  orig: 128, 32
+  offset: 0, 0
+  index: -1
+gui/slider_nub
+  rotate: false
+  xy: 192, 0
+  size: 9, 16
+  orig: 9, 16
+  offset: 0, 0
+  index: -1
+gui/slider_rail
+  rotate: false
+  xy: 208, 24
+  size: 16, 8
+  orig: 16, 8
+  offset: 0, 0
+  index: -1
+gui/tooltip
+  rotate: false
+  xy: 192, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+
+spritesheet8.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+gui/sheet/buttons
+  rotate: false
+  xy: 0, 0
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+
+spritesheet9.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+pointers/build_pointer
+  rotate: false
+  xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pointers/default_pointer
+  rotate: false
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pointers/query_pointer
+  rotate: false
+  xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+spritesheet10.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+tiles/dirt
+  rotate: false
+  xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/grass
+  rotate: false
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/hidden
+  rotate: false
+  xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/outline_full
+  rotate: false
+  xy: 96, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/outline_top
+  rotate: false
+  xy: 128, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/selection_invalid
+  rotate: false
+  xy: 160, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+tiles/selection_valid
+  rotate: false
+  xy: 192, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
