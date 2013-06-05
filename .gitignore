@@ -11,8 +11,8 @@ bin/
 ##############
 .metadata
 .settings/
-.classpath
-.project
+#.classpath
+#.project
 
 # configs
 ##############
