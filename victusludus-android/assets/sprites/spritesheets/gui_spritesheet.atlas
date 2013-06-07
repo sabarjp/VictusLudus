@@ -1,0 +1,99 @@
+
+gui_spritesheet.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+button
+  rotate: false
+  xy: 128, 16
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+field
+  rotate: false
+  xy: 128, 0
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+field_hover
+  rotate: false
+  xy: 160, 16
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+field_select
+  rotate: false
+  xy: 160, 0
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+loading_text
+  rotate: false
+  xy: 0, 0
+  size: 128, 32
+  orig: 128, 32
+  offset: 0, 0
+  index: -1
+slider_nub
+  rotate: false
+  xy: 192, 0
+  size: 9, 16
+  orig: 9, 16
+  offset: 0, 0
+  index: -1
+slider_rail
+  rotate: false
+  xy: 208, 24
+  size: 16, 8
+  orig: 16, 8
+  offset: 0, 0
+  index: -1
+tooltip
+  rotate: false
+  xy: 192, 16
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+
+gui_spritesheet2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+pointers/build_pointer
+  rotate: false
+  xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pointers/default_pointer
+  rotate: false
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pointers/query_pointer
+  rotate: false
+  xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+gui_spritesheet3.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sheet/buttons
+  rotate: false
+  xy: 0, 0
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1

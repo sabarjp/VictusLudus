@@ -1,6 +1,6 @@
 package com.teamderpy.victusludus.data.resources;
 
-import org.newdawn.slick.UnicodeFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 
 /**
@@ -27,13 +27,13 @@ public class FontFile {
 	private int largeSize = 16;
 	
 	/** The font normal. */
-	private UnicodeFont fontNormal;
+	private BitmapFont fontNormal;
 	
 	/** The font small. */
-	private UnicodeFont fontSmall;
+	private BitmapFont fontSmall;
 	
 	/** The font large. */
-	private UnicodeFont fontLarge;
+	private BitmapFont fontLarge;
 	
 	/**
 	 * Gets the id.
@@ -148,7 +148,7 @@ public class FontFile {
 	 *
 	 * @return the font normal
 	 */
-	public UnicodeFont getFontNormal() {
+	public BitmapFont getFontNormal() {
 		return fontNormal;
 	}
 
@@ -157,7 +157,7 @@ public class FontFile {
 	 *
 	 * @param fontNormal the new font normal
 	 */
-	public void setFontNormal(UnicodeFont fontNormal) {
+	public void setFontNormal(BitmapFont fontNormal) {
 		this.fontNormal = fontNormal;
 	}
 
@@ -166,7 +166,7 @@ public class FontFile {
 	 *
 	 * @return the font small
 	 */
-	public UnicodeFont getFontSmall() {
+	public BitmapFont getFontSmall() {
 		return fontSmall;
 	}
 
@@ -175,7 +175,7 @@ public class FontFile {
 	 *
 	 * @param fontSmall the new font small
 	 */
-	public void setFontSmall(UnicodeFont fontSmall) {
+	public void setFontSmall(BitmapFont fontSmall) {
 		this.fontSmall = fontSmall;
 	}
 
@@ -184,7 +184,7 @@ public class FontFile {
 	 *
 	 * @return the font large
 	 */
-	public UnicodeFont getFontLarge() {
+	public BitmapFont getFontLarge() {
 		return fontLarge;
 	}
 
@@ -193,7 +193,7 @@ public class FontFile {
 	 *
 	 * @param fontLarge the new font large
 	 */
-	public void setFontLarge(UnicodeFont fontLarge) {
+	public void setFontLarge(BitmapFont fontLarge) {
 		this.fontLarge = fontLarge;
 	}
 }

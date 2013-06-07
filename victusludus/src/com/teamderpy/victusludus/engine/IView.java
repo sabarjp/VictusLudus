@@ -1,5 +1,7 @@
 package com.teamderpy.victusludus.engine;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 /**
  * A view is composed of a playing field and a GUI that renders over it.
  * The engine can render one view at a time, typically the game field with
@@ -18,8 +20,9 @@ public interface IView {
 
 	/**
 	 * Renders the view and the GUI over it
+	 * @param batch 
 	 */
-	public void render(float deltaT);
+	public void render(SpriteBatch batch, float deltaT);
 
 	/**
 	 * Does a tick

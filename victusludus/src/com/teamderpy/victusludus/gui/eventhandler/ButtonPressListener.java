@@ -24,6 +24,7 @@ public interface ButtonPressListener extends EventListener{
 	 * On button press.
 	 *
 	 * @param buttonPressEvent the button press event
+	 * @return whether or not the event was handled
 	 */
-	public void onButtonPress(ButtonPressEvent buttonPressEvent);
+	public boolean onButtonPress(ButtonPressEvent buttonPressEvent);
 }

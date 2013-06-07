@@ -23,6 +23,7 @@ public interface TooltipListener extends EventListener{
 	 * On change tooltip.
 	 *
 	 * @param tooltipEvent the tooltip event
+	 * @return whether or not the event was handled
 	 */
-	public void onChangeTooltip(TooltipEvent tooltipEvent);
+	public boolean onChangeTooltip(TooltipEvent tooltipEvent);
 }

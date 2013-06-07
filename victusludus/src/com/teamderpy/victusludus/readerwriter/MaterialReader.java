@@ -2,6 +2,7 @@ package com.teamderpy.victusludus.readerwriter;
 
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.parts.Material;
 
@@ -93,7 +94,7 @@ public class MaterialReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				VictusLudus.LOGGER.warning("ERROR: material in " + path + " on line " + r.getLineNumber()
+				Gdx.app.log("warning", "ERROR: material in " + path + " on line " + r.getLineNumber()
 						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
 			}
 		}

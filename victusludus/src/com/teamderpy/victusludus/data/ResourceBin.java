@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
@@ -41,8 +42,12 @@ public class ResourceBin {
 	private ArrayList<StarColorTuple> starColorMap;
 	
 	/** TextureAtlas */
-	private TextureAtlas textureAtlas;
+	private TextureAtlas textureAtlasCosmos;
+	private TextureAtlas textureAtlasEntities;
+	private TextureAtlas textureAtlasGUI;
+	private TextureAtlas textureAtlasTiles;
 
+	
 	/**
 	 * Instantiates a new resource bin.
 	 */
@@ -130,13 +135,65 @@ public class ResourceBin {
 		return this.starColorMap;
 	}
 
-	public TextureAtlas getTextureAtlas(){
-		if(this.textureAtlas == null){
-			this.textureAtlas = VictusLudusGame.engine.assetManager.get(DataReader.PATH_SPRITE_SHEETS, TextureAtlas.class);
+	/**
+	 * Fetches the texture atlas for the cosmos
+	 * 
+	 * @return the texture atlas for the cosmos
+	 */
+	public TextureAtlas getTextureAtlasCosmos(){
+		if(this.textureAtlasCosmos == null){
+			this.textureAtlasCosmos = VictusLudusGame.engine.assetManager.get(DataReader.PATH_SPRITE_SHEETS_COSMOS, TextureAtlas.class);
 		}
 		
-		return this.textureAtlas;
+		return this.textureAtlasCosmos;
 	}
 	
-
+	/**
+	 * Fetches the texture atlas for the gui
+	 * 
+	 * @return the texture atlas for the gui
+	 */
+	public TextureAtlas getTextureAtlasGUI(){
+		if(this.textureAtlasGUI == null){
+			this.textureAtlasGUI = VictusLudusGame.engine.assetManager.get(DataReader.PATH_SPRITE_SHEETS_GUI, TextureAtlas.class);
+		}
+		
+		return this.textureAtlasGUI;
+	}
+	
+	/**
+	 * Fetches the texture atlas for the tiles
+	 * 
+	 * @return the texture atlas for the tiles
+	 */
+	public TextureAtlas getTextureAtlasTiles(){
+		if(this.textureAtlasTiles == null){
+			this.textureAtlasTiles = VictusLudusGame.engine.assetManager.get(DataReader.PATH_SPRITE_SHEETS_TILES, TextureAtlas.class);
+		}
+		
+		return this.textureAtlasTiles;
+	}
+	
+	/**
+	 * Fetches the texture atlas for the entities
+	 * 
+	 * @return the texture atlas for the entities
+	 */
+	public TextureAtlas getTextureAtlasEntities(){
+		if(this.textureAtlasEntities == null){
+			this.textureAtlasEntities = VictusLudusGame.engine.assetManager.get(DataReader.PATH_SPRITE_SHEETS_ENTITIES, TextureAtlas.class);
+		}
+		
+		return this.textureAtlasEntities;
+	}
+	
+	/**
+	 * Fetches a sound
+	 * 
+	 * @param path the asset path to the sound
+	 * @return the sound
+	 */
+	public Sound getSound(String path){
+		return VictusLudusGame.engine.assetManager.get(path, Sound.class);
+	}
 }

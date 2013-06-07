@@ -24,8 +24,9 @@ public interface MouseListener extends EventListener{
 	 * On mouse click.
 	 *
 	 * @param mouseEvent the mouse event
+	 * @return whether or not the event was handled
 	 */
-	public void onMouseClick(MouseEvent mouseEvent);
+	public boolean onMouseClick(MouseEvent mouseEvent);
 	
 	/**
 	 * On mouse move.
@@ -38,6 +39,7 @@ public interface MouseListener extends EventListener{
 	 * On mouse scroll.
 	 *
 	 * @param mouseEvent the mouse event
+	 * @return whether or not the event was handled
 	 */
-	public void onScroll(ScrollEvent scrollEvent);
+	public boolean onScroll(ScrollEvent scrollEvent);
 }

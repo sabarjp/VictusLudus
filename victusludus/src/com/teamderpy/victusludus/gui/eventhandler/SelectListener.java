@@ -23,13 +23,15 @@ public interface SelectListener extends EventListener{
 	 * On select.
 	 *
 	 * @param selectEvent the select event
+	 * @return whether or not the event was handled
 	 */
-	public void onSelect(SelectEvent selectEvent);
+	public boolean onSelect(SelectEvent selectEvent);
 	
 	/**
 	 * On unselect.
 	 *
 	 * @param selectEvent the select event
+	 * @return whether or not the event was handled
 	 */
-	public void onUnselect(SelectEvent selectEvent);
+	public boolean onUnselect(SelectEvent selectEvent);
 }

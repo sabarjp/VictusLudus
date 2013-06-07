@@ -1,7 +1,6 @@
 package com.teamderpy.victusludus.game.light;
 
-import org.newdawn.slick.Color;
-
+import com.badlogic.gdx.graphics.Color;
 import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.ScreenCoord;
 import com.teamderpy.victusludus.game.WorldCoord;
@@ -48,7 +47,7 @@ public class LightEmitter extends EuclideanObject{
 	public LightEmitter(final int x, final int y, final int z, final int strength){
 		this.setStrength(strength);
 		this.setPos(new WorldCoord(x, y, z));
-		this.color = Color.white;
+		this.color = Color.WHITE;
 		this.brightness = 0.25F;
 	}
 

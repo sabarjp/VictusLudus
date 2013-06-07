@@ -1,0 +1,108 @@
+
+entities_spritesheet.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+alveolus
+  rotate: false
+  xy: 0, 32
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+blood_vessel
+  rotate: false
+  xy: 0, 0
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+fungus_t1
+  rotate: false
+  xy: 0, 448
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+fungus_t2
+  rotate: false
+  xy: 0, 384
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+fungus_t3
+  rotate: false
+  xy: 0, 320
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+fungus_t4
+  rotate: false
+  xy: 0, 256
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+fungus_t5
+  rotate: false
+  xy: 0, 192
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+fungus_t6
+  rotate: false
+  xy: 0, 128
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+fungus_t7
+  rotate: false
+  xy: 0, 64
+  size: 512, 64
+  orig: 512, 64
+  offset: 0, 0
+  index: -1
+
+entities_spritesheet2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bone_marrow
+  rotate: false
+  xy: 0, 128
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+bush_t1
+  rotate: false
+  xy: 0, 96
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+bush_t2
+  rotate: false
+  xy: 0, 64
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+nodule
+  rotate: false
+  xy: 0, 32
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
+red_blood_cell
+  rotate: false
+  xy: 0, 0
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1

@@ -1,10 +1,10 @@
 package com.teamderpy.victusludus.gui.element;
 
 
-import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.UnicodeFont;
-
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.gui.GUI;
 
 
@@ -21,7 +21,7 @@ public class GUIText extends GUIElement{
 	private Color color = GUI.ELEMENT_COLOR_DEFAULT;
 	
 	/** The font. */
-	private UnicodeFont font;
+	private BitmapFont font;
 	
 	/** The is centered. */
 	private boolean isCentered = false;
@@ -47,8 +47,8 @@ public class GUIText extends GUIElement{
 	 * @param color the color
 	 * @param font the font
 	 */
-	public GUIText(int x, int y, String text, Color color, UnicodeFont font) {
-		super(x, y, font.getWidth(text), font.getLineHeight());
+	public GUIText(int x, int y, String text, Color color, BitmapFont font) {
+		super(x, y, (int)font.getBounds(text).width, (int)font.getLineHeight());
 		this.text = text;
 		this.color = color;
 		this.font = font;
@@ -58,22 +58,24 @@ public class GUIText extends GUIElement{
 	/* (non-Javadoc)
 	 * @see com.teamderpy.victusludus.gui.element.GUIElement#render()
 	 */
-	public void render() {
+	public void render(SpriteBatch batch, float deltaT) {
 		if(isVisible()){
 			if(this.isRenderInverted){
 				//invert
-				GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
+				Gdx.gl11.glBlendFunc(Gdx.gl11.GL_ONE_MINUS_DST_COLOR, Gdx.gl11.GL_ONE_MINUS_SRC_COLOR);
 			}
 			
 			if(!isWrapped){
-				font.drawString(x, y, text, color);
+				font.setColor(color);
+				font.draw(batch, text, x, y);
 			} else {
 				String remainingText = text;
 				int ymod = 0;
 				while(!remainingText.isEmpty()){
 					int charPos = findCharacterAtWidth(remainingText, this.widthWrap, true);
 					String cutText = remainingText.substring(0, charPos);
-					font.drawString(x+((this.widthWrap-font.getWidth(cutText)))/2, y + (ymod * font.getLineHeight()), cutText, color);
+					font.setColor(color);
+					font.draw(batch, cutText, x+((this.widthWrap-(int)font.getBounds(cutText).width))/2, y + (ymod * font.getLineHeight()));
 					remainingText = remainingText.substring(charPos, remainingText.length());
 					ymod++;
 				}
@@ -81,7 +83,7 @@ public class GUIText extends GUIElement{
 			
 			if(this.isRenderInverted){
 				//normal
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				Gdx.gl11.glBlendFunc(Gdx.gl11.GL_SRC_ALPHA, Gdx.gl11.GL_ONE_MINUS_SRC_ALPHA);
 			}
 		}
 	}
@@ -102,13 +104,13 @@ public class GUIText extends GUIElement{
 		
 		//increment character position until we bypass length
 		do{
-			slen = font.getWidth(text.substring(0, i));		
+			slen = (int)font.getBounds(text.substring(0, i)).width;		
 		}while(slen < width && i++ < text.length());
 		
 		//set position 1 less
 		if(i > 0){
 			i--;
-			slen = font.getWidth(text.substring(0, i));
+			slen = (int)font.getBounds(text.substring(0, i)).width;
 		}
 		
 		//get word boundary if we need to
@@ -144,7 +146,7 @@ public class GUIText extends GUIElement{
 		
 		setCentered(this.isCentered);
 		
-		super.setWidth(font.getWidth(this.text));
+		super.setWidth((int)font.getBounds(this.text).width);
 	}
 
 	/**
@@ -213,7 +215,7 @@ public class GUIText extends GUIElement{
 	 *
 	 * @return the font
 	 */
-	public UnicodeFont getFont() {
+	public BitmapFont getFont() {
 		return font;
 	}
 
@@ -222,10 +224,8 @@ public class GUIText extends GUIElement{
 	 *
 	 * @param font the new font
 	 */
-	public void setFont(UnicodeFont font) {
+	public void setFont(BitmapFont font) {
 		this.font = font;
-		
-		GUI.InitializeUnicodeFont(font);
 	}
 	
 	/**
@@ -247,7 +247,7 @@ public class GUIText extends GUIElement{
 		
 		if(isCentered){
 			if(!isWrapped){
-				super.setX(originalX-(font.getWidth(text)/2));
+				super.setX((int)(originalX-(font.getBounds(text).width/2)));
 			}else{
 				super.setX(originalX-(widthWrap/2));
 			}

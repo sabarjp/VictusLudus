@@ -23,13 +23,15 @@ public interface HoverListener extends EventListener{
 	 * On enter.
 	 *
 	 * @param hoverEvent the hover event
+	 * @return whether or not the event was handled
 	 */
-	public void onEnter(HoverEvent hoverEvent);
+	public boolean onEnter(HoverEvent hoverEvent);
 	
 	/**
 	 * On leave.
 	 *
 	 * @param hoverEvent the hover event
+	 * @return whether or not the event was handled
 	 */
-	public void onLeave(HoverEvent hoverEvent);
+	public boolean onLeave(HoverEvent hoverEvent);
 }

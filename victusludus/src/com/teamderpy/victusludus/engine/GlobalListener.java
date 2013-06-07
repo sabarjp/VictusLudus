@@ -55,19 +55,22 @@ public class GlobalListener implements KeyboardListener{
 	 * @see com.teamderpy.victusludus.gui.eventhandler.KeyboardListener#onKeyPress(com.teamderpy.victusludus.gui.eventhandler.event.KeyboardEvent)
 	 */
 	@Override
-	public void onKeyDown(final KeyDownEvent keyboardEvent) {
+	public boolean onKeyDown(final KeyDownEvent keyboardEvent) {
 		if (keyboardEvent.getKey() == Keys.F3) {
 			VictusLudusGame.engine.IS_DEBUGGING = !VictusLudusGame.engine.IS_DEBUGGING;
+			return true;
 		}
+		
+		return false;
 	}
 
 	@Override
-	public void onKeyUp (KeyUpEvent keyboardEvent) {
-		// TODO Auto-generated method stub
+	public boolean onKeyUp (KeyUpEvent keyboardEvent) {
+		return false;
 	}
 
 	@Override
-	public void onKeyTyped (KeyTypedEvent keyboardEvent) {
-		// TODO Auto-generated method stub
+	public boolean onKeyTyped (KeyTypedEvent keyboardEvent) {
+		return false;
 	}
 }

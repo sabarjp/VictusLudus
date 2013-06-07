@@ -2,17 +2,21 @@ package com.teamderpy.victusludus.gui;
 
 import java.util.ArrayList;
 
-import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.font.effects.ColorEffect;
-import org.newdawn.slick.geom.Rectangle;
-
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.data.DataReader;
 import com.teamderpy.victusludus.data.resources.FontFile;
-import com.teamderpy.VictusLudusGame.enginengine.graphics.BitmapHandler;
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 
 
@@ -23,31 +27,31 @@ import com.teamderpy.victusludus.gui.element.GUIElement;
 public abstract class GUI{
 
 	/** The element color default. */
-	public static Color ELEMENT_COLOR_DEFAULT = new Color(46,46,46);
+	public static Color ELEMENT_COLOR_DEFAULT = new Color(0.18f, 0.18f, 0.18f, 1);
 
 	/** The selection color default. */
-	public static Color SELECTION_COLOR_DEFAULT = new Color(67,55,255);
+	public static Color SELECTION_COLOR_DEFAULT = new Color(0.26f, 0.22f, 1, 1);
 
 	/** The hover color default. */
-	public static Color HOVER_COLOR_DEFAULT = new Color(255,0,0);
+	public static Color HOVER_COLOR_DEFAULT = new Color(1, 0, 0, 1);
 
 	/** The press color default. */
-	public static Color PRESS_COLOR_DEFAULT = new Color(0,255,0);
+	public static Color PRESS_COLOR_DEFAULT = new Color(0, 1, 0, 1);
 
 	/** The subelement color default. */
-	public static Color SUBELEMENT_COLOR_DEFAULT = new Color(111,111,111);
+	public static Color SUBELEMENT_COLOR_DEFAULT = new Color(0.44f ,0.44f ,0.44f ,1);
 
 	/** The subselection color default. */
-	public static Color SUBSELECTION_COLOR_DEFAULT = new Color(37,35,155);
+	public static Color SUBSELECTION_COLOR_DEFAULT = new Color(0.15f , 0.14f ,0.61f ,1);
 
 	/** The subhover color default. */
-	public static Color SUBHOVER_COLOR_DEFAULT = new Color(155,0,0);
+	public static Color SUBHOVER_COLOR_DEFAULT = new Color(0.61f ,0 ,0 ,1);
 
 	/** The focused color default. */
-	public static Color FOCUSED_COLOR_DEFAULT = new Color(255,255,0);
+	public static Color FOCUSED_COLOR_DEFAULT = new Color(1, 1, 0, 1);
 
 	/** The tooltip text color default. */
-	public static Color TOOLTIP_TEXT_COLOR_DEFAULT = new Color(122,122,122);
+	public static Color TOOLTIP_TEXT_COLOR_DEFAULT = new Color(0.48f, 0.48f, 0.48f,1);
 
 	/** The pmono font id. */
 	public static String PMONO_FONT_ID = "EpilepsySansMono";
@@ -59,7 +63,7 @@ public abstract class GUI{
 	public static String TOOLT_FONT_ID = "EpilepsySansMono";
 
 	/** The Constant GUI_SHEET_PATH. */
-	public static final String  GUI_SHEET_PATH = "res/sprites/gui/buttons.png";
+	public static final String  GUI_SHEET_PATH = "sheet/buttons.png";
 
 	/** The Constant ID_BUILD_BTN. */
 	public static final byte ID_BUILD_BTN   = 0x0;
@@ -77,10 +81,13 @@ public abstract class GUI{
 	public static final byte ID_BLANK_BTN   = 0x10;
 
 	/** The gui button sheet. */
-	public static SpriteSheet guiButtonSheet = null;
+	public static Sprite guiButtonSheet = null;
+	
+	/** default font */
+	public static BitmapFont defaultFont = new BitmapFont(true);
 
 	/** The background color. */
-	protected Color backgroundColor = new Color(255,255,255);
+	protected Color backgroundColor = new Color(1, 1, 1, 1);
 
 	/** The element list. */
 	protected ArrayList<GUIElement> elementList = null;
@@ -153,15 +160,19 @@ public abstract class GUI{
 
 	/**
 	 * Render.
+	 * @param deltaT 
+	 * @param batch 
 	 */
-	public void render() {
+	public void render(SpriteBatch batch, float deltaT) {
 		if(this.backgroundColor != null){
-			VictusLudusGame.engine.graphics.setColor(this.backgroundColor);
-			VictusLudusGame.engine.graphics.fill(new Rectangle(this.x, this.y, this.width, this.height));
+			VictusLudusGame.engine.shapeRenderer.begin(ShapeType.Rectangle);
+			VictusLudusGame.engine.shapeRenderer.setColor(this.backgroundColor);
+			VictusLudusGame.engine.shapeRenderer.filledRect(this.x, this.y, this.width, this.height);
+			VictusLudusGame.engine.shapeRenderer.end();
 		}
 
 		for(GUIElement i:this.elementList){
-			i.render();
+			i.render(batch, deltaT);
 		}
 	}
 
@@ -269,24 +280,22 @@ public abstract class GUI{
 	 */
 	public static void loadFonts(){
 		// load fonts in the hash table
-		for(FontFile f:VictusLudus.resources.getFontHash().values()){
-			try {
-				f.setFontNormal(new UnicodeFont(f.getPath(), (int)(f.getDefaultSize() * VictusLudusGame.engine.scalingFactor), false, false));
-				f.setFontSmall(new UnicodeFont(f.getPath(), (int)(f.getSmallSize() * VictusLudusGame.engine.scalingFactor), false, false));
-				f.setFontLarge(new UnicodeFont(f.getPath(), (int)(f.getLargeSize() * VictusLudusGame.engine.scalingFactor), false, false));
-			} catch (SlickException e) {
-				e.printStackTrace();
-			} finally{
-				GUI.InitializeUnicodeFont(f.getFontNormal());
-				GUI.InitializeUnicodeFont(f.getFontSmall());
-				GUI.InitializeUnicodeFont(f.getFontLarge());
+		for(FontFile f:VictusLudusGame.resources.getFontHash().values()){
+
+				FileHandle font = Gdx.files.internal(f.getPath());
+				FreeTypeFontGenerator ft = new FreeTypeFontGenerator(font);
+				
+				f.setFontNormal(ft.generateFont((int)(f.getDefaultSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, true));
+				f.setFontSmall(ft.generateFont((int)(f.getSmallSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, true));
+				f.setFontLarge(ft.generateFont((int)(f.getLargeSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, true));
+				
+				ft.dispose();
 
 				if(VictusLudusGame.engine.IS_DEBUGGING){
-					Gdx.app.log("info", "using font " + f.getFontNormal().getFontFile() + " for " + f.getId());
-					Gdx.app.log("info", "using font " + f.getFontSmall().getFontFile() + " for " + f.getId());
-					Gdx.app.log("info", "using font " + f.getFontLarge().getFontFile() + " for " + f.getId());
+					Gdx.app.log("info", "using font " + f.getFontNormal() + " for " + f.getId());
+					Gdx.app.log("info", "using font " + f.getFontSmall() + " for " + f.getId());
+					Gdx.app.log("info", "using font " + f.getFontLarge() + " for " + f.getId());
 				}
-			}
 		}
 	}
 
@@ -294,57 +303,38 @@ public abstract class GUI{
 	 * Load gui sprite sheets.
 	 */
 	public static void loadGUISpriteSheets(){
-		GUI.guiButtonSheet = BitmapHandler.LoadSpriteSheet(GUI.GUI_SHEET_PATH);
+		//GUI.guiButtonSheet = BitmapHandler.LoadSpriteSheet(GUI.GUI_SHEET_PATH);
+		GUI.guiButtonSheet = VictusLudusGame.resources.getTextureAtlasGUI().createSprite(GUI.GUI_SHEET_PATH);
 	}
 
 	/**
 	 * Fetch font m.
 	 *
 	 * @param fontId the font id
-	 * @return the unicode font
+	 * @return the bitmap font
 	 */
-	public static UnicodeFont fetchFontM(final String fontId){
-		return VictusLudus.resources.getFontHash().get(fontId).getFontNormal();
+	public static BitmapFont fetchFontM(final String fontId){
+		return VictusLudusGame.resources.getFontHash().get(fontId).getFontNormal();
 	}
 
 	/**
 	 * Fetch font s.
 	 *
 	 * @param fontId the font id
-	 * @return the unicode font
+	 * @return the bitmap font
 	 */
-	public static UnicodeFont fetchFontS(final String fontId){
-		return VictusLudus.resources.getFontHash().get(fontId).getFontSmall();
+	public static BitmapFont fetchFontS(final String fontId){
+		return VictusLudusGame.resources.getFontHash().get(fontId).getFontSmall();
 	}
 
 	/**
 	 * Fetch font l.
 	 *
 	 * @param fontId the font id
-	 * @return the unicode font
+	 * @return the bitmap font
 	 */
-	public static UnicodeFont fetchFontL(final String fontId){
-		return VictusLudus.resources.getFontHash().get(fontId).getFontLarge();
-	}
-
-	/**
-	 * Initialize unicode font.
-	 *
-	 * @param font the font
-	 */
-	@SuppressWarnings("unchecked")
-	public static void InitializeUnicodeFont(final UnicodeFont font){
-		//font.addAsciiGlyphs();
-		font.addGlyphs(32, 127);
-		font.getEffects().add(new ColorEffect(java.awt.Color.WHITE));
-
-		try {
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			font.loadGlyphs();
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
-		} catch (SlickException e) {
-			VictusLudus.LOGGER.severe(e.toString());
-		}
+	public static BitmapFont fetchFontL(final String fontId){
+		return VictusLudusGame.resources.getFontHash().get(fontId).getFontLarge();
 	}
 
 	/**

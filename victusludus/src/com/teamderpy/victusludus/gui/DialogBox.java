@@ -2,12 +2,13 @@ package com.teamderpy.victusludus.gui;
 
 import java.util.ArrayList;
 
-import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.geom.Rectangle;
 
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.VictusLudusGame.enginengine.Actionable;
+import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 import com.teamderpy.victusludus.gui.element.GUIText;
 import com.teamderpy.victusludus.gui.element.GUITextButton;
@@ -15,6 +16,8 @@ import com.teamderpy.victusludus.gui.eventhandler.KeyboardListener;
 import com.teamderpy.victusludus.gui.eventhandler.ResizeListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.ButtonPressEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyDownEvent;
+import com.teamderpy.victusludus.gui.eventhandler.event.KeyTypedEvent;
+import com.teamderpy.victusludus.gui.eventhandler.event.KeyUpEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent;
 
@@ -26,10 +29,10 @@ import com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent;
 public class DialogBox implements KeyboardListener, ResizeListener{
 	
 	/** The background color. */
-	protected Color backgroundColor = Color.yellow;
+	protected Color backgroundColor = Color.YELLOW;
 	
 	/** The border color. */
-	protected Color borderColor = Color.black;
+	protected Color borderColor = Color.BLACK;
 	
 	/** The element list. */
 	protected ArrayList<GUIElement> elementList = new ArrayList<GUIElement>();
@@ -200,19 +203,23 @@ public class DialogBox implements KeyboardListener, ResizeListener{
 
 	/**
 	 * Render.
+	 * @param deltaT 
+	 * @param batch 
 	 */
-	public void render() {
+	public void render(SpriteBatch batch, float deltaT) {
 		/* fader */
-		VictusLudusGame.engine.graphics.setColor(new Color(0,0,0,230));
-		VictusLudusGame.engine.graphics.fill(new Rectangle(0, 0, VictusLudusGame.engine.X_RESOLUTION(), VictusLudusGame.engine.Y_RESOLUTION()));
+		VictusLudusGame.engine.shapeRenderer.begin(ShapeType.FilledRectangle);
+		VictusLudusGame.engine.shapeRenderer.setColor(new Color(0,0,0,230));
+		VictusLudusGame.engine.shapeRenderer.filledRect(0, 0, VictusLudusGame.engine.X_RESOLUTION(), VictusLudusGame.engine.Y_RESOLUTION());
 		
 		/* box */
-		VictusLudusGame.engine.graphics.setColor(this.backgroundColor);
-		VictusLudusGame.engine.graphics.fill(new Rectangle(this.x, this.y, this.width, this.height));
+		VictusLudusGame.engine.shapeRenderer.setColor(this.backgroundColor);
+		VictusLudusGame.engine.shapeRenderer.filledRect(this.x, this.y, this.width, this.height);
+		VictusLudusGame.engine.shapeRenderer.end();
 		
 		/* elements */
 		for(GUIElement i:elementList){
-			i.render();
+			i.render(batch, deltaT);
 		}
 	}
 
@@ -246,22 +253,27 @@ public class DialogBox implements KeyboardListener, ResizeListener{
 	 * @see com.teamderpy.victusludus.gui.eventhandler.KeyboardListener#onKeyPress(com.teamderpy.victusludus.gui.eventhandler.event.KeyboardEvent)
 	 */
 	@Override
-	public void onKeyDown(KeyDownEvent keyboardEvent) {
+	public boolean onKeyDown(KeyDownEvent keyboardEvent) {
 		if(!isDisabled){
-			if (keyboardEvent.getKey() == Keyboard.KEY_RIGHT) {
+			if (keyboardEvent.getKey() == Keys.RIGHT) {
 				if (currentElement < menuList.size() - 1) {
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(menuList.get(currentElement), false));
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(menuList.get(++currentElement), true));
+					return true;
 				}
-			} else if (keyboardEvent.getKey() == Keyboard.KEY_LEFT) {
+			} else if (keyboardEvent.getKey() == Keys.LEFT) {
 				if (currentElement > 0) {
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(menuList.get(currentElement), false));
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(menuList.get(--currentElement), true));
+					return true;
 				}
-			} else if (keyboardEvent.getKey() == Keyboard.KEY_RETURN) {
+			} else if (keyboardEvent.getKey() == Keys.ENTER) {
 				VictusLudusGame.engine.eventHandler.signal(new ButtonPressEvent(menuList.get(currentElement), ""));
+				return true;
 			} 
 		}
+		
+		return false;
 	}
 	
 	/**
@@ -497,5 +509,15 @@ public class DialogBox implements KeyboardListener, ResizeListener{
 		for(GUIElement i:elementList){
 			i.tick();
 		}
+	}
+
+	@Override
+	public boolean onKeyUp (KeyUpEvent keyboardEvent) {
+		return false;
+	}
+
+	@Override
+	public boolean onKeyTyped (KeyTypedEvent keyboardEvent) {
+		return false;
 	}
 }

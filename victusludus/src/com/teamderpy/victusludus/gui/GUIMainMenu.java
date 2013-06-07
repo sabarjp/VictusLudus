@@ -15,6 +15,8 @@ import com.teamderpy.victusludus.gui.eventhandler.ResizeListener;
 import com.teamderpy.victusludus.gui.eventhandler.TooltipListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.ButtonPressEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyDownEvent;
+import com.teamderpy.victusludus.gui.eventhandler.event.KeyTypedEvent;
+import com.teamderpy.victusludus.gui.eventhandler.event.KeyUpEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
@@ -223,5 +225,17 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 	protected void finalize() {
 		this.unregisterListeners();
 		this.unregisterListeningChildren();
+	}
+
+	@Override
+	public void onKeyUp (KeyUpEvent keyboardEvent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onKeyTyped (KeyTypedEvent keyboardEvent) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -3,6 +3,7 @@ package com.teamderpy.victusludus.engine;
 import java.io.IOException;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.teamderpy.victusludus.VictusLudusGame;
 
 
@@ -22,13 +23,23 @@ public class SoundSystem {
 	private Music currentMusicTrack;
 
 	/**
-	 * Load wav.
+	 * Return a loaded music track.
 	 *
 	 * @param path the path
 	 * @return the audio
 	 */
-	public Music loadWAV(final String path){
+	public Music loadMusic(final String path){
 		return VictusLudusGame.engine.assetManager.get(path, Music.class);
+	}
+	
+	/**
+	 * Return a loaded sound
+	 *
+	 * @param path the path
+	 * @return the audio
+	 */
+	public Sound loadSound(final String path){
+		return VictusLudusGame.engine.assetManager.get(path, Sound.class);
 	}
 
 	public Music getCurrentMusicTrack() {
@@ -48,7 +59,7 @@ public class SoundSystem {
 			this.currentMusicTrack.dispose();
 		}
 		
-		this.currentMusicTrack = this.loadWAV(track);
+		this.currentMusicTrack = this.loadMusic(track);
 		this.currentMusicTrack.setLooping(true);
 		this.currentMusicTrack.play();
 	}

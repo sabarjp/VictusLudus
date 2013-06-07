@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.badlogic.gdx.Gdx;
 import com.teamderpy.victusludus.VictusLudusGame;
 
 public class LineReader implements ISimpleReader{
@@ -15,7 +16,7 @@ public class LineReader implements ISimpleReader{
 		final File f = new File(path);
 
 		if (!f.exists() || !f.isFile()) {
-			VictusLudus.LOGGER.severe("ERROR: File does not exist [" + path + "]");
+			Gdx.app.log("severe", "ERROR: File does not exist [" + path + "]");
 			return;
 		}
 

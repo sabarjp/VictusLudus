@@ -23,13 +23,15 @@ public interface FocusListener extends EventListener{
 	 * On gain focus.
 	 *
 	 * @param focusEvent the focus event
+	 * @return whether or not the event was handled
 	 */
-	public void onGainFocus(FocusEvent focusEvent);
+	public boolean onGainFocus(FocusEvent focusEvent);
 	
 	/**
 	 * On lose focus.
 	 *
 	 * @param focusEvent the focus event
+	 * @return whether or not the event was handled
 	 */
-	public void onLoseFocus(FocusEvent focusEvent);
+	public boolean onLoseFocus(FocusEvent focusEvent);
 }

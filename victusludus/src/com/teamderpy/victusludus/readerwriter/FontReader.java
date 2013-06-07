@@ -2,6 +2,7 @@ package com.teamderpy.victusludus.readerwriter;
 
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.teamderpy.victusludus.data.DataReader;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.data.resources.FontFile;
@@ -62,7 +63,7 @@ public class FontReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				VictusLudus.LOGGER.warning("ERROR: font in " + path + " on line " + r.getLineNumber()
+				Gdx.app.log("warning", "ERROR: font in " + path + " on line " + r.getLineNumber()
 						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
 			}
 		}

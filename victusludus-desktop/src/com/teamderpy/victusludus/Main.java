@@ -1,8 +1,12 @@
 
 package com.teamderpy.victusludus;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 
@@ -21,7 +25,10 @@ public class Main {
 			settings.combineSubdirectories = false;
 			settings.paddingX = 0;
 			settings.paddingY = 0;
-			TexturePacker2.process(settings, "../victusludus-sprites", "../victusludus-android/assets/sprites/spritesheets", "spritesheet");
+			TexturePacker2.process(settings, "../victusludus-sprites/cosmos", "../victusludus-android/assets/sprites/spritesheets", "cosmos_spritesheet");
+			TexturePacker2.process(settings, "../victusludus-sprites/entities", "../victusludus-android/assets/sprites/spritesheets", "entities_spritesheet");
+			TexturePacker2.process(settings, "../victusludus-sprites/gui", "../victusludus-android/assets/sprites/spritesheets", "gui_spritesheet");
+			TexturePacker2.process(settings, "../victusludus-sprites/tiles", "../victusludus-android/assets/sprites/spritesheets", "tiles_spritesheet");
 		}
 
 		/*

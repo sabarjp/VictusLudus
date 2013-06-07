@@ -9,10 +9,13 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.data.DataReader;
 import com.teamderpy.victusludus.game.cosmos.Universe;
@@ -46,7 +49,7 @@ public class Engine{
 	public int targetFramerate = 60;
 
 	/** The running. */
-	private boolean running = false;
+	public boolean running = false;
 
 	/** The frames since reset. */
 	private int framesSinceReset;
@@ -107,6 +110,24 @@ public class Engine{
 	
 	/** The input poller and signaller */
 	public InputPoller inputPoller;
+	
+	/** shape renderer*/
+	public ShapeRenderer shapeRenderer;
+	
+	/** the camera */
+	private OrthographicCamera camera;
+	
+	/**
+	 * Initialize a new game engine
+	 * 
+	 * @param camera the orthographic camera
+	 */
+	public Engine(OrthographicCamera camera){
+		this.camera = camera;
+		
+		this.shapeRenderer = new ShapeRenderer();
+		this.shapeRenderer.setProjectionMatrix(camera.combined);
+	}
 
 	/**
 	 * Starts to initialize the engine, up to queueing the data load 
@@ -134,7 +155,9 @@ public class Engine{
 	 * Finished initializing the engine.
 	 * DO NOT CALL UNTIL RESOURCES ARE LOADED
 	 */
-	public void initializeEnd(){
+	public void initializeEnd(){		
+		GUI.loadGUISpriteSheets();
+		
 		this.initInputPoller();
 
 		this.createMousePointer();
@@ -148,7 +171,7 @@ public class Engine{
 		this.globalListener = new GlobalListener();
 		this.globalListener.registerListeners();
 
-		//this.start();
+		this.start();
 	}
 	
 	private void setDisplay(){
@@ -158,6 +181,9 @@ public class Engine{
 			} else {
 				Gdx.graphics.setDisplayMode(this.currentDisplayMode.width, this.currentDisplayMode.height, this.currentDisplayMode.isFullscreen);
 			}
+			
+			this.camera.setToOrtho(true, this.X_RESOLUTION(), this.Y_RESOLUTION());
+			this.camera.update();
 		}
 	}
 	
@@ -333,8 +359,7 @@ public class Engine{
 		//external data
 		
 		DataReader.ReadData();		
-//		GUI.loadFonts();
-//		GUI.loadGUISpriteSheets();
+		GUI.loadFonts();
 
 //		this.clearGL();
 //		this.graphics.drawImage(loadText, loadingBarX, loadingBarY - loadText.getHeight());
@@ -403,7 +428,6 @@ public class Engine{
 	 */
 	public void start() {
 		this.running = true;
-		this.run();
 	}
 
 	/**
@@ -483,29 +507,29 @@ public class Engine{
 	/**
 	 * Render
 	 */
-	private void render(final float deltaT) {
+	public void render(final SpriteBatch batch, final float deltaT) {
 		this.clearGL();
 
 		this.lastFrameDrawTime = Time.getTime();
 
 		if(this.currentView != null) {
-			this.currentView.render(deltaT);
+			this.currentView.render(batch, deltaT);
 		}
 
 		// GUI
 		if(this.currentGUI != null) {
-			this.currentGUI.render();
+			this.currentGUI.render(batch, deltaT);
 		}
 
 		if(this.currentDialog != null) {
-			this.currentDialog.render();
+			this.currentDialog.render(batch, deltaT);
 		}
 	}
 
 	/**
 	 * Run.
 	 */
-	public void run() {
+	public void run(final SpriteBatch batch) {
 		this.lastFrameResetTime = Time.getTime();
 		this.lastTickTime = Time.getTime();
 		this.lastFrameDrawTime = Time.getTime();
@@ -523,21 +547,10 @@ public class Engine{
 			this.tickIfPermitted();
 
 			//draw as fast as possible
-			this.render((Time.getTime() - this.lastFrameDrawTime)/1000.0F);
-
-			//take input as fast as possible
-			//InputPoller.pollInput();
+			this.render(batch, (Time.getTime() - this.lastFrameDrawTime)/1000.0F);
 
 			//send events as fast as possible
 			this.eventHandler.tick();
-
-			//syncing will slow how often the frame code here is ran
-			//Display.update();
-			//Display.sync(this.targetFramerate);
-
-			//if (Display.isCloseRequested()) {
-			//	this.running = false;
-			//}
 		}
 
 		if (this.IS_DEBUGGING) {
