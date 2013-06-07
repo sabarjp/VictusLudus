@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,22 +32,28 @@ public class DataReader {
 
 	public static final String PATH_FONTS = "fonts/";
 
-	public static final String PATH_BACKGROUNDS = ".backgrounds/";
+	public static final String PATH_BACKGROUNDS = "backgrounds/";
 
-	public static final String PATH_ENTITIES = ".entities/";
+	public static final String PATH_ENTITIES = "entities/";
+	
+	public static final String PATH_SOUNDS = "sounds/";
 
 	public static final String STAR_NAMES = "celestial/star_names";
 	public static final String GALAXY_NAMES = "celestial/galaxy_names";
 
 	public static final String STAR_COLOR_CHART = "sprites/spectrum_starcolor.png";
 	
-	public static final String PATH_SPRITE_SHEETS = "sprites/spritesheets/spritesheet.atlas";
+	public static final String PATH_SPRITE_SHEETS_COSMOS = "sprites/spritesheets/cosmos_spritesheet.atlas";
+	public static final String PATH_SPRITE_SHEETS_ENTITIES = "sprites/spritesheets/entities_spritesheet.atlas";
+	public static final String PATH_SPRITE_SHEETS_GUI = "sprites/spritesheets/gui_spritesheet.atlas";
+	public static final String PATH_SPRITE_SHEETS_TILES = "sprites/spritesheets/tiles_spritesheet.atlas";
 
 	/**
 	 * Read data.
 	 */
 	public static void ReadData() {
-		//DataReader.ReadAndLoadAll(DataReader.PATH_FONTS, VictusLudus.resources.getFontHash(), new FontReader());
+		DataReader.ReadAndLoadAll(DataReader.PATH_FONTS, VictusLudusGame.resources.getFontHash(), new FontReader());
+		
 		//DataReader.ReadAndLoadAll(DataReader.PATH_CREATURES, VictusLudus.resources.getCreatureHash(), new CreatureReader());
 		//DataReader.ReadAndLoadAll(DataReader.PATH_MATERIALS, VictusLudus.resources.getMaterialHash(), new MaterialReader());
 		//DataReader.ReadAndLoadAll(DataReader.PATH_BACKGROUNDS, VictusLudus.resources.getBackgroundsHash(), new BackgroundReader());
@@ -55,7 +63,12 @@ public class DataReader {
 		//DataReader.SimpleReadAndLoad(DataReader.GALAXY_NAMES, VictusLudus.resources.getCelestialGalaxyNameArray(), new LineReader());
 		//DataReader.ReadStarColorChart(DataReader.STAR_COLOR_CHART, VictusLudus.resources.getStarColorMap());
 		
-		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS);
+		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_COSMOS);
+		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_ENTITIES);
+		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_GUI);
+		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_TILES);
+		
+		DataReader.LoadSounds(DataReader.PATH_SOUNDS);
 	}
 	
 	/**
@@ -67,6 +80,22 @@ public class DataReader {
 		AssetManager assetManager = VictusLudusGame.engine.assetManager;
 		
 		assetManager.load(path, TextureAtlas.class);
+	}
+	
+	/**
+	 * Loads the sounds located at path
+	 * 
+	 * @param path
+	 */
+	private static void LoadSounds(String path){
+		AssetManager assetManager = VictusLudusGame.engine.assetManager;
+		
+		FileHandle[] files = Gdx.files.internal(path).list();
+		for(FileHandle file: files) {
+		   if(!file.isDirectory() && file.extension().toLowerCase() == ".wav"){
+		   	assetManager.load(file.path(), Sound.class);
+		   }
+		}
 	}
 
 	/**

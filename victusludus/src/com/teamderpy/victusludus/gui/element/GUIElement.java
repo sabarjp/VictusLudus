@@ -1,9 +1,9 @@
 package com.teamderpy.victusludus.gui.element;
 
-import org.newdawn.slick.openal.Audio;
-
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.VictusLudusGame.enginengine.SoundSystem;
+import com.teamderpy.victusludus.engine.SoundSystem;
 
 
 
@@ -13,10 +13,10 @@ import com.teamderpy.VictusLudusGame.enginengine.SoundSystem;
 public abstract class GUIElement{
 	
 	/** The sound select. */
-	protected static Audio SOUND_SELECT;
+	protected static Sound SOUND_SELECT;
 	
 	/** The sound type. */
-	protected static Audio SOUND_TYPE;
+	protected static Sound SOUND_TYPE;
 	
 	/** The height. */
 	protected int height = -1;
@@ -50,16 +50,18 @@ public abstract class GUIElement{
 		this.width = width;
 		this.height = height;
 		
-		SOUND_SELECT = VictusLudusGame.engine.soundSystem.loadWAV(SoundSystem.SOUND_SELECT_1);
-		SOUND_TYPE   = VictusLudusGame.engine.soundSystem.loadWAV(SoundSystem.SOUND_TYPE_1);
+		SOUND_SELECT = VictusLudusGame.engine.soundSystem.loadSound(SoundSystem.SOUND_SELECT_1);
+		SOUND_TYPE   = VictusLudusGame.engine.soundSystem.loadSound(SoundSystem.SOUND_TYPE_1);
 		
 		this.registerListeners();
 	}
 
 	/**
 	 * Render.
+	 * @param deltaT 
+	 * @param batch 
 	 */
-	public abstract void render();
+	public abstract void render(SpriteBatch batch, float deltaT);
 	
 	/**
 	 * Tick.

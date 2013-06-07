@@ -37,6 +37,6 @@ public class MousePointer {
 	 * @param path the path
 	 */
 	public void loadPointer(String path){
-		this.currentMousePointer = VictusLudusGame.resources.getTextureAtlas().createSprite(DEFAULT_CURSOR);
+		this.currentMousePointer = VictusLudusGame.resources.getTextureAtlasGUI().createSprite(DEFAULT_CURSOR);
 	}
 }

@@ -2,6 +2,7 @@ package com.teamderpy.victusludus.readerwriter;
 
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.parts.BodyPart;
 import com.teamderpy.victusludus.parts.Creature;
@@ -68,7 +69,7 @@ public class CreatureReader implements IObjectReader {
 
 					enteredData = true;
 				} else if (rd.getId().equalsIgnoreCase("material")) {
-					p.setMaterial(VictusLudus.resources.getMaterialHash().get(rd.getValue()));
+					p.setMaterial(VictusLudusGame.resources.getMaterialHash().get(rd.getValue()));
 
 					enteredData = true;
 				} else if (rd.getId().equalsIgnoreCase("flag") || rd.getId().equalsIgnoreCase("flags")) {
@@ -98,7 +99,7 @@ public class CreatureReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				VictusLudus.LOGGER.warning("ERROR: creature in " + path + " on line " + r.getLineNumber()
+				Gdx.app.log("severe", "ERROR: creature in " + path + " on line " + r.getLineNumber()
 						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
 			}
 		}

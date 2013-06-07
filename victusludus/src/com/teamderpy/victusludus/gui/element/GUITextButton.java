@@ -1,10 +1,12 @@
 package com.teamderpy.victusludus.gui.element;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.UnicodeFont;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.VictusLudusGame.enginengine.Actionable;
+import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.eventhandler.ButtonPressListener;
 import com.teamderpy.victusludus.gui.eventhandler.HoverListener;
@@ -13,6 +15,7 @@ import com.teamderpy.victusludus.gui.eventhandler.SelectListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.ButtonPressEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.HoverEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
+import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
 
@@ -51,7 +54,7 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	private final Color pressColor = GUI.PRESS_COLOR_DEFAULT;
 	
 	/** The font. */
-	private UnicodeFont font;
+	private BitmapFont font;
 	
 	/** The action. */
 	private Actionable action;
@@ -86,8 +89,8 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 * @param color the color
 	 * @param font the font
 	 */
-	public GUITextButton(final int x, final int y, final String text, final Color color, final UnicodeFont font) {
-		super(x, y, font.getWidth(text)+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
+	public GUITextButton(final int x, final int y, final String text, final Color color, final BitmapFont font) {
+		super(x, y, (int)font.getBounds(text).width+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, (int)font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
 		this.text = text;
 		this.color = color;
 		this.font = font;
@@ -110,8 +113,8 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 * @param font the font
 	 * @param buttonPath the button path
 	 */
-	public GUITextButton(final int x, final int y, final String text, final Color color, final UnicodeFont font, final String buttonPath) {
-		super(x, y, font.getWidth(text)+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
+	public GUITextButton(final int x, final int y, final String text, final Color color, final BitmapFont font, final String buttonPath) {
+		super(x, y, (int)font.getBounds(text).width+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, (int)font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
 		this.text = text;
 		this.color = color;
 		this.font = font;
@@ -132,8 +135,8 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 * @param font the font
 	 * @param characterSize the character size
 	 */
-	public GUITextButton(final int x, final int y, final String text, final Color color, final UnicodeFont font, final int characterSize) {
-		super(x, y, font.getWidth(text)+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
+	public GUITextButton(final int x, final int y, final String text, final Color color, final BitmapFont font, final int characterSize) {
+		super(x, y, (int)font.getBounds(text).width+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, (int)font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
 		this.text = text;
 		this.color = color;
 		this.font = font;
@@ -155,8 +158,8 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 * @param buttonPath the button path
 	 * @param characterSize the character size
 	 */
-	public GUITextButton(final int x, final int y, final String text, final Color color, final UnicodeFont font, final String buttonPath, final int characterSize) {
-		super(x, y, font.getWidth(text)+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
+	public GUITextButton(final int x, final int y, final String text, final Color color, final BitmapFont font, final String buttonPath, final int characterSize) {
+		super(x, y, (int)font.getBounds(text).width+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, (int)font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
 		this.text = text;
 		this.color = color;
 		this.font = font;
@@ -171,7 +174,7 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 * @see com.teamderpy.victusludus.gui.element.GUIElement#render()
 	 */
 	@Override
-	public void render() {
+	public void render(SpriteBatch batch, float deltaT) {
 		if(this.isVisible()){
 			//draw image box first
 			int imageX;
@@ -185,20 +188,27 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 			this.img.draw(imageX , this.y);
 
 			if(this.isDisabled){
-				this.font.drawString(this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE, this.text, this.color);
+				this.font.setColor(this.color);
+				this.font.draw(batch, this.text, this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE);
 			}else if(this.isDepressed && this.pressColor != null){
-				this.font.drawString(this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE, this.text, this.pressColor);
+				this.font.setColor(this.pressColor);
+				this.font.draw(batch, this.text, this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE);
 			}else if(this.isHoveredOn && this.hoverColor != null){
-				this.font.drawString(this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE, this.text, this.hoverColor);
+				this.font.setColor(this.hoverColor);
+				this.font.draw(batch, this.text, this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE);
 			}else if(this.isSelected && this.selectColor != null){
-				this.font.drawString(this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE, this.text, this.selectColor);
+				this.font.setColor(this.selectColor);
+				this.font.draw(batch, this.text, this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE);
 			}else{
-				this.font.drawString(this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE, this.text, this.color);
+				this.font.setColor(this.color);
+				this.font.draw(batch, this.text, this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE);
 			}
 
 			if(VictusLudusGame.engine.IS_DEBUGGING){
-				VictusLudusGame.engine.graphics.setColor(Color.red);
-				VictusLudusGame.engine.graphics.draw(new org.newdawn.slick.geom.Rectangle(this.x, this.y, this.getWidth(), this.getHeight()));
+				VictusLudusGame.engine.shapeRenderer.setColor(Color.RED);
+				VictusLudusGame.engine.shapeRenderer.begin(ShapeType.Rectangle);
+				VictusLudusGame.engine.shapeRenderer.rect(this.x, this.y, this.getWidth(), this.getHeight());
+				VictusLudusGame.engine.shapeRenderer.end();
 			}
 		}
 	}
@@ -244,10 +254,10 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	private void setImage(final String imagePath) {
 		int width;
 
-		if(this.font.getWidth("W")*this.customSize > this.font.getWidth(this.text)){
-			width = this.font.getWidth("W")*this.customSize;
+		if(this.font.getBounds("W").width*this.customSize > this.font.getBounds(this.text).width){
+			width = (int)(this.font.getBounds("W").width*this.customSize);
 		} else {
-			width = this.font.getWidth(this.text);
+			width = (int)this.font.getBounds(this.text).width;
 		}
 
 		try {
@@ -269,10 +279,10 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 		this.setImage(this.buttonPath);
 
 		if(this.isCentered){
-			super.setX(this.originalX-this.font.getWidth(text)/2);
+			super.setX((this.originalX-(int)this.font.getBounds(text).width/2));
 		}
 
-		super.setWidth(this.font.getWidth(this.text));
+		super.setWidth((int)this.font.getBounds(this.text).width);
 	}
 
 	/**
@@ -353,7 +363,7 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 *
 	 * @return the font
 	 */
-	public UnicodeFont getFont() {
+	public BitmapFont getFont() {
 		return this.font;
 	}
 
@@ -362,7 +372,7 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 *
 	 * @param font the new font
 	 */
-	public void setFont(final UnicodeFont font) {
+	public void setFont(final BitmapFont font) {
 		this.font = font;
 	}
 
@@ -371,7 +381,7 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 *
 	 * @param act the new pressed action
 	 */
-	public void setPressedAction(final com.teamderpy.VictusLudusGame.enginengine.Actionable act){
+	public void setPressedAction(final Actionable act){
 		this.action = act;
 	}
 
@@ -439,12 +449,13 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 * @see com.teamderpy.victusludus.gui.eventhandler.MouseListener#onMouseClick(com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent)
 	 */
 	@Override
-	public void onMouseClick(final MouseEvent mouseEvent) {
+	public boolean onMouseClick(final MouseEvent mouseEvent) {
 		if(!this.isDisabled() && this.isVisible()){
 			if(mouseEvent.getButton() == MouseEvent.BUTTON_1){
 				if(mouseEvent.isButtonPressed()){
 					if(this.isInside(mouseEvent.getX(), mouseEvent.getY())){
 						this.isDepressed = true;
+						return true;
 					}
 				}
 				else{
@@ -452,6 +463,7 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 						if(this.isDepressed){
 							VictusLudusGame.engine.eventHandler.signal(new ButtonPressEvent(this, ""));
 							this.isDepressed = false;
+							return true;
 						}
 					} else {
 						this.isDepressed = false;
@@ -459,6 +471,8 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 				}
 			}
 		}
+		
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -484,67 +498,82 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 * @see com.teamderpy.victusludus.gui.eventhandler.SelectListener#onSelect(com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent)
 	 */
 	@Override
-	public void onSelect(final SelectEvent selectEvent) {
+	public boolean onSelect(final SelectEvent selectEvent) {
 		if(!this.isDisabled() && this.isVisible()){
 			if(this.equals(selectEvent.getSource())){
 				this.isSelected = true;
 				VictusLudusGame.engine.eventHandler.signal(new TooltipEvent(this, this.getTooltip()));
+				return true;
 			}
 		}
+		
+		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.teamderpy.victusludus.gui.eventhandler.SelectListener#onUnselect(com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent)
 	 */
 	@Override
-	public void onUnselect(final SelectEvent selectEvent) {
+	public boolean onUnselect(final SelectEvent selectEvent) {
 		if(!this.isDisabled() && this.isVisible()){
 			if(this.equals(selectEvent.getSource())){
 				this.isSelected = false;
+				return true;
 			}
 		}
+		
+		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.teamderpy.victusludus.gui.eventhandler.ButtonPressListener#onButtonPress(com.teamderpy.victusludus.gui.eventhandler.event.ButtonPressEvent)
 	 */
 	@Override
-	public void onButtonPress(final ButtonPressEvent buttonPressEvent) {
+	public boolean onButtonPress(final ButtonPressEvent buttonPressEvent) {
 		if(!this.isDisabled() && this.isVisible()){
 			if(this.equals(buttonPressEvent.getSource())){
-				GUIElement.SOUND_SELECT.playAsSoundEffect(1.0F, 1.0F, false);
+				GUIElement.SOUND_SELECT.play();
 				this.act();
+				return true;
 			}
 		}
+		
+		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.teamderpy.victusludus.gui.eventhandler.HoverListener#onEnter(com.teamderpy.victusludus.gui.eventhandler.event.HoverEvent)
 	 */
 	@Override
-	public void onEnter(final HoverEvent hoverEvent) {
+	public boolean onEnter(final HoverEvent hoverEvent) {
 		if(!this.isDisabled() && this.isVisible()){
 			if(this.equals(hoverEvent.getSource())){
 				this.isHoveredOn = true;
 				VictusLudusGame.engine.eventHandler.signal(new TooltipEvent(this, this.getTooltip()));
+				return true;
 			}
 		}
+		
+		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.teamderpy.victusludus.gui.eventhandler.HoverListener#onLeave(com.teamderpy.victusludus.gui.eventhandler.event.HoverEvent)
 	 */
 	@Override
-	public void onLeave(final HoverEvent hoverEvent) {
+	public boolean onLeave(final HoverEvent hoverEvent) {
 		if(!this.isDisabled() && this.isVisible()){
 			if(this.equals(hoverEvent.getSource())){
 				this.isHoveredOn = false;
+				return true;
 			}else{
 				if(this.isSelected){
 					VictusLudusGame.engine.eventHandler.signal(new TooltipEvent(this, this.getTooltip()));
 				}
 			}
 		}
+		
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -594,5 +623,11 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	public void tick() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean onScroll (ScrollEvent scrollEvent) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

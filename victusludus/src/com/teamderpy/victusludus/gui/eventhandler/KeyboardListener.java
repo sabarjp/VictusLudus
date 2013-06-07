@@ -25,20 +25,23 @@ public interface KeyboardListener extends EventListener{
 	 * On key pressed down
 	 *
 	 * @param keyboardEvent the keyboard event
+	 * @return whether or not the event was handled
 	 */
-	public void onKeyDown(KeyDownEvent keyboardEvent);
+	public boolean onKeyDown(KeyDownEvent keyboardEvent);
 	
 	/**
 	 * On key release
 	 *
 	 * @param keyboardEvent the keyboard event
+	 * @return whether or not the event was handled
 	 */
-	public void onKeyUp(KeyUpEvent keyboardEvent);
+	public boolean onKeyUp(KeyUpEvent keyboardEvent);
 	
 	/**
 	 * On key typed
 	 *
 	 * @param keyboardEvent the keyboard event
+	 * @return whether or not the event was handled
 	 */
-	public void onKeyTyped(KeyTypedEvent keyboardEvent);
+	public boolean onKeyTyped(KeyTypedEvent keyboardEvent);
 }

@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.badlogic.gdx.Gdx;
 import com.teamderpy.victusludus.VictusLudusGame;
 
 
@@ -139,7 +140,7 @@ public class JLDLSerialReader {
 			this.sarray = this.line.split(":", 2);
 
 			if (this.sarray.length != 2) {
-				VictusLudus.LOGGER.warning("ERROR: in " + this.filePath + " on line " + this.lineNumber
+				Gdx.app.log("severe", "ERROR: in " + this.filePath + " on line " + this.lineNumber
 						+ ": invalid format (" + this.sarray.length + ")");
 				return null;
 			}
@@ -190,7 +191,7 @@ public class JLDLSerialReader {
 			this.sarray = this.line.split(":", 2);
 
 			if (this.sarray.length != 2) {
-				VictusLudus.LOGGER.warning("ERROR: in " + this.filePath + " on line " + this.lineNumber
+				Gdx.app.log("warning", "ERROR: in " + this.filePath + " on line " + this.lineNumber
 						+ ": invalid format (" + this.sarray.length + ")");
 				return null;
 			}
@@ -221,7 +222,7 @@ public class JLDLSerialReader {
 		this.nodeStack = new ArrayDeque<JLDL>();
 
 		if (!f.exists() || !f.isFile()) {
-			VictusLudus.LOGGER.severe("ERROR: File does not exist [" + this.filePath + "]");
+			Gdx.app.log("severe", "ERROR: File does not exist [" + this.filePath + "]");
 			return;
 		}
 

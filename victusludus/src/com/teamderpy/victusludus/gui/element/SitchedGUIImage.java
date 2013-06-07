@@ -1,13 +1,7 @@
 package com.teamderpy.victusludus.gui.element;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.teamderpy.victusludus.VictusLudusGame;
-
-
 
 /**
  * The Class SitchedGUIImage.
@@ -15,7 +9,7 @@ import com.teamderpy.victusludus.VictusLudusGame;
 public class SitchedGUIImage {
 	
 	/** The button image. */
-	private Image buttonImage;
+	private Sprite buttonImage;
 
 	/** The width. */
 	private int width;

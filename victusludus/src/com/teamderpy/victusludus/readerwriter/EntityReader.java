@@ -3,11 +3,10 @@ package com.teamderpy.victusludus.readerwriter;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.newdawn.slick.Color;
-
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
-import com.teamderpy.VictusLudusGame.enginengine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.behavior.CreateAdjacentBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
@@ -164,7 +163,7 @@ public class EntityReader implements IObjectReader {
 										}
 									}
 
-									light.setColor(new Color(red, green, blue));
+									light.setColor(new Color((float)red/255, (float)green/255, (float)blue/255, 1));
 									e.setLight(light);
 								} else if (graphicsLevel.getId().equalsIgnoreCase("animation")) {
 									System.out.println("found entity graphics animation node");
@@ -290,7 +289,7 @@ public class EntityReader implements IObjectReader {
 					}
 
 					//put entity in hash
-					VictusLudus.LOGGER.warning("PLACED ENTITY IN HASH");
+					Gdx.app.log("warning", "PLACED ENTITY IN HASH");
 					hash.put(e.getId(), (T) e);
 				} else {
 					System.out.println("baseLevelnode");
@@ -313,7 +312,7 @@ public class EntityReader implements IObjectReader {
 	 * @param node the node
 	 */
 	private void logError(final String path, final JLDLSerialReader r, final ReadData node){
-		VictusLudus.LOGGER.severe("entity in " + path + " on line " + r.getLineNumber() + ":\n\t"
+		Gdx.app.log("severe", "entity in " + path + " on line " + r.getLineNumber() + ":\n\t"
 				+ " bad indentation or unknown keyword '" + node.getNode() + "' -> '" + node.getId() + ":" + node.getValue() + "'");
 	}
 }
