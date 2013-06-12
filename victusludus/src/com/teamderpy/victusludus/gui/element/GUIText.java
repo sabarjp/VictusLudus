@@ -60,9 +60,11 @@ public class GUIText extends GUIElement{
 	 */
 	public void render(SpriteBatch batch, float deltaT) {
 		if(isVisible()){
+			batch.enableBlending();
+			
 			if(this.isRenderInverted){
 				//invert
-				Gdx.gl11.glBlendFunc(Gdx.gl11.GL_ONE_MINUS_DST_COLOR, Gdx.gl11.GL_ONE_MINUS_SRC_COLOR);
+				//Gdx.gl11.glBlendFunc(Gdx.gl11.GL_ONE_MINUS_DST_COLOR, Gdx.gl11.GL_ONE_MINUS_SRC_COLOR);
 			}
 			
 			if(!isWrapped){
@@ -83,8 +85,10 @@ public class GUIText extends GUIElement{
 			
 			if(this.isRenderInverted){
 				//normal
-				Gdx.gl11.glBlendFunc(Gdx.gl11.GL_SRC_ALPHA, Gdx.gl11.GL_ONE_MINUS_SRC_ALPHA);
+				//Gdx.gl11.glBlendFunc(Gdx.gl11.GL_SRC_ALPHA, Gdx.gl11.GL_ONE_MINUS_SRC_ALPHA);
 			}
+			
+			batch.disableBlending();
 		}
 	}
 	

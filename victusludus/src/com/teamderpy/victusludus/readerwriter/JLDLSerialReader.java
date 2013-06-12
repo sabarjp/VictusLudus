@@ -3,6 +3,7 @@ package com.teamderpy.victusludus.readerwriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.Reader;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -10,7 +11,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.VictusRuntimeException;
+import com.teamderpy.victusludus.data.VFile;
 
 
 
@@ -25,13 +29,13 @@ public class JLDLSerialReader {
 	/** The file path. */
 	private final String filePath;
 
-	/** The fr. */
-	private FileReader fr;
+	/** The file reader. */
+	private Reader fr;
 	
 	/** The node stack. */
 	private Deque<JLDL> nodeStack;
 	
-	/** The s. */
+	/** The scanner. */
 	private PeekScanner s;
 	
 	/** The line. */
@@ -40,7 +44,7 @@ public class JLDLSerialReader {
 	/** The last item. */
 	private JLDL lastItem;
 	
-	/** The sarray. */
+	/** The string array. */
 	private String[] sarray;
 
 	/** The line number. */
@@ -84,7 +88,7 @@ public class JLDLSerialReader {
 	}
 
 	/**
-	 * Instantiates a new jLDL serial reader.
+	 * Instantiates a new JLDL serial reader.
 	 *
 	 * @param path the path
 	 */
@@ -140,9 +144,9 @@ public class JLDLSerialReader {
 			this.sarray = this.line.split(":", 2);
 
 			if (this.sarray.length != 2) {
-				Gdx.app.log("severe", "ERROR: in " + this.filePath + " on line " + this.lineNumber
+				Gdx.app.log("severe", "<ERROR> in " + this.filePath + " on line " + this.lineNumber
 						+ ": invalid format (" + this.sarray.length + ")");
-				return null;
+				throw new VictusRuntimeException("Improper formatting for file " + this.filePath + " on line " + this.lineNumber);
 			}
 
 			JLDL parent = this.nodeStack.peekFirst();
@@ -191,7 +195,7 @@ public class JLDLSerialReader {
 			this.sarray = this.line.split(":", 2);
 
 			if (this.sarray.length != 2) {
-				Gdx.app.log("warning", "ERROR: in " + this.filePath + " on line " + this.lineNumber
+				Gdx.app.log("warning", "<ERROR> in " + this.filePath + " on line " + this.lineNumber
 						+ ": invalid format (" + this.sarray.length + ")");
 				return null;
 			}
@@ -218,24 +222,20 @@ public class JLDLSerialReader {
 	 * Initialize.
 	 */
 	private void initialize() {
-		final File f = new File(this.filePath);
+		final FileHandle f = VFile.getFileHandle(this.filePath);
 		this.nodeStack = new ArrayDeque<JLDL>();
 
-		if (!f.exists() || !f.isFile()) {
-			Gdx.app.log("severe", "ERROR: File does not exist [" + this.filePath + "]");
-			return;
+		if (!f.exists()) {
+			Gdx.app.log("severe", "<ERROR> File does not exist [" + this.filePath + "]");
+			throw new VictusRuntimeException("File does not exist, " + this.filePath);
 		}
 
-		try {
-			this.fr = new FileReader(this.filePath);
-			this.s = new PeekScanner(this.fr);
-			this.line = null;
-			this.lastItem = new JLDL(JLDLSerialReader.BASE_LEVEL_NODE, -1);
+		this.fr = f.reader(256);
+		this.s = new PeekScanner(this.fr);
+		this.line = null;
+		this.lastItem = new JLDL(JLDLSerialReader.BASE_LEVEL_NODE, -1);
 
-			this.lineNumber = 0;
-			this.curIndent = -1;
-		} catch (final FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		this.lineNumber = 0;
+		this.curIndent = -1;
 	}
 }

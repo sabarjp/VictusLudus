@@ -34,4 +34,9 @@ public class SelectEvent extends EventObject{
 	public boolean isSelecting() {
 		return isSelecting;
 	}
+	
+	@Override
+	public String toString(){
+		return "SelectEvent" + "  selecting? " + this.isSelecting;
+	}
 }

@@ -65,7 +65,7 @@ public class BackgroundReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				Gdx.app.log("warning", "ERROR: background in " + path + " on line " + r.getLineNumber()
+				Gdx.app.log("warning", "<ERROR> background in " + path + " on line " + r.getLineNumber()
 						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
 			}
 		}

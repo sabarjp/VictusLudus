@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.parts.BodyPart;
 import com.teamderpy.victusludus.parts.Creature;
 
@@ -99,8 +100,9 @@ public class CreatureReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				Gdx.app.log("severe", "ERROR: creature in " + path + " on line " + r.getLineNumber()
+				Gdx.app.log("severe", "<ERROR> creature in " + path + " on line " + r.getLineNumber()
 						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
+				throw new VictusRuntimeException("Improper formatting for file " + path + " on line " + r.getLineNumber());
 			}
 		}
 

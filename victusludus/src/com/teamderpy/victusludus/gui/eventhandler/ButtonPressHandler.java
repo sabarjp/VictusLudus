@@ -49,11 +49,11 @@ public class ButtonPressHandler extends AbstractHandler{
 		ButtonPressEvent evt = (ButtonPressEvent) e;
 
 		for(ButtonPressListener l: this.listenerQueue){
-			l.onButtonPress(evt);
-
 			if(VictusLudusGame.engine.IS_DEBUGGING){
 				Gdx.app.log("info", "SIGNAL     " + ButtonPressHandler.name + ": " + evt + " -> " + l);
 			}
+			
+			if(l.onButtonPress(evt)) break;
 		}
 	}
 

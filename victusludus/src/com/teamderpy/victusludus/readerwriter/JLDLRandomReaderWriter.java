@@ -14,6 +14,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.teamderpy.victusludus.data.JTree;
 import com.teamderpy.victusludus.data.JTreeNode;
 
@@ -94,15 +96,13 @@ public class JLDLRandomReaderWriter {
 	 * Initialize.
 	 */
 	private void initialize() {
-		File f = new File(this.filePath);
-
-		//make new file if one does not exist
-		if (!f.exists() || !f.isFile()) {
+		FileHandle f = Gdx.files.internal(this.filePath);
+		
+		if(!f.exists()){
 			try {
-				f.createNewFile();
+				f.file().createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
-				return;
 			}
 		}
 

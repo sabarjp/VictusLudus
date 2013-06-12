@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import com.badlogic.gdx.Gdx;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.VictusRuntimeException;
 
 public class LineReader implements ISimpleReader{
 
@@ -16,8 +17,8 @@ public class LineReader implements ISimpleReader{
 		final File f = new File(path);
 
 		if (!f.exists() || !f.isFile()) {
-			Gdx.app.log("severe", "ERROR: File does not exist [" + path + "]");
-			return;
+			Gdx.app.log("severe", "<ERROR> File does not exist [" + path + "]");
+			throw new VictusRuntimeException("File does not exist, " + path);
 		}
 
 		try {

@@ -48,4 +48,9 @@ public class ResizeEvent extends EventObject{
 	public int getHeight() {
 		return this.height;
 	}
+	
+	@Override
+	public String toString(){
+		return "ResizeEvent" + "  w " + this.width + "  h " + this.height;
+	}
 }

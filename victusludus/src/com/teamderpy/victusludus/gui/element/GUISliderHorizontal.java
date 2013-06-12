@@ -93,10 +93,10 @@ public class GUISliderHorizontal extends GUIElement implements Actionable, Selec
 	private int sliderNubHeight = 20;
 
 	/** The slider rail img. */
-	private SitchedGUIImage sliderRailImg;
+	private Patch3Image sliderRailImg;
 
 	/** The slider nub img. */
-	private SitchedGUIImage sliderNubImg;
+	private Patch3Image sliderNubImg;
 
 	/** The min slider value. */
 	private float minSliderValue = -1.0F * Float.MAX_VALUE;
@@ -139,7 +139,7 @@ public class GUISliderHorizontal extends GUIElement implements Actionable, Selec
 		this.setSliderNubImage(this.sliderNubPath);
 
 		this.miniTooltip = new GUITextWithBox(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.miniTooltip.setCentered(false);
 
 		super.setHeight(font.getLineHeight()+this.sliderNubImg.getHeight()+5);
@@ -859,7 +859,7 @@ public class GUISliderHorizontal extends GUIElement implements Actionable, Selec
 		final int height = this.getSliderRailHeightS();
 
 		try {
-			this.sliderRailImg = new SitchedGUIImage(imagePath, width+GUISliderHorizontal.BORDER_SIZE+GUISliderHorizontal.BORDER_SIZE, height+GUISliderHorizontal.BORDER_SIZE+GUISliderHorizontal.BORDER_SIZE, GUISliderHorizontal.BORDER_SIZE);
+			this.sliderRailImg = new Patch3Image(imagePath, width+GUISliderHorizontal.BORDER_SIZE+GUISliderHorizontal.BORDER_SIZE, height+GUISliderHorizontal.BORDER_SIZE+GUISliderHorizontal.BORDER_SIZE, GUISliderHorizontal.BORDER_SIZE);
 		} catch (final Exception e) {
 			this.sliderRailImg = null;
 			e.printStackTrace();
@@ -876,7 +876,7 @@ public class GUISliderHorizontal extends GUIElement implements Actionable, Selec
 		final int height = this.getSliderNubHeightS();
 
 		try {
-			this.sliderNubImg = new SitchedGUIImage(imagePath, width+GUISliderHorizontal.BORDER_SIZE+GUISliderHorizontal.BORDER_SIZE, height+GUISliderHorizontal.BORDER_SIZE+GUISliderHorizontal.BORDER_SIZE, GUISliderHorizontal.BORDER_SIZE);
+			this.sliderNubImg = new Patch3Image(imagePath, width+GUISliderHorizontal.BORDER_SIZE+GUISliderHorizontal.BORDER_SIZE, height+GUISliderHorizontal.BORDER_SIZE+GUISliderHorizontal.BORDER_SIZE, GUISliderHorizontal.BORDER_SIZE);
 		} catch (final Exception e) {
 			this.sliderNubImg = null;
 			e.printStackTrace();

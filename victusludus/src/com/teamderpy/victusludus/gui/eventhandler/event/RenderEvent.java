@@ -54,4 +54,8 @@ public class RenderEvent extends EventObject{
 		this.game = game;
 	}
 
+	@Override
+	public String toString(){
+		return "RenderEvent" + "  type " + this.eventType + "  game " + this.game;
+	}
 }

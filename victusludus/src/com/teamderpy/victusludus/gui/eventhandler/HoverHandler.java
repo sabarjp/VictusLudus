@@ -49,14 +49,14 @@ public class HoverHandler extends AbstractHandler{
 		HoverEvent evt = (HoverEvent) e;
 
 		for(HoverListener l: this.listenerQueue){
-			if(evt.isEntering()){
-				l.onEnter(evt);
-			} else {
-				l.onLeave(evt);
-			}
-
 			if(VictusLudusGame.engine.IS_DEBUGGING){
 				Gdx.app.log("info", "SIGNAL     " + HoverHandler.name + ": " + evt + " -> " + l);
+			}
+			
+			if(evt.isEntering()){
+				if(l.onEnter(evt)) break;
+			} else {
+				if(l.onLeave(evt)) break;
 			}
 		}
 	}

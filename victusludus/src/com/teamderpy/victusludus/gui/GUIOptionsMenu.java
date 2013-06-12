@@ -70,10 +70,10 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 	private String BACKUP_TITLE_FONT_ID = GUI.TITLE_FONT_ID;
 	
 	/** The backup toolt font id. */
-	private String BACKUP_TOOLT_FONT_ID = GUI.TOOLT_FONT_ID;
+	private String BACKUP_TOOLT_FONT_ID = GUI.TOOLTIP_FONT_ID;
 	
 	/** The backup pmono font id. */
-	private String BACKUP_PMONO_FONT_ID = GUI.PMONO_FONT_ID;
+	private String BACKUP_PMONO_FONT_ID = GUI.PRIMARY_FONT_ID;
 	
 	/** The backup scaling factor. */
 	private double BACKUP_SCALING_FACTOR = VictusLudusGame.engine.scalingFactor;
@@ -99,7 +99,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * TOOLTIP
 		 */
 		
-	   tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+	   tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		tooltipText.setCentered(true);
 	   elementList.add(tooltipText);
 		
@@ -107,7 +107,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * DPI SELECT
 		 */
 		
-		dpiSelect = new GUISelectFieldHorizontal(0, 0, "Scaling factor", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		dpiSelect = new GUISelectFieldHorizontal(0, 0, "Scaling factor", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		dpiSelect.setCentered(true);
 		dpiSelect.addItem("Tiny", "0.5", "50% scaling");
 		if(VictusLudusGame.engine.scalingFactor == 0.5)
@@ -138,7 +138,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * RESOLUTION SELECT
 		 */
 		
-		resolutionSelect = new GUISelectFieldHorizontal(0, 0, "Display resolution", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		resolutionSelect = new GUISelectFieldHorizontal(0, 0, "Display resolution", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		resolutionSelect.setCentered(true);
 		
 		int i = 0;
@@ -156,7 +156,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * FULLSCREEN SELECT
 		 */
 		
-		fullScreenSelect = new GUISelectFieldHorizontal(0, 0, "Fullscreen?", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		fullScreenSelect = new GUISelectFieldHorizontal(0, 0, "Fullscreen?", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		fullScreenSelect.setCentered(true);
 		
 		fullScreenSelect.addItem("Yes", "1", "Enable fullscreen");
@@ -174,7 +174,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * VSYNC SELECT
 		 */
 		
-		vsyncSelect = new GUISelectFieldHorizontal(0, 0, "Vsync?", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		vsyncSelect = new GUISelectFieldHorizontal(0, 0, "Vsync?", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		vsyncSelect.setCentered(true);
 		
 		vsyncSelect.addItem("Yes", "1", "Enable vsync");
@@ -192,7 +192,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * FRAMERATE CAP SELECT
 		 */
 		
-		frameCapSelect = new GUISelectFieldHorizontal(0, 0, "Framerate cap", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		frameCapSelect = new GUISelectFieldHorizontal(0, 0, "Framerate cap", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		frameCapSelect.setCentered(true);
 		frameCapSelect.addItem("15", "15", "Render no more than 15 frames per second");
 		if(VictusLudusGame.engine.targetFramerate == 15)
@@ -221,18 +221,18 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * MAIN FONT
 		 */
 		
-		fontSelectMain = new GUISelectFieldHorizontal(0, 0, "Main font", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		fontSelectMain = new GUISelectFieldHorizontal(0, 0, "Main font", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		fontSelectMain.setCentered(true);
 		for(FontFile f:VictusLudus.resources.getFontHash().values()){
 			fontSelectMain.addItem(f.getName(), f.getId(), f.getPath());
 			
-			if(GUI.PMONO_FONT_ID.equals(f.getId()))
+			if(GUI.PRIMARY_FONT_ID.equals(f.getId()))
 				fontSelectMain.setCurrentSelectionIndex(fontSelectMain.getSize()-1);
 		}
 		
 		fontSelectMain.setChangedAction(new Actionable(){
 			public void act() {
-				GUI.PMONO_FONT_ID = fontSelectMain.getCurrentSelection().getValue();
+				GUI.PRIMARY_FONT_ID = fontSelectMain.getCurrentSelection().getValue();
 				recreate();
 			}
 		});
@@ -244,7 +244,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * BIG FONT
 		 */
 		
-		fontSelectBig = new GUISelectFieldHorizontal(0, 0, "Large font", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		fontSelectBig = new GUISelectFieldHorizontal(0, 0, "Large font", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		fontSelectBig.setCentered(true);
 		for(FontFile f:VictusLudus.resources.getFontHash().values()){
 			fontSelectBig.addItem(f.getName(), f.getId(), f.getPath());
@@ -267,18 +267,18 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * SMALL FONT
 		 */
 		
-		fontSelectSmall = new GUISelectFieldHorizontal(0, 0, "Small font", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		fontSelectSmall = new GUISelectFieldHorizontal(0, 0, "Small font", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		fontSelectSmall.setCentered(true);
 		for(FontFile f:VictusLudus.resources.getFontHash().values()){
 			fontSelectSmall.addItem(f.getName(), f.getId(), f.getPath());
 			
-			if(GUI.TOOLT_FONT_ID.equals(f.getId()))
+			if(GUI.TOOLTIP_FONT_ID.equals(f.getId()))
 				fontSelectSmall.setCurrentSelectionIndex(fontSelectSmall.getSize()-1);
 		}
 		
 		fontSelectSmall.setChangedAction(new Actionable(){
 			public void act() {
-				GUI.TOOLT_FONT_ID = fontSelectSmall.getCurrentSelection().getValue();
+				GUI.TOOLTIP_FONT_ID = fontSelectSmall.getCurrentSelection().getValue();
 				recreate();
 			}
 		});
@@ -290,7 +290,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * APPLY CHANGES
 		 */
 		
-		applyButton = new GUITextButton(0, 0, "Apply & save changes", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 16);
+		applyButton = new GUITextButton(0, 0, "Apply & save changes", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 16);
 		applyButton.setCentered(true);
 		applyButton.setPressedAction(new Actionable() {
 					public void act() {
@@ -306,15 +306,15 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 						
 						//overwrite backup settings
 						BACKUP_TITLE_FONT_ID = GUI.TITLE_FONT_ID;
-						BACKUP_TOOLT_FONT_ID = GUI.TOOLT_FONT_ID;
-						BACKUP_PMONO_FONT_ID = GUI.PMONO_FONT_ID;
+						BACKUP_TOOLT_FONT_ID = GUI.TOOLTIP_FONT_ID;
+						BACKUP_PMONO_FONT_ID = GUI.PRIMARY_FONT_ID;
 						BACKUP_SCALING_FACTOR = VictusLudusGame.engine.scalingFactor;
 						BACKUP_TARGET_FRAMERATE = VictusLudusGame.engine.targetFramerate;
 						
 						//save to preferences
-						VictusLudusGame.engine.preferences.write("settings->interface->fonts->main:" + GUI.PMONO_FONT_ID);
+						VictusLudusGame.engine.preferences.write("settings->interface->fonts->main:" + GUI.PRIMARY_FONT_ID);
 						VictusLudusGame.engine.preferences.write("settings->interface->fonts->big:" + GUI.TITLE_FONT_ID);
-						VictusLudusGame.engine.preferences.write("settings->interface->fonts->small:" + GUI.TOOLT_FONT_ID);
+						VictusLudusGame.engine.preferences.write("settings->interface->fonts->small:" + GUI.TOOLTIP_FONT_ID);
 						VictusLudusGame.engine.preferences.write("settings->interface->dpi:" + VictusLudusGame.engine.scalingFactor);
 						VictusLudusGame.engine.preferences.write("settings->interface->maximum framerate:" + VictusLudusGame.engine.targetFramerate);
 						
@@ -383,14 +383,14 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		 * BACK
 		 */
 		
-		backButton = new GUITextButton(0, 0, "Back", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 16);
+		backButton = new GUITextButton(0, 0, "Back", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 16);
 		backButton.setCentered(true);
 		backButton.setPressedAction(new Actionable() {
 					public void act() {
 						/*reverse any changes*/
 						GUI.TITLE_FONT_ID = BACKUP_TITLE_FONT_ID;
-						GUI.TOOLT_FONT_ID = BACKUP_TOOLT_FONT_ID;
-						GUI.PMONO_FONT_ID = BACKUP_PMONO_FONT_ID;
+						GUI.TOOLTIP_FONT_ID = BACKUP_TOOLT_FONT_ID;
+						GUI.PRIMARY_FONT_ID = BACKUP_PMONO_FONT_ID;
 						VictusLudusGame.engine.targetFramerate = BACKUP_TARGET_FRAMERATE;
 						
 						if(VictusLudusGame.engine.scalingFactor != BACKUP_SCALING_FACTOR){
@@ -426,7 +426,7 @@ public class GUIOptionsMenu extends GUI implements KeyboardListener, ResizeListe
 		titleText.setY(5);
 		
 		tooltipText.setX(VictusLudusGame.engine.X_RESOLUTION() / 2);
-		tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PMONO_FONT_ID).getLineHeight()-5);
+		tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PRIMARY_FONT_ID).getLineHeight()-5);
 		
 		setNextElementPos(titleText.getHeight() + 20);
 		setElementSpacing(5);

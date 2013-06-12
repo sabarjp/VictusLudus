@@ -94,7 +94,7 @@ public class MaterialReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				Gdx.app.log("warning", "ERROR: material in " + path + " on line " + r.getLineNumber()
+				Gdx.app.log("warning", "<ERROR> material in " + path + " on line " + r.getLineNumber()
 						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
 			}
 		}

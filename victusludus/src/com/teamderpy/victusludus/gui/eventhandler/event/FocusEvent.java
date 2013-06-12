@@ -34,4 +34,9 @@ public class FocusEvent extends EventObject{
 	public boolean isGainingFocus() {
 		return isGainingFocus;
 	}
+	
+	@Override
+	public String toString(){
+		return "FocusEvent" + "  Gaining? " + this.isGainingFocus;
+	}
 }

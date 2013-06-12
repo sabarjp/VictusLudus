@@ -33,4 +33,9 @@ public class ScrollEvent extends EventObject{
 	public int getScrollAmount() {
 		return this.amountScrolled;
 	}
+	
+	@Override
+	public String toString(){
+		return "ScrollEvent" + " val " + this.amountScrolled;
+	}
 }

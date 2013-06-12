@@ -2,11 +2,9 @@ package com.teamderpy.victusludus.gui;
 
 import java.util.ArrayList;
 
-
-import org.lwjgl.input.Keyboard;
-
+import com.badlogic.gdx.Input.Keys;
 import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.VictusLudusGame.enginengine.Actionable;
+import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 import com.teamderpy.victusludus.gui.element.GUIText;
 import com.teamderpy.victusludus.gui.element.GUITextButton;
@@ -63,7 +61,7 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 		 */
 
 		this.tooltipText = new GUIText(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.tooltipText.setCentered(true);
 		this.elementList.add(this.tooltipText);
 
@@ -71,7 +69,7 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 		 * NEW GAME
 		 */
 
-		this.newWorldButton = new GUITextButton(0, 0, "New universe", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 14);
+		this.newWorldButton = new GUITextButton(0, 0, "New universe", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 14);
 		this.newWorldButton.setCentered(true);
 		this.newWorldButton.setPressedAction(new Actionable() {
 			@Override
@@ -88,7 +86,7 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 		 */
 
 		this.optionsButton = new GUITextButton(0, 0, "Options",
-				GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 14);
+				GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 14);
 		this.optionsButton.setCentered(true);
 		this.optionsButton.setPressedAction(new Actionable() {
 			@Override
@@ -105,7 +103,7 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 		 */
 
 		this.quitButton = new GUITextButton(0, 0, "Quit",
-				GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 14);
+				GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 14);
 		this.quitButton.setCentered(true);
 		this.quitButton.setPressedAction(new Actionable() {
 			@Override
@@ -138,7 +136,7 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 		this.titleText.setY(5);
 
 		this.tooltipText.setX(VictusLudusGame.engine.X_RESOLUTION() / 2);
-		this.tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PMONO_FONT_ID).getLineHeight()-5);
+		this.tooltipText.setY((int)(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PRIMARY_FONT_ID).getLineHeight()-5));
 
 		this.setNextElementPos(VictusLudusGame.engine.Y_RESOLUTION() / 2);
 		this.setElementSpacing(5);
@@ -159,10 +157,13 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 	 * @see com.teamderpy.victusludus.gui.eventhandler.TooltipListener#onChangeTooltip(com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent)
 	 */
 	@Override
-	public void onChangeTooltip(final TooltipEvent tooltipEvent) {
+	public boolean onChangeTooltip(final TooltipEvent tooltipEvent) {
 		if(!this.isDisabled){
 			this.tooltipText.setText(tooltipEvent.getTooltip());
+			return true;
 		}
+		
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -177,24 +178,30 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 	 * @see com.teamderpy.victusludus.gui.eventhandler.KeyboardListener#onKeyPress(com.teamderpy.victusludus.gui.eventhandler.event.KeyboardEvent)
 	 */
 	@Override
-	public void onKeyDown(final KeyDownEvent keyboardEvent) {
+	public boolean onKeyDown(final KeyDownEvent keyboardEvent) {
 		if(!this.isDisabled){
-			if (keyboardEvent.getKey() == Keyboard.KEY_DOWN) {
+			if (keyboardEvent.getKey() == Keys.DOWN) {
 				if (this.currentElement < this.menuList.size() - 1) {
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(this.menuList.get(this.currentElement), false));
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(this.menuList.get(++this.currentElement), true));
+					return true;
 				}
-			} else if (keyboardEvent.getKey() == Keyboard.KEY_UP) {
+			} else if (keyboardEvent.getKey() == Keys.UP) {
 				if (this.currentElement > 0) {
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(this.menuList.get(this.currentElement), false));
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(this.menuList.get(--this.currentElement), true));
+					return true;
 				}
-			} else if (keyboardEvent.getKey() == Keyboard.KEY_RETURN) {
+			} else if (keyboardEvent.getKey() == Keys.ENTER) {
 				VictusLudusGame.engine.eventHandler.signal(new ButtonPressEvent(this.menuList.get(this.currentElement), ""));
-			} else if (keyboardEvent.getKey() == Keyboard.KEY_ESCAPE) {
+				return true;
+			} else if (keyboardEvent.getKey() == Keys.ESCAPE) {
 				this.quitButton.act();
+				return true;
 			}
 		}
+		
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -228,14 +235,12 @@ public class GUIMainMenu extends GUI implements KeyboardListener, ResizeListener
 	}
 
 	@Override
-	public void onKeyUp (KeyUpEvent keyboardEvent) {
-		// TODO Auto-generated method stub
-		
+	public boolean onKeyUp (KeyUpEvent keyboardEvent) {
+		return false;
 	}
 
 	@Override
-	public void onKeyTyped (KeyTypedEvent keyboardEvent) {
-		// TODO Auto-generated method stub
-		
+	public boolean onKeyTyped (KeyTypedEvent keyboardEvent) {
+		return false;
 	}
 }

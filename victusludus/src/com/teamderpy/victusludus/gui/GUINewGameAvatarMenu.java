@@ -76,7 +76,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * TOOLTIP
 		 */
 		
-	   tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+	   tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		tooltipText.setCentered(true);
 	   elementList.add(tooltipText);
 		
@@ -84,7 +84,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * AVATAR FIRST NAME LABEL
 		 */
 		
-		avatarFirstNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		avatarFirstNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		avatarFirstNameLabel.setText("First name");
 		avatarFirstNameLabel.setCentered(true);
 		elementList.add(avatarFirstNameLabel);
@@ -93,7 +93,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * AVATAR FIRST NAME
 		 */
 		
-		avatarFirstNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		avatarFirstNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		avatarFirstNameField.setText("");
 		avatarFirstNameField.setMaximumSize(15);
 		avatarFirstNameField.setTooltip("Your first name");
@@ -110,7 +110,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * AVATAR LAST NAME LABEL
 		 */
 		
-		avatarLastNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		avatarLastNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		avatarLastNameLabel.setText("Last name");
 		avatarLastNameLabel.setCentered(true);
 		elementList.add(avatarLastNameLabel);
@@ -119,7 +119,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * AVATAR LAST NAME
 		 */
 		
-		avatarLastNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		avatarLastNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		avatarLastNameField.setText("");
 		avatarLastNameField.setMaximumSize(15);
 		avatarLastNameField.setTooltip("Your last name");
@@ -136,7 +136,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * AVATAR BACKGROUND
 		 */
 		
-		avatarBackgroundSelect = new GUISelectFieldHorizontal(0, 0, "Background", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		avatarBackgroundSelect = new GUISelectFieldHorizontal(0, 0, "Background", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		avatarBackgroundSelect.setCentered(true);
 		for(PlayerBackground pbg:VictusLudus.resources.getBackgroundsHash().values()){
 			avatarBackgroundSelect.addItem(pbg.getName(), pbg.getDegree(), pbg.getDescription());
@@ -156,7 +156,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * AVATAR BACKGROUND LABEL
 		 */
 		
-		avatarBackgroundLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		avatarBackgroundLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		avatarBackgroundLabel.setText(avatarBackgroundSelect.getCurrentSelection().getTooltip());
 		avatarBackgroundLabel.setCentered(true);
 		avatarBackgroundLabel.setWidthWrap((int)(this.width * 0.75));
@@ -167,7 +167,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * CREATE
 		 */
 		
-		createButton = new GUITextButton(0, 0, "Create!", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 8);
+		createButton = new GUITextButton(0, 0, "Create!", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 8);
 		createButton.setCentered(true);
 		createButton.setPressedAction(new Actionable() {
 			public void act() {
@@ -195,7 +195,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		 * BACK
 		 */
 		
-		quitButton = new GUITextButton(0, 0, "Quit", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 8);
+		quitButton = new GUITextButton(0, 0, "Quit", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 8);
 		quitButton.setCentered(true);
 		quitButton.setPressedAction(new Actionable() {
 					public void act() {
@@ -225,7 +225,7 @@ public class GUINewGameAvatarMenu extends GUI implements KeyboardListener, Resiz
 		titleText.setY(5);
 		
 		tooltipText.setX(VictusLudusGame.engine.X_RESOLUTION() / 2);
-		tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PMONO_FONT_ID).getLineHeight()-5);
+		tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PRIMARY_FONT_ID).getLineHeight()-5);
 		
 		setNextElementPos(titleText.getHeight() + 50);
 		setElementSpacing(5);

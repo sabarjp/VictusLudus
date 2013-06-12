@@ -6,6 +6,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.behavior.CreateAdjacentBehavior;
@@ -314,5 +315,6 @@ public class EntityReader implements IObjectReader {
 	private void logError(final String path, final JLDLSerialReader r, final ReadData node){
 		Gdx.app.log("severe", "entity in " + path + " on line " + r.getLineNumber() + ":\n\t"
 				+ " bad indentation or unknown keyword '" + node.getNode() + "' -> '" + node.getId() + ":" + node.getValue() + "'");
+		throw new VictusRuntimeException("Improper formatting for file " + path + " on line " + r.getLineNumber());
 	}
 }

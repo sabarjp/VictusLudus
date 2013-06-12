@@ -86,7 +86,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * TOOLTIP
 		 */
 
-		this.tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+		this.tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.tooltipText.setCentered(true);
 		this.elementList.add(this.tooltipText);
 
@@ -95,7 +95,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * ORGANISM NAME LABEL
 		 */
 
-		this.worldNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.worldNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.worldNameLabel.setText("Organism name");
 		this.worldNameLabel.setCentered(true);
 		this.elementList.add(this.worldNameLabel);
@@ -104,7 +104,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * ORGANISM NAME
 		 */
 
-		this.worldNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.worldNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.worldNameField.setText("");
 		this.worldNameField.setMaximumSize(15);
 		this.worldNameField.setTooltip("The name of your organism");
@@ -122,7 +122,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * WORLD SIZE
 		 */
 
-		this.worldSizeSelect = new GUISelectFieldHorizontal(0, 0, "World size", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.worldSizeSelect = new GUISelectFieldHorizontal(0, 0, "World size", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.worldSizeSelect.setCentered(true);
 		this.worldSizeSelect.addItem("Tiny", "32", "A very small area");
 		this.worldSizeSelect.addItem("Small", "64", "A small area");
@@ -138,7 +138,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * BIOTA VARIETY
 		 */
 
-		this.biotaVariety = new GUISelectFieldHorizontal(0, 0, "Biota variety", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.biotaVariety = new GUISelectFieldHorizontal(0, 0, "Biota variety", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.biotaVariety.setCentered(true);
 		this.biotaVariety.addItem("Minor", "1", "Life forms are more or less the same");
 		this.biotaVariety.addItem("Medium", "2", "Life forms have a good amount of variety");
@@ -153,7 +153,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * WORLD SMOOTHNESS
 		 */
 
-		this.worldSmoothness = new GUISliderHorizontal(0, 0, "Terrain smoothness", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.worldSmoothness = new GUISliderHorizontal(0, 0, "Terrain smoothness", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.worldSmoothness.setCentered(true);
 		this.worldSmoothness.setMinSliderValue(0.0F);
 		this.worldSmoothness.setMaxSliderValue(10.0F);
@@ -168,7 +168,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * WORLD RANDOMNESS
 		 */
 
-		this.worldRandomness = new GUISliderHorizontal(0, 0, "Terrain type", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.worldRandomness = new GUISliderHorizontal(0, 0, "Terrain type", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.worldRandomness.setCentered(true);
 		this.worldRandomness.setMinSliderValue(0.0F);
 		this.worldRandomness.setMaxSliderValue(1.5F);
@@ -183,7 +183,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * WORLD SCALENESS
 		 */
 
-		this.worldScaleness = new GUISliderHorizontal(0, 0, "Terrain scale", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.worldScaleness = new GUISliderHorizontal(0, 0, "Terrain scale", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.worldScaleness.setCentered(true);
 		this.worldScaleness.setMinSliderValue(1.0F);
 		this.worldScaleness.setMaxSliderValue(12.0F);
@@ -198,7 +198,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * WORLD PLATEAU FACTOR
 		 */
 
-		this.worldPlateauFactor = new GUISliderHorizontal(0, 0, "Hill & valley types", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.worldPlateauFactor = new GUISliderHorizontal(0, 0, "Hill & valley types", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.worldPlateauFactor.setCentered(true);
 		this.worldPlateauFactor.setMinSliderValue(0.0F);
 		this.worldPlateauFactor.setMaxSliderValue(0.30F);
@@ -214,7 +214,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * CONTINUE
 		 */
 
-		this.continueButton = new GUITextButton(0, 0, "Generate", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 8);
+		this.continueButton = new GUITextButton(0, 0, "Generate", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 8);
 		this.continueButton.setCentered(true);
 		this.continueButton.setPressedAction(new Actionable() {
 			@Override
@@ -256,7 +256,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		 * BACK
 		 */
 
-		this.backButton = new GUITextButton(0, 0, "Back", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 8);
+		this.backButton = new GUITextButton(0, 0, "Back", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 8);
 		this.backButton.setCentered(true);
 		this.backButton.setPressedAction(new Actionable() {
 			@Override
@@ -289,7 +289,7 @@ public class GUINewGameMenu extends GUI implements KeyboardListener, ResizeListe
 		this.titleText.setY(5);
 
 		this.tooltipText.setX(VictusLudusGame.engine.X_RESOLUTION() / 2);
-		this.tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PMONO_FONT_ID).getLineHeight()-5);
+		this.tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PRIMARY_FONT_ID).getLineHeight()-5);
 
 		this.setNextElementPos(this.titleText.getHeight() + 50);
 		this.setElementSpacing(5);

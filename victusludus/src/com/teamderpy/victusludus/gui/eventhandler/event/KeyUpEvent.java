@@ -34,4 +34,9 @@ public class KeyUpEvent extends EventObject{
 	public int getKey() {
 		return this.key;
 	}
+	
+	@Override
+	public String toString(){
+		return "KeyUpEvent" + "  Key " + this.key;
+	}
 }

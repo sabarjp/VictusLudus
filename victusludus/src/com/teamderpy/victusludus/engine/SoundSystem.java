@@ -13,12 +13,12 @@ import com.teamderpy.victusludus.VictusLudusGame;
 public class SoundSystem {
 
 	/** The Constant SOUND_SELECT_1. */
-	public static final String SOUND_SELECT_1 = "./sounds/select.wav";
+	public static final String SOUND_SELECT_1 = "sounds/select.wav";
 
 	/** The Constant SOUND_TYPE_1. */
-	public static final String SOUND_TYPE_1   = "./sounds/type.wav";
+	public static final String SOUND_TYPE_1   = "sounds/type.wav";
 
-	public static final String MUSIC_TRACK_TENSE = "./sounds/mystery.wav";
+	public static final String MUSIC_TRACK_TENSE = "sounds/mystery.wav";
 
 	private Music currentMusicTrack;
 
