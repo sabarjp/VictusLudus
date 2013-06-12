@@ -77,9 +77,9 @@ public class GUITextField extends GUIElement implements Actionable, Selectable, 
 	private Actionable action;
 
 	/** The img. */
-	private SitchedGUIImage img;
-	private SitchedGUIImage imgHover;
-	private SitchedGUIImage imgSelect;
+	private Patch3Image img;
+	private Patch3Image imgHover;
+	private Patch3Image imgSelect;
 
 	/** The maximum size. */
 	private int maximumSize = Integer.MAX_VALUE;
@@ -218,7 +218,7 @@ public class GUITextField extends GUIElement implements Actionable, Selectable, 
 		final int width = this.getWidth();
 
 		try {
-			this.img = new SitchedGUIImage(imagePath, width+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE, this.font.getLineHeight()+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE);
+			this.img = new Patch3Image(imagePath, width+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE, this.font.getLineHeight()+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE);
 		} catch (final Exception e) {
 			this.img = null;
 			e.printStackTrace();
@@ -234,7 +234,7 @@ public class GUITextField extends GUIElement implements Actionable, Selectable, 
 		final int width = this.getWidth();
 
 		try {
-			this.imgHover = new SitchedGUIImage(imagePath, width+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE, this.font.getLineHeight()+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE);
+			this.imgHover = new Patch3Image(imagePath, width+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE, this.font.getLineHeight()+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE);
 		} catch (final Exception e) {
 			this.imgHover = null;
 			e.printStackTrace();
@@ -250,7 +250,7 @@ public class GUITextField extends GUIElement implements Actionable, Selectable, 
 		final int width = this.getWidth();
 
 		try {
-			this.imgSelect = new SitchedGUIImage(imagePath, width+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE, this.font.getLineHeight()+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE);
+			this.imgSelect = new Patch3Image(imagePath, width+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE, this.font.getLineHeight()+GUITextField.BORDER_SIZE+GUITextField.BORDER_SIZE);
 		} catch (final Exception e) {
 			this.imgSelect = null;
 			e.printStackTrace();

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.teamderpy.victusludus.data.ResourceBin;
 import com.teamderpy.victusludus.engine.Engine;
+import com.teamderpy.victusludus.engine.graphics.EasyGL;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 
@@ -47,6 +49,7 @@ public class VictusLudusGame implements ApplicationListener {
 		this.camera.update();
 		
 		this.batch  = new SpriteBatch();
+		this.batch.disableBlending();
 		
 		VictusLudusGame.engine = new Engine(camera);
 		VictusLudusGame.engine.initializeBegin();
@@ -59,19 +62,10 @@ public class VictusLudusGame implements ApplicationListener {
 
 	@Override
 	public void render() {		
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		
 		if(VictusLudusGame.engine.running){
 			VictusLudusGame.engine.run(batch);
 		}
-		
-		batch.end();
-		
-		
+
 		//check if our assets are loaded
 		if(!this.isLoaded){
 			if(VictusLudusGame.engine.assetManager.update()){
@@ -80,6 +74,9 @@ public class VictusLudusGame implements ApplicationListener {
 				VictusLudusGame.engine.initializeEnd();
 				System.out.println("initialize complete");
 			} else {
+				EasyGL.setViewport();
+				EasyGL.clearScreen(1, 1, 1, 1);
+				
 				float progress = VictusLudusGame.engine.assetManager.getProgress();
 				int queued = VictusLudusGame.engine.assetManager.getQueuedAssets();
 				int loaded = VictusLudusGame.engine.assetManager.getLoadedAssets();
@@ -94,19 +91,28 @@ public class VictusLudusGame implements ApplicationListener {
 				final int loadingBarX = VictusLudusGame.engine.X_RESOLUTION()/3;
 				final int loadingBarY = VictusLudusGame.engine.Y_RESOLUTION()/2 - loadingBarHeight/2;
 				
+				batch.setProjectionMatrix(camera.combined);
 				batch.begin();
+				batch.enableBlending();
+				
 				GUI.defaultFont.setColor(Color.BLACK);
 				GUI.defaultFont.draw(batch, "Loading...", loadingBarX, loadingBarY - GUI.defaultFont.getLineHeight());
+				
+				batch.disableBlending();
+				
+				EasyGL.drawRect(batch, Color.BLACK, loadingBarX-2, loadingBarY-2, loadingBarLength+4, loadingBarHeight+4);
+				EasyGL.drawRect(batch, Color.CYAN, loadingBarX, loadingBarY, (int)(loadingBarLength*progress), loadingBarHeight);
+				
 				batch.end();
 				
-				VictusLudusGame.engine.shapeRenderer.setProjectionMatrix(this.camera.combined);
+				EasyGL.freePoolResources();
 				
-				VictusLudusGame.engine.shapeRenderer.begin(ShapeType.FilledRectangle);
-				VictusLudusGame.engine.shapeRenderer.setColor(Color.BLACK);
-				VictusLudusGame.engine.shapeRenderer.filledRect(loadingBarX-2, loadingBarY-2, loadingBarLength+4, loadingBarHeight+4);
-				VictusLudusGame.engine.shapeRenderer.setColor(Color.CYAN);
-				VictusLudusGame.engine.shapeRenderer.filledRect(loadingBarX, loadingBarY, loadingBarLength*progress, loadingBarHeight);
-				VictusLudusGame.engine.shapeRenderer.end();
+				//VictusLudusGame.engine.shapeRenderer.begin(ShapeType.FilledRectangle);
+				//VictusLudusGame.engine.shapeRenderer.setColor(Color.BLACK);
+				//VictusLudusGame.engine.shapeRenderer.filledRect(loadingBarX-2, loadingBarY-2, loadingBarLength+4, loadingBarHeight+4);
+				//VictusLudusGame.engine.shapeRenderer.setColor(Color.CYAN);
+				//VictusLudusGame.engine.shapeRenderer.filledRect(loadingBarX, loadingBarY, loadingBarLength*progress, loadingBarHeight);
+				//VictusLudusGame.engine.shapeRenderer.end();
 			}
 		}
 	}

@@ -15,8 +15,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.data.DataReader;
+import com.teamderpy.victusludus.data.VFile;
 import com.teamderpy.victusludus.data.resources.FontFile;
 import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
+import com.teamderpy.victusludus.engine.graphics.EasyGL;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 
 
@@ -54,13 +56,13 @@ public abstract class GUI{
 	public static Color TOOLTIP_TEXT_COLOR_DEFAULT = new Color(0.48f, 0.48f, 0.48f,1);
 
 	/** The pmono font id. */
-	public static String PMONO_FONT_ID = "EpilepsySansMono";
+	public static String PRIMARY_FONT_ID = "EpilepsySansMono";
 
 	/** The title font id. */
 	public static String TITLE_FONT_ID = "EpilepsySansMono";
 
 	/** The toolt font id. */
-	public static String TOOLT_FONT_ID = "EpilepsySansMono";
+	public static String TOOLTIP_FONT_ID = "EpilepsySansMono";
 
 	/** The Constant GUI_SHEET_PATH. */
 	public static final String  GUI_SHEET_PATH = "sheet/buttons.png";
@@ -87,7 +89,7 @@ public abstract class GUI{
 	public static BitmapFont defaultFont = new BitmapFont(true);
 
 	/** The background color. */
-	protected Color backgroundColor = new Color(1, 1, 1, 1);
+	protected Color backgroundColor = new Color(0, 0, 0, 1);
 
 	/** The element list. */
 	protected ArrayList<GUIElement> elementList = null;
@@ -165,10 +167,7 @@ public abstract class GUI{
 	 */
 	public void render(SpriteBatch batch, float deltaT) {
 		if(this.backgroundColor != null){
-			VictusLudusGame.engine.shapeRenderer.begin(ShapeType.Rectangle);
-			VictusLudusGame.engine.shapeRenderer.setColor(this.backgroundColor);
-			VictusLudusGame.engine.shapeRenderer.filledRect(this.x, this.y, this.width, this.height);
-			VictusLudusGame.engine.shapeRenderer.end();
+			EasyGL.drawRect(batch, this.backgroundColor, 0, 0, this.width, this.height);
 		}
 
 		for(GUIElement i:this.elementList){
@@ -282,12 +281,12 @@ public abstract class GUI{
 		// load fonts in the hash table
 		for(FontFile f:VictusLudusGame.resources.getFontHash().values()){
 
-				FileHandle font = Gdx.files.internal(f.getPath());
+				FileHandle font = VFile.getFileHandle(f.getPath());
 				FreeTypeFontGenerator ft = new FreeTypeFontGenerator(font);
 				
-				f.setFontNormal(ft.generateFont((int)(f.getDefaultSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, true));
-				f.setFontSmall(ft.generateFont((int)(f.getSmallSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, true));
-				f.setFontLarge(ft.generateFont((int)(f.getLargeSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, true));
+				f.setFontNormal(ft.generateFont((int)(f.getDefaultSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, false));
+				f.setFontSmall(ft.generateFont((int)(f.getSmallSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, false));
+				f.setFontLarge(ft.generateFont((int)(f.getLargeSize() * VictusLudusGame.engine.scalingFactor), FreeTypeFontGenerator.DEFAULT_CHARS, false));
 				
 				ft.dispose();
 
@@ -303,7 +302,6 @@ public abstract class GUI{
 	 * Load gui sprite sheets.
 	 */
 	public static void loadGUISpriteSheets(){
-		//GUI.guiButtonSheet = BitmapHandler.LoadSpriteSheet(GUI.GUI_SHEET_PATH);
 		GUI.guiButtonSheet = VictusLudusGame.resources.getTextureAtlasGUI().createSprite(GUI.GUI_SHEET_PATH);
 	}
 

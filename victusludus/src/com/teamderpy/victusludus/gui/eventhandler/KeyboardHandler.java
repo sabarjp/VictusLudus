@@ -53,31 +53,31 @@ public class KeyboardHandler extends AbstractHandler{
 			KeyDownEvent evt = (KeyDownEvent) e;
 	
 			for(KeyboardListener l: this.listenerQueue){
-				l.onKeyDown(evt);
-	
 				if(VictusLudusGame.engine.IS_DEBUGGING){
 					Gdx.app.log("info", "SIGNAL     " + KeyboardHandler.name + ": " + evt + " -> " + l);
 				}
+				
+				if(l.onKeyDown(evt)) break;
 			}
 		} else if(e instanceof KeyUpEvent){
 			KeyUpEvent evt = (KeyUpEvent) e;
 	
 			for(KeyboardListener l: this.listenerQueue){
-				l.onKeyUp(evt);
-	
 				if(VictusLudusGame.engine.IS_DEBUGGING){
 					Gdx.app.log("info", "SIGNAL     " + KeyboardHandler.name + ": " + evt + " -> " + l);
 				}
+				
+				if(l.onKeyUp(evt)) break;
 			}
 		} else if(e instanceof KeyTypedEvent){
 			KeyTypedEvent evt = (KeyTypedEvent) e;
 	
 			for(KeyboardListener l: this.listenerQueue){
-				l.onKeyTyped(evt);
-	
 				if(VictusLudusGame.engine.IS_DEBUGGING){
 					Gdx.app.log("info", "SIGNAL     " + KeyboardHandler.name + ": " + evt + " -> " + l);
 				}
+				
+				if(l.onKeyTyped(evt)) break;
 			}
 		}
 	}

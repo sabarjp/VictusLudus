@@ -1,6 +1,6 @@
 package com.teamderpy.victusludus.readerwriter;
 
-import java.io.FileReader;
+import java.io.Reader;
 import java.util.Scanner;
 
 
@@ -20,7 +20,7 @@ public class PeekScanner {
 	 *
 	 * @param fr the fr
 	 */
-	public PeekScanner(final FileReader fr){
+	public PeekScanner(final Reader fr){
 		this.scanner = new Scanner(fr);
 
 		if(this.scanner.hasNextLine()){

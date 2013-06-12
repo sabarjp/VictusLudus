@@ -27,7 +27,7 @@ import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
 public class GUITextButton extends GUIElement implements Actionable, Selectable, MouseListener, HoverListener, ButtonPressListener, SelectListener{
 	
 	/** The Constant BUTTON_1. */
-	public static final String BUTTON_1 = "res/sprites/gui/button1.png";
+	public static final String BUTTON_1 = "button";
 	
 	/** The Constant BORDER_SIZE. */
 	public static final int BORDER_SIZE = 3;
@@ -60,7 +60,7 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	private Actionable action;
 	
 	/** The img. */
-	private SitchedGUIImage img;
+	private Patch3Image img;
 	
 	/** The custom size. */
 	private final int customSize;
@@ -175,7 +175,7 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 	 */
 	@Override
 	public void render(SpriteBatch batch, float deltaT) {
-		if(this.isVisible()){
+		if(this.isVisible()){			
 			//draw image box first
 			int imageX;
 
@@ -185,7 +185,9 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 				imageX = this.originalX;
 			}
 
-			this.img.draw(imageX , this.y);
+			this.img.draw(batch, imageX , this.y);
+			
+			batch.enableBlending();
 
 			if(this.isDisabled){
 				this.font.setColor(this.color);
@@ -203,6 +205,8 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 				this.font.setColor(this.color);
 				this.font.draw(batch, this.text, this.x+GUITextButton.BORDER_SIZE, this.y+GUITextButton.BORDER_SIZE);
 			}
+			
+			batch.disableBlending();
 
 			if(VictusLudusGame.engine.IS_DEBUGGING){
 				VictusLudusGame.engine.shapeRenderer.setColor(Color.RED);
@@ -261,11 +265,11 @@ public class GUITextButton extends GUIElement implements Actionable, Selectable,
 		}
 
 		try {
-			this.img = new SitchedGUIImage(imagePath, width+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, this.font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE);
-		} catch (final Exception e) {
-			this.img = null;
+			this.img = new Patch3Image(imagePath, width+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE, (int)(this.font.getLineHeight()+GUITextButton.BORDER_SIZE+GUITextButton.BORDER_SIZE));
+		} catch (InvalidDimensionsException e) {
 			e.printStackTrace();
 		}
+	
 	}
 
 	/**

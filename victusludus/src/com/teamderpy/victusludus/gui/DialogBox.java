@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.engine.Actionable;
+import com.teamderpy.victusludus.engine.graphics.EasyGL;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 import com.teamderpy.victusludus.gui.element.GUIText;
 import com.teamderpy.victusludus.gui.element.GUITextButton;
@@ -33,6 +34,9 @@ public class DialogBox implements KeyboardListener, ResizeListener{
 	
 	/** The border color. */
 	protected Color borderColor = Color.BLACK;
+	
+	/** The fade color */
+	protected Color fadeColor = new Color(0, 0, 0, 0.7F);
 	
 	/** The element list. */
 	protected ArrayList<GUIElement> elementList = new ArrayList<GUIElement>();
@@ -109,25 +113,25 @@ public class DialogBox implements KeyboardListener, ResizeListener{
 		
 		if(numberOfButtons > 0 && numberOfButtons < 5){
 			if(numberOfButtons >= 1){
-				button1 = new GUITextButton(0, 0, "button1", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+				button1 = new GUITextButton(0, 0, "button1", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 				elementList.add(button1);
 				menuList.add(button1);
 			}
 			
 			if(numberOfButtons >= 2){
-				button2 = new GUITextButton(0, 0, "button2", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+				button2 = new GUITextButton(0, 0, "button2", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 				elementList.add(button2);
 				menuList.add(button2);
 			}
 			
 			if(numberOfButtons >= 3){
-				button3 = new GUITextButton(0, 0, "button3", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+				button3 = new GUITextButton(0, 0, "button3", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 				elementList.add(button3);
 				menuList.add(button3);
 			}
 			
 			if(numberOfButtons == 4){
-				button4 = new GUITextButton(0, 0, "button4", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+				button4 = new GUITextButton(0, 0, "button4", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 				elementList.add(button4);
 				menuList.add(button4);			
 			}
@@ -136,11 +140,11 @@ public class DialogBox implements KeyboardListener, ResizeListener{
 			throw new IllegalArgumentException();
 		}
 		
-		titleText = new GUIText(0, 0, "title", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		titleText = new GUIText(0, 0, "title", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		titleText.setCentered(true);
 		elementList.add(titleText);
 		
-		messageText = new GUIText(0, 0, "message", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		messageText = new GUIText(0, 0, "message", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		messageText.setCentered(true);
 		messageText.setWidthWrap(500);
 		elementList.add(messageText);
@@ -208,14 +212,12 @@ public class DialogBox implements KeyboardListener, ResizeListener{
 	 */
 	public void render(SpriteBatch batch, float deltaT) {
 		/* fader */
-		VictusLudusGame.engine.shapeRenderer.begin(ShapeType.FilledRectangle);
-		VictusLudusGame.engine.shapeRenderer.setColor(new Color(0,0,0,230));
-		VictusLudusGame.engine.shapeRenderer.filledRect(0, 0, VictusLudusGame.engine.X_RESOLUTION(), VictusLudusGame.engine.Y_RESOLUTION());
+		batch.enableBlending();
+		EasyGL.drawRect(batch, this.fadeColor, 0, 0, VictusLudusGame.engine.X_RESOLUTION(), VictusLudusGame.engine.Y_RESOLUTION());
+		batch.disableBlending();
 		
 		/* box */
-		VictusLudusGame.engine.shapeRenderer.setColor(this.backgroundColor);
-		VictusLudusGame.engine.shapeRenderer.filledRect(this.x, this.y, this.width, this.height);
-		VictusLudusGame.engine.shapeRenderer.end();
+		EasyGL.drawRect(batch, this.backgroundColor, this.x, this.y, this.width, this.height);
 		
 		/* elements */
 		for(GUIElement i:elementList){

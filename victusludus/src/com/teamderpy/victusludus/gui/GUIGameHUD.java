@@ -81,7 +81,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		 */
 
 		this.debugText = new GUIText(0, 0, "DEBUG\n",
-				Color.yellow, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+				Color.yellow, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.debugText.setCentered(false);
 		this.elementList.add(this.debugText);
 
@@ -90,7 +90,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		 */
 
 		this.tooltipText = new GUITextWithBox(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.tooltipText.setCentered(false);
 
 		/************
@@ -98,7 +98,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		 */
 
 		this.currentTileText = new GUIText(0, 0, "Selected: ",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.currentTileText.setCentered(false);
 		this.elementList.add(this.currentTileText);
 
@@ -107,7 +107,7 @@ public class GUIGameHUD extends GUI implements KeyboardListener, ResizeListener,
 		 */
 
 		this.currentDepthText = new GUIText(0, 0, "Depth: ",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.currentDepthText.setCentered(false);
 		this.elementList.add(this.currentDepthText);
 

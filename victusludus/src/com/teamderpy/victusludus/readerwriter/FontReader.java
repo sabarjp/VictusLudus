@@ -63,7 +63,7 @@ public class FontReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				Gdx.app.log("warning", "ERROR: font in " + path + " on line " + r.getLineNumber()
+				Gdx.app.log("warning", "<ERROR> font in " + path + " on line " + r.getLineNumber()
 						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
 			}
 		}

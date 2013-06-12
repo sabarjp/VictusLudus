@@ -105,4 +105,9 @@ public class MouseEvent extends EventObject{
 	public boolean isButtonPressed() {
 		return isButtonPressed;
 	}
+	
+	@Override
+	public String toString(){
+		return "Mouse event" + " evt " + this.specificEvent + "  " + this.x + "," + this.y + "  btn " + this.button + " " + this.isButtonPressed;
+	}
 }

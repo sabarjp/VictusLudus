@@ -66,7 +66,7 @@ public class GUICosmosGalaxyHUD extends GUI implements KeyboardListener, ResizeL
 		 */
 
 		this.tooltipText = new GUITextWithBox(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.tooltipText.setCentered(false);
 		
 		/************
@@ -95,7 +95,7 @@ public class GUICosmosGalaxyHUD extends GUI implements KeyboardListener, ResizeL
 		 */
 
 		this.selectedStarName = new GUIText(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLTIP_FONT_ID));
 		this.selectedStarName.setCentered(false);
 		this.selectedStarName.setRenderInverted(true);
 		this.elementList.add(this.selectedStarName);
@@ -105,7 +105,7 @@ public class GUICosmosGalaxyHUD extends GUI implements KeyboardListener, ResizeL
 		 */
 
 		this.selectedStarType = new GUIText(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLTIP_FONT_ID));
 		this.selectedStarType.setCentered(false);
 		this.selectedStarType.setRenderInverted(true);
 		this.elementList.add(this.selectedStarType);
@@ -115,7 +115,7 @@ public class GUICosmosGalaxyHUD extends GUI implements KeyboardListener, ResizeL
 		 */
 
 		this.selectedStarAge = new GUIText(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLTIP_FONT_ID));
 		this.selectedStarAge.setCentered(false);
 		this.selectedStarAge.setRenderInverted(true);
 		this.elementList.add(this.selectedStarAge);
@@ -125,7 +125,7 @@ public class GUICosmosGalaxyHUD extends GUI implements KeyboardListener, ResizeL
 		 */
 
 		this.selectedStarPlanetCount = new GUIText(0, 0, "",
-				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLT_FONT_ID));
+				GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontM(GUI.TOOLTIP_FONT_ID));
 		this.selectedStarPlanetCount.setCentered(false);
 		this.selectedStarPlanetCount.setRenderInverted(true);
 		this.elementList.add(this.selectedStarPlanetCount);

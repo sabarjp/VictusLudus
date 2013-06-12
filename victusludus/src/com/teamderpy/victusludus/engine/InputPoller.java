@@ -1,6 +1,5 @@
 package com.teamderpy.victusludus.engine;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyDownEvent;
@@ -35,37 +34,36 @@ public class InputPoller implements InputProcessor{
 	@Override
 	public boolean keyDown (int keycode) {
 		VictusLudusGame.engine.eventHandler.signal(new KeyDownEvent(VictusLudusGame.engine.eventHandler, keycode));
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean keyUp (int keycode) {
 		VictusLudusGame.engine.eventHandler.signal(new KeyUpEvent(VictusLudusGame.engine.eventHandler, keycode));
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean keyTyped (char character) {
 		VictusLudusGame.engine.eventHandler.signal(new KeyTypedEvent(VictusLudusGame.engine.eventHandler, character));
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_CLICK, screenX, screenY, button, true));
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_CLICK, screenX, screenY, button, false));
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
-		return true;
+		return false;
 	}
 
 	@Override
@@ -75,12 +73,12 @@ public class InputPoller implements InputProcessor{
 			this.lastMouseX = screenX;
 			this.lastMouseY = screenY;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean scrolled (int amount) {
 		VictusLudusGame.engine.eventHandler.signal(new ScrollEvent(VictusLudusGame.engine.eventHandler, amount));
-		return true;
+		return false;
 	}
 }

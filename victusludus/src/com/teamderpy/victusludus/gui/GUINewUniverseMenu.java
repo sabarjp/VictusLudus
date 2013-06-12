@@ -71,7 +71,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		 * TOOLTIP
 		 */
 
-		this.tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLT_FONT_ID));
+		this.tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.tooltipText.setCentered(true);
 		this.elementList.add(this.tooltipText);
 
@@ -80,7 +80,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		 * UNIVERSE NAME LABEL
 		 */
 
-		this.universeNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.universeNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.universeNameLabel.setText("Universe name");
 		this.universeNameLabel.setCentered(true);
 		this.elementList.add(this.universeNameLabel);
@@ -89,7 +89,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		 * UNIVERSE NAME
 		 */
 
-		this.universeNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.universeNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.universeNameField.setText("");
 		this.universeNameField.setMaximumSize(15);
 		this.universeNameField.setTooltip("The name of your universe");
@@ -107,7 +107,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		 * UNIVERSE AGE
 		 */
 
-		this.universeAgeSlider = new GUISliderHorizontal(0, 0, "Universe age", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.universeAgeSlider = new GUISliderHorizontal(0, 0, "Universe age", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.universeAgeSlider.setCentered(true);
 		this.universeAgeSlider.setMinSliderValue(3.0F);
 		this.universeAgeSlider.setMaxSliderValue(33.0F);
@@ -122,7 +122,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		 * UNIVERSE DENSITY
 		 */
 
-		this.universeDensitySlider = new GUISliderHorizontal(0, 0, "Universe density", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID));
+		this.universeDensitySlider = new GUISliderHorizontal(0, 0, "Universe density", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.universeDensitySlider.setCentered(true);
 		this.universeDensitySlider.setMinSliderValue(0.0F);
 		this.universeDensitySlider.setMaxSliderValue(1.5F);
@@ -137,7 +137,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		 * CONTINUE
 		 */
 
-		this.continueButton = new GUITextButton(0, 0, "Generate", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 8);
+		this.continueButton = new GUITextButton(0, 0, "Generate", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 8);
 		this.continueButton.setCentered(true);
 		this.continueButton.setPressedAction(new Actionable() {
 			@Override
@@ -173,7 +173,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		 * BACK
 		 */
 
-		this.backButton = new GUITextButton(0, 0, "Back", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PMONO_FONT_ID), 8);
+		this.backButton = new GUITextButton(0, 0, "Back", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 8);
 		this.backButton.setCentered(true);
 		this.backButton.setPressedAction(new Actionable() {
 			@Override
@@ -206,7 +206,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		this.titleText.setY(5);
 
 		this.tooltipText.setX(VictusLudusGame.engine.X_RESOLUTION() / 2);
-		this.tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PMONO_FONT_ID).getLineHeight()-5);
+		this.tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PRIMARY_FONT_ID).getLineHeight()-5);
 
 		this.setNextElementPos(this.titleText.getHeight() + 50);
 		this.setElementSpacing(5);

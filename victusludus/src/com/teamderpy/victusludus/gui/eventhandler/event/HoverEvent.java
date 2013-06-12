@@ -34,4 +34,9 @@ public class HoverEvent extends EventObject{
 	public boolean isEntering() {
 		return isEntering;
 	}
+	
+	@Override
+	public String toString(){
+		return "HoverEvent" + "  Enter? " + this.isEntering;
+	}
 }

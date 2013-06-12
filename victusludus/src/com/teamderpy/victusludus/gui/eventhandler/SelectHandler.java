@@ -49,14 +49,14 @@ public class SelectHandler extends AbstractHandler{
 		SelectEvent evt = (SelectEvent) e;
 
 		for(SelectListener l: this.listenerQueue){
-			if(evt.isSelecting()){
-				l.onSelect(evt);
-			} else {
-				l.onUnselect(evt);
-			}
-
 			if(VictusLudusGame.engine.IS_DEBUGGING){
 				Gdx.app.log("info", "SIGNAL     " + SelectHandler.name + ": " + evt + " -> " + l);
+			}
+			
+			if(evt.isSelecting()){
+				if(l.onSelect(evt)) break;
+			} else {
+				if(l.onUnselect(evt)) break;
 			}
 		}
 	}

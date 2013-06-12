@@ -34,4 +34,9 @@ public class TooltipEvent extends EventObject{
 	public String getTooltip(){
 		return this.tooltip;
 	}
+	
+	@Override
+	public String toString(){
+		return "TooltipEvent" + "  tip " + this.tooltip;
+	}
 }

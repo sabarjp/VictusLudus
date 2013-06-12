@@ -51,25 +51,25 @@ public class MouseHandler extends AbstractHandler{
 			MouseEvent evt = (MouseEvent) e;
 			
 			for(MouseListener l: this.listenerQueue){
-				if(evt.getSpecificEvent() == MouseEvent.EVENT_CLICK){
-					l.onMouseClick(evt);
-				} else if (evt.getSpecificEvent() == MouseEvent.EVENT_MOVE){
-					l.onMouseMove(evt);
-				}
-
 				if(VictusLudusGame.engine.IS_DEBUGGING){
 					Gdx.app.log("info", "SIGNAL     " + MouseHandler.name + ": " + evt + " -> " + l);
+				}
+				
+				if(evt.getSpecificEvent() == MouseEvent.EVENT_CLICK){
+					if(l.onMouseClick(evt)) break;;
+				} else if (evt.getSpecificEvent() == MouseEvent.EVENT_MOVE){
+					l.onMouseMove(evt);
 				}
 			}
 		} else if(e instanceof ScrollEvent){
 			ScrollEvent evt = (ScrollEvent) e;
 			
 			for(MouseListener l: this.listenerQueue){
-				l.onScroll(evt);
-
 				if(VictusLudusGame.engine.IS_DEBUGGING){
 					Gdx.app.log("info", "SIGNAL     " + MouseHandler.name + ": " + evt + " -> " + l);
 				}
+				
+				if(l.onScroll(evt)) break;
 			}
 		}
 	}

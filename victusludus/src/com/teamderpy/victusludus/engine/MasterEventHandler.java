@@ -133,14 +133,12 @@ public class MasterEventHandler {
 		/* send signals to listeners */
 		int dequeueUntil = this.eventQueue.size();
 		int dequeueCount = 0;
-		//Triage.PrintError("Sending signals for " + eventQueue.size() + " events");
+
 		while(dequeueCount < dequeueUntil){
 			if(this.eventQueue.isEmpty()){
-				Gdx.app.log("warning", "ERROR: Event queue modified while traversing!");
+				Gdx.app.log("warning", "<ERROR> Event queue modified while traversing!");
 				return;
 			}
-
-			//Triage.PrintError("   Signal " + (dequeueCount+1) + " of " + dequeueUntil);
 
 			EventObject e = this.eventQueue.removeFirst();
 

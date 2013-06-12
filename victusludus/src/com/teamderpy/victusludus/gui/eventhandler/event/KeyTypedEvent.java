@@ -33,4 +33,9 @@ public class KeyTypedEvent extends EventObject{
 	public char getCharacter() {
 		return this.character;
 	}
+	
+	@Override
+	public String toString(){
+		return "KeyTypedEvent" + "  Key " + this.character;
+	}
 }

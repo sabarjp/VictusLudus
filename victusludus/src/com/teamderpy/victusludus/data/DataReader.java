@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.data.resources.StarColorTuple;
 import com.teamderpy.victusludus.readerwriter.BackgroundReader;
 import com.teamderpy.victusludus.readerwriter.CreatureReader;
@@ -90,10 +91,13 @@ public class DataReader {
 	private static void LoadSounds(String path){
 		AssetManager assetManager = VictusLudusGame.engine.assetManager;
 		
-		FileHandle[] files = Gdx.files.internal(path).list();
+		FileHandle soundFolder = VFile.getFileHandle(path);
+		FileHandle[] files = VFile.getFiles(soundFolder);
+		
 		for(FileHandle file: files) {
-		   if(!file.isDirectory() && file.extension().toLowerCase() == ".wav"){
+		   if(file.exists() && file.extension().toLowerCase().equals("wav")){
 		   	assetManager.load(file.path(), Sound.class);
+		   	System.err.println("loaded sound");
 		   }
 		}
 	}
@@ -108,7 +112,7 @@ public class DataReader {
 		int minColor = 0;
 		int maxColor = 33000;
 
-		Sprite starColorImage = new Sprite(new Texture(Gdx.files.internal(starColorChart)));
+		Sprite starColorImage = new Sprite(new Texture(VFile.getFileHandle(starColorChart)));
 		starColorImage.flip(true, false);
 		
 		starColorImage.getTexture().getTextureData().prepare();
@@ -135,26 +139,21 @@ public class DataReader {
 	 * @param reader the reader
 	 */
 	private static <T> void ReadAndLoadAll(final String path, final Map<String, T> hash, final IObjectReader reader) {
-		File folder = new File(path);
+		FileHandle folder = VFile.getFileHandle(path);
 
-		if (folder.exists() && folder.canRead()) {
-			File[] listOfFiles = folder.listFiles();
+		FileHandle[] listOfFiles = VFile.getFiles(folder);
 
-			for (File f : listOfFiles) {
-				if (!f.isDirectory()) {
-					if (f.exists() && f.canRead()) {
-						reader.ReadAndLoad(f.getAbsolutePath(), hash);
+		for (FileHandle f : listOfFiles) {
+			if (f.exists()) {
+				reader.ReadAndLoad(f.path(), hash);
 
-						if (VictusLudusGame.engine.IS_DEBUGGING) {
-							Gdx.app.log("info", "loaded " + f.getPath());
-						}
-					} else {
-						Gdx.app.log("severe", "ERROR: Cannot read file [" + f.getAbsolutePath() + "]");
-					}
+				if (VictusLudusGame.engine.IS_DEBUGGING) {
+					Gdx.app.log("info", "loaded " + f.path());
 				}
+			} else {
+				Gdx.app.log("severe", "<ERROR> Cannot read file [" + f.path() + "]");
+				throw new VictusRuntimeException("Could not read resource folder for " + path);
 			}
-		} else {
-			Gdx.app.log("severe", "ERROR: Folder does not exist [" + path + "]");
 		}
 	}
 
@@ -179,12 +178,14 @@ public class DataReader {
 							Gdx.app.log("info", "loaded " + f.getPath());
 						}
 					} else {
-						Gdx.app.log("severe", "ERROR: Cannot read file [" + f.getAbsolutePath() + "]");
+						Gdx.app.log("severe", "<ERROR> Cannot read file [" + f.getAbsolutePath() + "]");
+						throw new VictusRuntimeException("Could not read resource folder for " + path);
 					}
 				}
 			}
 		} else {
-			Gdx.app.log("severe", "ERROR: Folder does not exist [" + path + "]");
+			Gdx.app.log("severe", "<ERROR> Folder does not exist [" + path + "]");
+			throw new VictusRuntimeException("Could not locate resource folder for " + path);
 		}
 	}
 }

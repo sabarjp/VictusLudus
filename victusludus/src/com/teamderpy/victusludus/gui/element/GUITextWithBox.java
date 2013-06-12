@@ -32,7 +32,7 @@ public class GUITextWithBox extends GUIElement{
 	private UnicodeFont font;
 	
 	/** The img. */
-	private SitchedGUIImage img;
+	private Patch3Image img;
 	
 	/** The custom size. */
 	private final int customSize;
@@ -221,7 +221,7 @@ public class GUITextWithBox extends GUIElement{
 		}
 
 		try {
-			this.img = new SitchedGUIImage(imagePath, width+GUITextWithBox.BORDER_SIZE+GUITextWithBox.BORDER_SIZE, this.font.getLineHeight()+GUITextWithBox.BORDER_SIZE+GUITextWithBox.BORDER_SIZE);
+			this.img = new Patch3Image(imagePath, width+GUITextWithBox.BORDER_SIZE+GUITextWithBox.BORDER_SIZE, this.font.getLineHeight()+GUITextWithBox.BORDER_SIZE+GUITextWithBox.BORDER_SIZE);
 		} catch (final Exception e) {
 			this.img = null;
 			e.printStackTrace();

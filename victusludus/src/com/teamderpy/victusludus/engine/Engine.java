@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -18,17 +19,20 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.data.DataReader;
+import com.teamderpy.victusludus.engine.graphics.EasyGL;
 import com.teamderpy.victusludus.game.cosmos.Universe;
 import com.teamderpy.victusludus.gui.DialogBox;
 import com.teamderpy.victusludus.gui.GUI;
+import com.teamderpy.victusludus.gui.UI;
+import com.teamderpy.victusludus.gui.eventhandler.ResizeListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 
 /**
  * The Class Engine.
  */
-public class Engine{
-	/** The target tickrate. */
-	private final int TARGET_TICKRATE = 60;       //logic occurs this many times per second
+public class Engine implements ResizeListener{
+	/** The target tick rate, how often logic occurs*/
+	private final int TARGET_TICKRATE = 60; 
 
 	/** The is resizable. */
 	private final boolean IS_RESIZABLE = false;
@@ -50,6 +54,9 @@ public class Engine{
 
 	/** The running. */
 	public boolean running = false;
+	
+	/** Whether or not to skip frames if we are behind */
+	private boolean isFrameSkipOn = true;
 
 	/** The frames since reset. */
 	private int framesSinceReset;
@@ -58,13 +65,16 @@ public class Engine{
 	private int ticksSinceReset;
 
 	/** The last frame reset time. */
-	private long lastFrameResetTime;
+	private long lastFPSResetTime;
 
 	/** The last frame draw time. */
 	private long lastFrameDrawTime;
 
 	/** The last tick time. */
 	private long lastTickTime;
+	
+	/** The last time the game title was updated */
+	private long lastTitleUpdateTime;
 
 	/** The tick count. */
 	private long tickCount = 0;
@@ -74,6 +84,8 @@ public class Engine{
 
 	/** The current gui. */
 	public GUI currentGUI = null;
+	
+	public UI currentUI = null;
 
 	/** The current dialog. */
 	public DialogBox currentDialog = null;
@@ -101,6 +113,9 @@ public class Engine{
 
 	/** The event handler. */
 	public MasterEventHandler eventHandler = null;
+	
+	/** The input multiplexer */
+	public InputMultiplexer inputMultiplexer = new InputMultiplexer();
 
 	/** The preferences. */
 	public com.teamderpy.victusludus.readerwriter.JLDLRandomReaderWriter preferences;
@@ -115,7 +130,13 @@ public class Engine{
 	public ShapeRenderer shapeRenderer;
 	
 	/** the camera */
-	private OrthographicCamera camera;
+	public OrthographicCamera camera;
+	
+	/** frames per second */
+	private int fps = 0;
+	
+	/** ticks per second */
+	private int tps = 0;
 	
 	/**
 	 * Initialize a new game engine
@@ -165,11 +186,15 @@ public class Engine{
 		this.initSoundSystem();
 
 		//this.changeGUI(new com.teamderpy.victusludus.gui.GUIMainMenu());
+		
+		this.changeUI(new com.teamderpy.victusludus.gui.UIMainMenu());
 
 		//LoadLevel();
 
 		this.globalListener = new GlobalListener();
 		this.globalListener.registerListeners();
+		
+		this.eventHandler.resizeHandler.registerPlease(this);
 
 		this.start();
 	}
@@ -184,6 +209,8 @@ public class Engine{
 			
 			this.camera.setToOrtho(true, this.X_RESOLUTION(), this.Y_RESOLUTION());
 			this.camera.update();
+			
+			this.shapeRenderer.setProjectionMatrix(camera.combined);
 		}
 	}
 	
@@ -192,7 +219,8 @@ public class Engine{
 	 */
 	private void initInputPoller(){
 		this.inputPoller = new InputPoller();
-		Gdx.input.setInputProcessor(inputPoller);
+		this.inputMultiplexer.addProcessor(inputPoller);
+		Gdx.input.setInputProcessor(this.inputMultiplexer);
 	}
 
 	/**
@@ -216,7 +244,7 @@ public class Engine{
 		r = this.preferences.read("settings->interface->fonts->main");
 
 		if(r != null) {
-			GUI.PMONO_FONT_ID = r;
+			GUI.PRIMARY_FONT_ID = r;
 		}
 
 		r = this.preferences.read("settings->interface->fonts->big");
@@ -228,7 +256,7 @@ public class Engine{
 		r = this.preferences.read("settings->interface->fonts->small");
 
 		if(r != null) {
-			GUI.TOOLT_FONT_ID = r;
+			GUI.TOOLTIP_FONT_ID = r;
 		}
 
 
@@ -336,65 +364,9 @@ public class Engine{
 	private void loadResources(){
 		this.assetManager = new AssetManager();
 		
-		final int loadingBarLength = this.X_RESOLUTION()/3;
-		final int loadingBarHeight = 20;
-		final int loadingBarX = this.X_RESOLUTION()/3;
-		final int loadingBarY = this.Y_RESOLUTION()/2 - loadingBarHeight/2;
-		final Color loadingBarColor = new Color(0.44F, 0.86F, 0.61F, 1);
-		final Color borderColor = Color.BLACK;
-
-//		this.clearGL();
-//		
-//		TextureAtlas atlas;
-//		atlas = new TextureAtlas(Gdx.files.internal("sprites/spritesheet"));
-//		Sprite sprite = atlas.createSprite("gui/loading_text");
-//
-//		this.graphics.drawImage(loadText, loadingBarX, loadingBarY - loadText.getHeight());
-//		this.graphics.setColor(borderColor);
-//		this.graphics.fillRect(loadingBarX-2, loadingBarY-2, loadingBarLength+4, loadingBarHeight+4);
-//		this.graphics.setColor(loadingBarColor);
-//		this.graphics.fillRect(loadingBarX, loadingBarY, loadingBarLength/4, loadingBarHeight);
-//		Display.update();
-
 		//external data
-		
 		DataReader.ReadData();		
 		GUI.loadFonts();
-
-//		this.clearGL();
-//		this.graphics.drawImage(loadText, loadingBarX, loadingBarY - loadText.getHeight());
-//		this.graphics.setColor(borderColor);
-//		this.graphics.fillRect(loadingBarX-2, loadingBarY-2, loadingBarLength+4, loadingBarHeight+4);
-//		this.graphics.setColor(loadingBarColor);
-//		this.graphics.fillRect(loadingBarX, loadingBarY, loadingBarLength/3, loadingBarHeight);
-//		Display.update();
-
-//		this.clearGL();
-//		this.graphics.drawImage(loadText, loadingBarX, loadingBarY - loadText.getHeight());
-//		this.graphics.setColor(borderColor);
-//		this.graphics.fillRect(loadingBarX-2, loadingBarY-2, loadingBarLength+4, loadingBarHeight+4);
-//		this.graphics.setColor(loadingBarColor);
-//		this.graphics.fillRect(loadingBarX, loadingBarY, loadingBarLength/2, loadingBarHeight);
-//		Display.update();
-
-		//fonts and initializing, this is somewhat slow
-
-
-//		this.clearGL();
-//		this.graphics.drawImage(loadText, loadingBarX, loadingBarY - loadText.getHeight());
-//		this.graphics.setColor(borderColor);
-//		this.graphics.fillRect(loadingBarX-2, loadingBarY-2, loadingBarLength+4, loadingBarHeight+4);
-//		this.graphics.setColor(loadingBarColor);
-//		this.graphics.fillRect(loadingBarX, loadingBarY, loadingBarLength, loadingBarHeight);
-//		Display.update();
-	}
-
-	/**
-	 * Clear gl.
-	 */
-	private void clearGL(){
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 	}
 
 	/**
@@ -424,59 +396,84 @@ public class Engine{
 	}
 
 	/**
-	 * Start.
-	 */
-	public void start() {
-		this.running = true;
-	}
-
-	/**
-	 * Stop.
-	 */
-	public void stop() {
-		this.running = false;
-	}
-
-	/**
-	 * Calculate fps.
-	 */
-	private void calculateFPS(){
-		final long interval = Time.getTime() - this.lastFrameResetTime;
-
-		if (interval > 1000) {
-			final Runtime rt = Runtime.getRuntime();
-
-			Gdx.graphics.setTitle("FPS: " + (int)(this.framesSinceReset*(1000.0/interval)) +
-					"   TPS: " + (int)(this.ticksSinceReset*(1000.0/interval)) +
-					"   Mem:" + rt.totalMemory() / 1000000 +
-					"M   Free: " + rt.freeMemory() / 1000000 +
-					"M   Use: " + (rt.totalMemory() - rt.freeMemory()) / 1000000 +
-					"M   EvtLsn: " + this.eventHandler.getListenerCounter() +
-					"   EvtCnt: " + this.eventHandler.getEventCounter() +
-					"   TCnt: " + this.getTickCount());
-
-			this.framesSinceReset = 0;
-			this.ticksSinceReset = 0;
-			this.lastFrameResetTime = Time.getTime();
-		}
-	}
-
-	/**
 	 * Tick if permitted.
 	 */
 	public void tickIfPermitted() {
-		final long interval = Time.getTime() - this.lastTickTime;
-		final long timePerTick = (long) (1.0/this.TARGET_TICKRATE*1000);
+		final long interval = Time.getTimeNano() - this.lastTickTime;
+		final long timePerTick = (long) (1.0/this.TARGET_TICKRATE*1000000000.0);
 
 		//passed time must be at least the tick rate
 		if(interval >= timePerTick){
-			int ticks = (int)(interval / timePerTick);
+			int ticksBehind = (int)(interval / timePerTick);
 
-			while(ticks-- > 0){
+			while(ticksBehind-- > 0){
 				this.tick();
 				this.ticksSinceReset++;
-				this.lastTickTime += timePerTick;
 			}
+			
+			this.lastTickTime = Time.getTimeNano();
+		}
+	}
+	
+	/**
+	 * Render if permitted.
+	 */
+	public void renderIfPermitted(final SpriteBatch batch) {
+		final long interval = Time.getTimeNano() - this.lastFrameDrawTime;
+		final long timePerDraw = (long)(1.0/this.targetFramerate*1000000000.0);
+		float deltaTime = (float)interval / 1000000000.0F;
+
+		int framesBehind = Math.max(1, (int)(interval / timePerDraw));
+
+		if(isFrameSkipOn){
+			framesBehind = 1;
+		}
+
+		while(framesBehind-- > 0){
+			deltaTime /= framesBehind;
+			
+			this.render(batch, deltaTime);
+			this.framesSinceReset++;
+		}
+		
+		this.lastFrameDrawTime = Time.getTimeNano();
+	}
+	
+	/**
+	 * Calculate fps
+	 */
+	private void calculateFPS(){
+		final long interval = Time.getTimeMilli() - this.lastFPSResetTime;
+
+		if (interval > 1000) {
+			this.fps = (int)Math.round((this.framesSinceReset*(1000.0/interval)));
+			this.tps = (int)Math.round((this.ticksSinceReset*(1000.0/interval)));
+			
+			System.err.println(this.framesSinceReset + " frames in " + interval + " time");
+			System.err.println(this.ticksSinceReset + "  ticks in " + interval + " time");
+
+			this.framesSinceReset = 0;
+			this.ticksSinceReset = 0;
+			this.lastFPSResetTime = Time.getTimeMilli();
+		}
+	}
+	
+	/**
+	 * Set the title of the game window
+	 */
+	private void setTitle(){
+		final long interval = Time.getTimeMilli() - this.lastTitleUpdateTime;
+		
+		if (interval > 1000) {
+			Gdx.graphics.setTitle("FPS: " + this.fps +
+				"   TPS: " + this.tps +
+				"   JHeap:" + Gdx.app.getJavaHeap() / 1000000 +
+				"M   NHeap: " + Gdx.app.getNativeHeap() / 1000000 +
+				"M   EvtLsn: " + this.eventHandler.getListenerCounter() +
+				"   EvtCnt: " + this.eventHandler.getEventCounter() +
+				"   TCnt: " + this.getTickCount());
+			
+			this.lastTitleUpdateTime = Time.getTimeMilli();
 		}
 	}
 
@@ -484,10 +481,6 @@ public class Engine{
 	 * Tick
 	 */
 	public void tick(){
-		if(this.IS_DEBUGGING){
-			System.err.println(this.eventHandler.getListenerList());
-		}
-
 		if(this.currentView != null) {
 			this.currentView.tick();
 		}
@@ -508,56 +501,83 @@ public class Engine{
 	 * Render
 	 */
 	public void render(final SpriteBatch batch, final float deltaT) {
-		this.clearGL();
-
-		this.lastFrameDrawTime = Time.getTime();
+		EasyGL.setViewport();
+		EasyGL.clearScreen(1, 1, 1, 1);
+		
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
 
 		if(this.currentView != null) {
 			this.currentView.render(batch, deltaT);
 		}
+		
+		batch.end();
 
 		// GUI
-		if(this.currentGUI != null) {
-			this.currentGUI.render(batch, deltaT);
+		//if(this.currentGUI != null) {
+		//	this.currentGUI.render(batch, deltaT);
+		//}
+		
+		if(this.currentUI != null) {
+			this.currentUI.render(batch, deltaT);
 		}
 
-		if(this.currentDialog != null) {
-			this.currentDialog.render(batch, deltaT);
-		}
+		//if(this.currentDialog != null) {
+		//	this.currentDialog.render(batch, deltaT);
+		//}
+		
+		
+		EasyGL.freePoolResources();
+		this.lastFrameDrawTime = Time.getTime();
 	}
 
 	/**
 	 * Run.
 	 */
 	public void run(final SpriteBatch batch) {
-		this.lastFrameResetTime = Time.getTime();
-		this.lastTickTime = Time.getTime();
-		this.lastFrameDrawTime = Time.getTime();
+		//rate of logic needs to be carefully controlled
+		this.tickIfPermitted();
+
+		//but draw as fast as possible
+		this.renderIfPermitted(batch);
+
+		//send events as fast as possible
+		this.eventHandler.tick();
+		
+		//calc FPS
+		this.calculateFPS();
+		this.setTitle();
+	}
+	
+	/**
+	 * Start.
+	 */
+	public void start() {
+		this.running = true;
+		
+		this.lastTickTime = Time.getTimeNano();
+		this.lastFrameDrawTime = Time.getTimeNano();
+		this.lastFPSResetTime = Time.getTimeMilli();
+		this.lastTitleUpdateTime = Time.getTimeMilli();
 
 		if (this.IS_DEBUGGING) {
 			Gdx.app.log("info", "running");
 		}
+	}
 
-		while (this.running) {
-			//this section constitutes a single frame
-			this.framesSinceReset++;
-			this.calculateFPS();
-
-			//rate of logic needs to be carefully controlled
-			this.tickIfPermitted();
-
-			//draw as fast as possible
-			this.render(batch, (Time.getTime() - this.lastFrameDrawTime)/1000.0F);
-
-			//send events as fast as possible
-			this.eventHandler.tick();
-		}
-
+	/**
+	 * Stop.
+	 */
+	public void stop() {
+		this.running = false;
+		
 		if (this.IS_DEBUGGING) {
 			Gdx.app.log("info", "closing");
 		}
 
 		this.soundSystem.close();
+		
+		Gdx.app.exit();
 	}
 
 	/**
@@ -570,6 +590,20 @@ public class Engine{
 			this.currentGUI.unregisterListeners();
 		}
 		this.currentGUI = newGUI;
+		this.inputPoller.forceMouseMove();
+	}
+	
+	/**
+	 * Change to a new UI
+	 * 
+	 * @param newUI the UI to switch to
+	 */
+	public void changeUI(final UI newUI) {
+		if (this.currentUI != null) {
+			//this.currentUI.unregisterListeners();
+			this.currentUI.dispose();
+		}
+		this.currentUI = newUI;
 		this.inputPoller.forceMouseMove();
 	}
 
@@ -668,6 +702,12 @@ public class Engine{
 	 */
 	public long getTickCount() {
 		return this.tickCount;
+	}
+
+	@Override
+	public void onResize (ResizeEvent resizeEvent) {
+		this.currentDisplayMode = new FlexibleDisplayMode(resizeEvent.getWidth(), resizeEvent.getHeight(), false);
+		this.setDisplay();
 	}
 }
 

@@ -49,11 +49,11 @@ public class TooltipHandler extends AbstractHandler{
 		TooltipEvent evt = (TooltipEvent) e;
 
 		for(TooltipListener l: this.listenerQueue){
-			l.onChangeTooltip(evt);
-
 			if(VictusLudusGame.engine.IS_DEBUGGING){
 				Gdx.app.log("info", "SIGNAL     " + TooltipHandler.name + ": " + evt + " -> " + l);
 			}
+			
+			if(l.onChangeTooltip(evt)) break;
 		}
 	}
 

@@ -34,4 +34,9 @@ public class ButtonPressEvent extends EventObject{
 	public String getValue(){
 		return this.value;
 	}
+	
+	@Override
+	public String toString(){
+		return "ButtonPressEvent" + "  Val " + this.value;
+	}
 }
