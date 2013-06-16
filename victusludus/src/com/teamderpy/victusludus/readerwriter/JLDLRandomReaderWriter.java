@@ -18,6 +18,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.teamderpy.victusludus.data.JTree;
 import com.teamderpy.victusludus.data.JTreeNode;
+import com.teamderpy.victusludus.data.VFile;
 
 
 /**
@@ -96,7 +97,7 @@ public class JLDLRandomReaderWriter {
 	 * Initialize.
 	 */
 	private void initialize() {
-		FileHandle f = Gdx.files.internal(this.filePath);
+		FileHandle f = VFile.getFileHandle(this.filePath);
 		
 		if(!f.exists()){
 			try {
@@ -124,7 +125,6 @@ public class JLDLRandomReaderWriter {
 		s.close();
 	}
 	
-	//creates a tree representation of the data we have
 	/**
 	 * Treeify.
 	 */

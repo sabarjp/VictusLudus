@@ -2,12 +2,12 @@ package com.teamderpy.victusludus.game.cosmos;
 
 import java.math.BigDecimal;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.VictusLudusGame.enginengine.GameException;
-import com.teamderpy.VictusLudusGame.enginengine.ISettings;
-import com.teamderpy.VictusLudusGame.enginengine.IView;
-import com.teamderpy.VictusLudusGame.enginengine.InputPoller;
-import com.teamderpy.VictusLudusGame.enginengine.SoundSystem;
+import com.teamderpy.victusludus.engine.GameException;
+import com.teamderpy.victusludus.engine.ISettings;
+import com.teamderpy.victusludus.engine.IView;
+import com.teamderpy.victusludus.engine.SoundSystem;
 import com.teamderpy.victusludus.game.GameCamera;
 import com.teamderpy.victusludus.game.GameDimensions;
 import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
@@ -15,6 +15,7 @@ import com.teamderpy.victusludus.gui.DialogBox;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.eventhandler.MouseListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
+import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
 
 public class Cosmos implements IView, MouseListener{
 	/** the universe */
@@ -89,17 +90,17 @@ public class Cosmos implements IView, MouseListener{
 	}
 
 	@Override
-	public void render(final float deltaT) {
+	public void render(final SpriteBatch batch, final float deltaT) {
 		if(this.isRunning){
 			this.cosmosRenderer.render(deltaT);
 
 			// GUI
 			if(this.currentGUI != null) {
-				this.currentGUI.render();
+				this.currentGUI.render(batch, deltaT);
 			}
 
 			if(this.currentDialog != null) {
-				this.currentDialog.render();
+				this.currentDialog.render(batch, deltaT);
 			}
 		}
 	}
@@ -155,15 +156,13 @@ public class Cosmos implements IView, MouseListener{
 	}
 
 	@Override
-	public void onMouseClick(final MouseEvent mouseEvent) {
-		// TODO Auto-generated method stub
-
+	public boolean onMouseClick(final MouseEvent mouseEvent) {
+		return false;
 	}
 
 	@Override
 	public void onMouseMove(final MouseEvent mouseEvent) {
-		// TODO Auto-generated method stub
-
+		return;
 	}
 
 	/**
@@ -252,5 +251,10 @@ public class Cosmos implements IView, MouseListener{
 
 	public GUI getCurrentGUI() {
 		return this.currentGUI;
+	}
+
+	@Override
+	public boolean onScroll (ScrollEvent scrollEvent) {
+		return false;
 	}
 }

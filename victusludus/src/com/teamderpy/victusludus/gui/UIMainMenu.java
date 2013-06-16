@@ -22,27 +22,6 @@ public class UIMainMenu extends UI{
 	@Override
 	public void create(){
 		stage = new Stage();
-		skin = new Skin();
-		
-		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
-		pixmap.setColor(Color.WHITE);
-		pixmap.fill();
-		
-		skin.add("white", new Texture(pixmap));
-		skin.add("default", GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
-		
-		TextButtonStyle buttonStyle = new TextButtonStyle();
-		buttonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-		buttonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-		buttonStyle.checked = skin.newDrawable("white", Color.BLUE);
-		buttonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-		buttonStyle.font = skin.getFont("default");
-		skin.add("default", buttonStyle);
-		
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.fontColor = GUI.ELEMENT_COLOR_DEFAULT;
-		labelStyle.font = skin.getFont("default");
-		skin.add("default", labelStyle);
 		
 		stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		
@@ -51,19 +30,19 @@ public class UIMainMenu extends UI{
 		Table tableContent = new Table();
 		tableContent.setFillParent(true);
 		tableContent.setBackground(skin.newDrawable("white", Color.BLACK));
-		tableContent.debug();
+		//tableContent.debug();
 		tableContent.center();
 		stage.addActor(tableContent);
 		
 		Table tableTitle = new Table();
 		tableTitle.setFillParent(true);
-		tableTitle.debug();
+		//tableTitle.debug();
 		tableTitle.top();
 		stage.addActor(tableTitle);
 		
 		Table tableFooter = new Table();
 		tableFooter.setFillParent(true);
-		tableFooter.debug();
+		//tableFooter.debug();
 		tableFooter.bottom();
 		stage.addActor(tableFooter);
 		
@@ -71,7 +50,7 @@ public class UIMainMenu extends UI{
 		 * TITLE
 		 */
 		
-		final Label titleText = new Label("Victus Ludus", skin);
+		final Label titleText = new Label("Victus Ludus", skin, "medium");
 		tableTitle.add(titleText);
 		tableTitle.row();
 		
@@ -88,12 +67,13 @@ public class UIMainMenu extends UI{
 		 */
 		
 		final TextButton newWorldButton = new TextButton("New universe", skin);
-		tableContent.add(newWorldButton);
+		tableContent.add(newWorldButton).pad(UI.CELL_PADDING);
 		tableContent.row();
 		
 		newWorldButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				newWorldButton.setText("Good job!");
+				UIMainMenu.this.soundSelect.play();
+				VictusLudusGame.engine.changeUI(new UINewUniverseMenu());
 			}
 		});
 		
@@ -108,12 +88,13 @@ public class UIMainMenu extends UI{
 		 */
 		
 		final TextButton optionsButton = new TextButton("Options", skin);
-		tableContent.add(optionsButton);
+		tableContent.add(optionsButton).pad(UI.CELL_PADDING);
 		tableContent.row();
 		
 		optionsButton.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				optionsButton.setText("Good job!");
+				UIMainMenu.this.soundSelect.play();
+				VictusLudusGame.engine.changeUI(new UIOptionsMenu());
 			}
 		});
 		
@@ -128,7 +109,7 @@ public class UIMainMenu extends UI{
 		 */
 		
 		final TextButton quitButton = new TextButton("Quit", skin);
-		tableContent.add(quitButton);
+		tableContent.add(quitButton).pad(UI.CELL_PADDING);
 		tableContent.row();
 		
 		quitButton.addListener(new ChangeListener() {

@@ -1,6 +1,7 @@
 package com.teamderpy.victusludus.game;
 
-import com.teamderpy.VictusLudusGame.enginengine.ISettings;
+import com.teamderpy.victusludus.engine.ISettings;
+
 
 
 /**

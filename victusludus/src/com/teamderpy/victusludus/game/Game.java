@@ -3,16 +3,9 @@ package com.teamderpy.victusludus.game;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.Color;
-
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
-import com.teamderpy.VictusLudusGame.enginengine.GameException;
-import com.teamderpy.VictusLudusGame.enginengine.ISettings;
-import com.teamderpy.VictusLudusGame.enginengine.IView;
-import com.teamderpy.VictusLudusGame.enginengine.InputPoller;
-import com.teamderpy.VictusLudusGame.enginengine.MousePointer;
+import com.teamderpy.victusludus.engine.IView;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.map.Map;
 import com.teamderpy.victusludus.game.renderer.GameRenderer;

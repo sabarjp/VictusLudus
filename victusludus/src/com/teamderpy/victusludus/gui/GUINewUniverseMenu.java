@@ -1,12 +1,10 @@
+
 package com.teamderpy.victusludus.gui;
 
 import java.util.ArrayList;
 
-
-import org.lwjgl.input.Keyboard;
-
 import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.VictusLudusGame.enginengine.Actionable;
+import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.game.cosmos.Cosmos;
 import com.teamderpy.victusludus.game.cosmos.UniverseSettings;
 import com.teamderpy.victusludus.gui.element.GUIElement;
@@ -23,11 +21,8 @@ import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
 
-
-/**
- * The Class GUINewUniverseMenu.
- */
-public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeListener, TooltipListener{
+/** The Class GUINewUniverseMenu. */
+public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeListener, TooltipListener {
 	/** How old the universe is */
 	private GUISliderHorizontal universeAgeSlider;
 
@@ -52,62 +47,54 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 	/** The title text. */
 	private GUIText titleText;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.teamderpy.victusludus.gui.GUI#create()
 	 */
 	@Override
-	protected void create() {
+	protected void create () {
 		this.menuList = new ArrayList<GUIElement>();
 
-		/************
-		 * TITLE
-		 */
+		/************ TITLE */
 
 		this.titleText = new GUIText(0, 0, "New Universe", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontL(GUI.TITLE_FONT_ID));
 		this.titleText.setCentered(true);
 		this.elementList.add(this.titleText);
 
-		/************
-		 * TOOLTIP
-		 */
+		/************ TOOLTIP */
 
 		this.tooltipText = new GUIText(0, 0, "", GUI.TOOLTIP_TEXT_COLOR_DEFAULT, GUI.fetchFontS(GUI.TOOLTIP_FONT_ID));
 		this.tooltipText.setCentered(true);
 		this.elementList.add(this.tooltipText);
 
-
-		/************
-		 * UNIVERSE NAME LABEL
-		 */
+		/************ UNIVERSE NAME LABEL */
 
 		this.universeNameLabel = new GUIText(0, 0, "", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.universeNameLabel.setText("Universe name");
 		this.universeNameLabel.setCentered(true);
 		this.elementList.add(this.universeNameLabel);
 
-		/************
-		 * UNIVERSE NAME
-		 */
+		/************ UNIVERSE NAME */
 
 		this.universeNameField = new GUITextField(0, 0, 200, GUI.SUBELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.universeNameField.setText("");
 		this.universeNameField.setMaximumSize(15);
 		this.universeNameField.setTooltip("The name of your universe");
 		this.universeNameField.setCentered(true);
-		this.universeNameField.setTypingAction(new Actionable(){
+		this.universeNameField.setTypingAction(new Actionable() {
 			@Override
-			public void act(){
+			public void act () {
 				GUINewUniverseMenu.this.titleText.setText(GUINewUniverseMenu.this.universeNameField.getText());
 			}
 		});
 		this.elementList.add(this.universeNameField);
 		this.menuList.add(this.universeNameField);
 
-		/************
-		 * UNIVERSE AGE
-		 */
+		/************ UNIVERSE AGE */
 
-		this.universeAgeSlider = new GUISliderHorizontal(0, 0, "Universe age", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
+		this.universeAgeSlider = new GUISliderHorizontal(0, 0, "Universe age", GUI.ELEMENT_COLOR_DEFAULT,
+			GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.universeAgeSlider.setCentered(true);
 		this.universeAgeSlider.setMinSliderValue(3.0F);
 		this.universeAgeSlider.setMaxSliderValue(33.0F);
@@ -118,11 +105,10 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		this.elementList.add(this.universeAgeSlider);
 		this.menuList.add(this.universeAgeSlider);
 
-		/************
-		 * UNIVERSE DENSITY
-		 */
+		/************ UNIVERSE DENSITY */
 
-		this.universeDensitySlider = new GUISliderHorizontal(0, 0, "Universe density", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
+		this.universeDensitySlider = new GUISliderHorizontal(0, 0, "Universe density", GUI.ELEMENT_COLOR_DEFAULT,
+			GUI.fetchFontM(GUI.PRIMARY_FONT_ID));
 		this.universeDensitySlider.setCentered(true);
 		this.universeDensitySlider.setMinSliderValue(0.0F);
 		this.universeDensitySlider.setMaxSliderValue(1.5F);
@@ -133,16 +119,14 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		this.elementList.add(this.universeDensitySlider);
 		this.menuList.add(this.universeDensitySlider);
 
-		/************
-		 * CONTINUE
-		 */
+		/************ CONTINUE */
 
 		this.continueButton = new GUITextButton(0, 0, "Generate", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 8);
 		this.continueButton.setCentered(true);
 		this.continueButton.setPressedAction(new Actionable() {
 			@Override
-			public void act() {
-				if(GUINewUniverseMenu.this.universeNameField.getText().length() > 0){
+			public void act () {
+				if (GUINewUniverseMenu.this.universeNameField.getText().length() > 0) {
 					UniverseSettings requestedSettings = new UniverseSettings();
 
 					requestedSettings.setRequestedUniAge(GUINewUniverseMenu.this.universeAgeSlider.getCurrentSliderValue());
@@ -155,9 +139,9 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 					db.setTitleText("Universe name?");
 					db.setMessageText("You forgot to enter a universe name!");
 					db.setButton1Text("OK!");
-					db.setButton1Action(new Actionable(){
+					db.setButton1Action(new Actionable() {
 						@Override
-						public void act(){
+						public void act () {
 							db.destroy();
 						}
 					});
@@ -169,15 +153,13 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		this.elementList.add(this.continueButton);
 		this.menuList.add(this.continueButton);
 
-		/************
-		 * BACK
-		 */
+		/************ BACK */
 
 		this.backButton = new GUITextButton(0, 0, "Back", GUI.ELEMENT_COLOR_DEFAULT, GUI.fetchFontM(GUI.PRIMARY_FONT_ID), 8);
 		this.backButton.setCentered(true);
 		this.backButton.setPressedAction(new Actionable() {
 			@Override
-			public void act() {
+			public void act () {
 				new com.teamderpy.victusludus.gui.GUIMainMenu().show();
 			}
 		});
@@ -185,20 +167,22 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		this.elementList.add(this.backButton);
 		this.menuList.add(this.backButton);
 
-		if(this.currentElement < 0 && !this.elementList.isEmpty()) {
+		if (this.currentElement < 0 && !this.elementList.isEmpty()) {
 			this.currentElement = 0;
 		}
 
-		if(!this.menuList.isEmpty()) {
+		if (!this.menuList.isEmpty()) {
 			VictusLudusGame.engine.eventHandler.signal(new SelectEvent(this.menuList.get(this.currentElement), true));
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.teamderpy.victusludus.gui.GUI#positionElements()
 	 */
 	@Override
-	protected void positionElements() {
+	protected void positionElements () {
 		this.width = VictusLudusGame.engine.X_RESOLUTION();
 		this.height = VictusLudusGame.engine.Y_RESOLUTION();
 
@@ -206,7 +190,7 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		this.titleText.setY(5);
 
 		this.tooltipText.setX(VictusLudusGame.engine.X_RESOLUTION() / 2);
-		this.tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PRIMARY_FONT_ID).getLineHeight()-5);
+		this.tooltipText.setY(VictusLudusGame.engine.Y_RESOLUTION() - GUI.fetchFontM(GUI.PRIMARY_FONT_ID).getLineHeight() - 5);
 
 		this.setNextElementPos(this.titleText.getHeight() + 50);
 		this.setElementSpacing(5);
@@ -239,30 +223,42 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		this.nextElementPosIncrement(this.backButton);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.TooltipListener#onChangeTooltip(com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.TooltipListener#onChangeTooltip(com.teamderpy.victusludus.gui.eventhandler.event
+	 * .TooltipEvent)
 	 */
 	@Override
-	public void onChangeTooltip(final TooltipEvent tooltipEvent) {
-		if(!this.isDisabled){
+	public void onChangeTooltip (final TooltipEvent tooltipEvent) {
+		if (!this.isDisabled) {
 			this.tooltipText.setText(tooltipEvent.getTooltip());
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.ResizeListener#onResize(com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.ResizeListener#onResize(com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent
+	 * )
 	 */
 	@Override
-	public void onResize(final ResizeEvent resizeEvent) {
+	public void onResize (final ResizeEvent resizeEvent) {
 		this.positionElements();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.KeyboardListener#onKeyPress(com.teamderpy.victusludus.gui.eventhandler.event.KeyboardEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.KeyboardListener#onKeyPress(com.teamderpy.victusludus.gui.eventhandler.event.
+	 * KeyboardEvent)
 	 */
 	@Override
-	public void onKeyDown(final KeyDownEvent keyboardEvent) {
-		if(!this.isDisabled){
+	public void onKeyDown (final KeyDownEvent keyboardEvent) {
+		if (!this.isDisabled) {
 			if (keyboardEvent.getKey() == Keyboard.KEY_DOWN) {
 				if (this.currentElement < this.menuList.size() - 1) {
 					VictusLudusGame.engine.eventHandler.signal(new SelectEvent(this.menuList.get(this.currentElement), false));
@@ -281,32 +277,38 @@ public class GUINewUniverseMenu extends GUI implements KeyboardListener, ResizeL
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.teamderpy.victusludus.gui.GUI#registerListeners()
 	 */
 	@Override
-	public void registerListeners() {
+	public void registerListeners () {
 		VictusLudusGame.engine.eventHandler.resizeHandler.registerPlease(this);
 		VictusLudusGame.engine.eventHandler.tooltipHandler.registerPlease(this);
 		VictusLudusGame.engine.eventHandler.keyboardHandler.registerPlease(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.teamderpy.victusludus.gui.GUI#unregisterListeners()
 	 */
 	@Override
-	public void unregisterListeners() {
+	public void unregisterListeners () {
 		VictusLudusGame.engine.eventHandler.resizeHandler.unregisterPlease(this);
 		VictusLudusGame.engine.eventHandler.tooltipHandler.unregisterPlease(this);
 		VictusLudusGame.engine.eventHandler.keyboardHandler.unregisterPlease(this);
 		this.unregisterListeningChildren();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#finalize()
 	 */
 	@Override
-	protected void finalize(){
+	protected void finalize () {
 		this.unregisterListeners();
 		this.unregisterListeningChildren();
 	}
