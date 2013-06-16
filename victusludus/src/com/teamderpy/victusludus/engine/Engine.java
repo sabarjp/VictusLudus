@@ -1,21 +1,11 @@
 package com.teamderpy.victusludus.engine;
 
-
-import java.awt.Toolkit;
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.data.DataReader;
@@ -106,7 +96,7 @@ public class Engine implements ResizeListener{
 	private GlobalListener globalListener;
 
 	/** The display modes. */
-	public Array<DisplayMode> displayModes = new Array<DisplayMode>();
+	public Array<FlexibleDisplayMode> displayModes = new Array<FlexibleDisplayMode>();
 
 	/** The current display mode. */
 	public FlexibleDisplayMode currentDisplayMode = null;
@@ -161,9 +151,14 @@ public class Engine implements ResizeListener{
 		//add displays with the same refresh rate as the desktop
 		for(final DisplayMode d:Gdx.graphics.getDisplayModes()){
 			if(d.refreshRate == Gdx.graphics.getDesktopDisplayMode().refreshRate){
-				this.displayModes.add(d);
+				FlexibleDisplayMode fd = new FlexibleDisplayMode(d.width, d.height, true);
+				fd.displayMode = d;
+				this.displayModes.add(fd);
 			}
 		}
+		
+		this.displayModes.sort();
+		this.displayModes.reverse();
 
 		//sets the current resolution
 		this.setDisplay();
@@ -409,9 +404,8 @@ public class Engine implements ResizeListener{
 			while(ticksBehind-- > 0){
 				this.tick();
 				this.ticksSinceReset++;
+				this.lastTickTime += timePerTick;
 			}
-			
-			this.lastTickTime = Time.getTimeNano();
 		}
 	}
 	
@@ -600,7 +594,6 @@ public class Engine implements ResizeListener{
 	 */
 	public void changeUI(final UI newUI) {
 		if (this.currentUI != null) {
-			//this.currentUI.unregisterListeners();
 			this.currentUI.dispose();
 		}
 		this.currentUI = newUI;
