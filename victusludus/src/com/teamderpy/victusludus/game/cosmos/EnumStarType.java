@@ -1,49 +1,48 @@
+
 package com.teamderpy.victusludus.game.cosmos;
 
 public enum EnumStarType {
-	DUST(0, "Dust Cloud"),
-	BROWN_DWARF(1, "Brown Dwarf"),
-	DEAD_BROWN_DWARF(2, "Dead Brown Dwarf"),
-	PROTOSTAR(3, "Proto-star"),
-	MAIN_SEQUENCE(4, "Main Sequence"),
-	RED_DWARF(5, "Red Dwarf"),
-	BLUE_DWARF(6, "Blue Dwarf"),
-	WHITE_DWARF(7, "White Dwarf"),
-	HELIUM_WHITE_DWARF(8, "Helium White Dwarf"),
-	BLACK_DWARF(9, "Black Dwarf"),
-	SUB_GIANT(10, "Sub-Giant"),
-	GIANT(11, "Giant"),
-	BRIGHT_GIANT(12, "Bright Giant"),
-	SUPER_GIANT(13, "Super Giant"),
-	HYPER_GIANT(14, "Hyper Giant"),
-	WOLF_RAYET_STAR(15, "Wolf-Rayet Star"),
-	PULSAR(16, "Pulsar"),
-	NEUTRON_STAR(17, "Neutron Star"),
-	BLACK_HOLE(18, "Black Hole"),
-	PLANETARY_NEBULA(19, "Planetary Nebula"),
-	SUPER_NOVA_TYPE_Ib(20, "Super Nova type Ib"),
-	SUPER_NOVA_TYPE_Ic(21, "Super Nova type Ic"),
-	SUPER_NOVA_TYPE_IIP(22, "Super Nova type IIP"),
-	SUPER_NOVA_TYPE_IIL(23, "Super Nova type IIL");
+	DUST("star/star_dust", "Dust Cloud"),
+	BROWN_DWARF("star/star_brown_dwarf", "Brown Dwarf"),
+	DEAD_BROWN_DWARF("star/star_brown_dwarf_dead", "Dead Brown Dwarf"),
+	PROTOSTAR("star/star_proto_star", "Proto-star"),
+	MAIN_SEQUENCE("star/star_main_sequence", "Main Sequence"),
+	RED_DWARF("star/star_red_dwarf", "Red Dwarf"),
+	BLUE_DWARF("star/star_blue_dwarf", "Blue Dwarf"),
+	WHITE_DWARF("star/star_white_dwarf", "White Dwarf"),
+	HELIUM_WHITE_DWARF("star/star_helium_white_dwarf", "Helium White Dwarf"),
+	BLACK_DWARF("star/star_black_dwarf", "Black Dwarf"),
+	SUB_GIANT("star/star_sub_giant", "Sub-Giant"),
+	GIANT("star/star_giant", "Giant"),
+	BRIGHT_GIANT("star/star_bright_giant", "Bright Giant"),
+	SUPER_GIANT("star/star_super_giant", "Super Giant"),
+	HYPER_GIANT("star/star_hyper_giant", "Hyper Giant"),
+	WOLF_RAYET_STAR("star/star_wolf_rayet", "Wolf-Rayet Star"),
+	PULSAR("star/star_pulsar", "Pulsar"),
+	NEUTRON_STAR("star/star_neutron", "Neutron Star"),
+	BLACK_HOLE("star/star_black_hole", "Black Hole"),
+	PLANETARY_NEBULA("star/star_planetary_nebula", "Planetary Nebula"),
+	SUPER_NOVA_TYPE_Ib("star/star_supernova_ib", "Super Nova type Ib"),
+	SUPER_NOVA_TYPE_Ic("star/star_supernova_ic", "Super Nova type Ic"),
+	SUPER_NOVA_TYPE_IIP("star/star_supernova_iip", "Super Nova type IIP"),
+	SUPER_NOVA_TYPE_IIL("star/star_supernova_iil", "Super Nova type IIL");
 
-	private int spriteIndex;
+	private String path;
 	private String properName;
 
-	EnumStarType(final int spriteIndex, String properName){
-		this.spriteIndex = spriteIndex;
+	EnumStarType (final String path, final String properName) {
+		this.path = path;
 		this.properName = properName;
 	}
 
-	/**
-	 * Returns the sprite index
+	/** Returns the sprite path
 	 * 
-	 * @return the sprite index number of the star
-	 */
-	public int getSpriteIndex() {
-		return this.spriteIndex;
+	 * @return the sprite path */
+	public String getPath () {
+		return this.path;
 	}
 
-	public String getProperName() {
-		return properName;
+	public String getProperName () {
+		return this.properName;
 	}
 }

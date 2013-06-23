@@ -1,26 +1,27 @@
+
 package com.teamderpy.victusludus.readerwriter;
 
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.parts.BodyPart;
 import com.teamderpy.victusludus.parts.Creature;
 
-
-
-/**
- * The Class CreatureReader.
- */
+/** The Class CreatureReader. */
 public class CreatureReader implements IObjectReader {
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.teamderpy.victusludus.readerwriter.IObjectReader#ReadAndLoad(java.lang.String, java.util.Map)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void ReadAndLoad(String path, Map<String, T> hash) {
-		JLDLSerialReader r = new JLDLSerialReader(path);
+	public <T> void ReadAndLoad (final FileHandle f, final Map<String, T> hash) {
+		JLDLSerialReader r = new JLDLSerialReader(f);
 
 		ReadData rd;
 		Creature c = null;
@@ -32,7 +33,7 @@ public class CreatureReader implements IObjectReader {
 				if (rd.getId().equalsIgnoreCase("creature")) {
 					c = new Creature();
 					c.setId(rd.getValue());
-					hash.put(c.getId(), (T) c);
+					hash.put(c.getId(), (T)c);
 
 					enteredData = true;
 				}
@@ -77,7 +78,7 @@ public class CreatureReader implements IObjectReader {
 					String[] farray = rd.getValue().replaceAll(" ", "").split(",");
 
 					if (farray.length == 0) {
-						farray = new String[] { rd.getValue() };
+						farray = new String[] {rd.getValue()};
 					}
 
 					for (String i : farray) {
@@ -100,9 +101,9 @@ public class CreatureReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				Gdx.app.log("severe", "<ERROR> creature in " + path + " on line " + r.getLineNumber()
-						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
-				throw new VictusRuntimeException("Improper formatting for file " + path + " on line " + r.getLineNumber());
+				Gdx.app.log("severe", "<ERROR> creature in " + f.path() + " on line " + r.getLineNumber()
+					+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
+				throw new VictusRuntimeException("Improper formatting for file " + f.path() + " on line " + r.getLineNumber());
 			}
 		}
 

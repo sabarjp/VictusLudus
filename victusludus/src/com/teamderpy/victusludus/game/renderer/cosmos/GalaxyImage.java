@@ -1,47 +1,55 @@
+
 package com.teamderpy.victusludus.game.renderer.cosmos;
 
-import com.teamderpy.VictusLudusGame.enginengine.Actionable;
-import com.teamderpy.VictusLudusGame.enginengine.graphics.ActionArea2D;
-import com.teamderpy.VictusLudusGame.enginengine.graphics.BitmapHandler;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.engine.Actionable;
+import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.game.cosmos.Cosmology;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Universe;
-import com.teamderpy.victusludus.gui.GUICosmosUniverseHUD;
+import com.teamderpy.victusludus.gui.UIUniverseHUD;
 
 /**
  * A galaxy and its corresponding image to render
  * @author Josh
- *
  */
 public class GalaxyImage {
 	private Galaxy galaxy;
 	private ActionArea2D actionArea;
 	private CosmosRenderer cosmosRenderer;
+	private Sprite sprite;
 
 	/**
-	 * Instantiates a new galaxy image, which is basically the galaxy
-	 * object combined with its rendered aspect
+	 * Instantiates a new galaxy image, which is basically the galaxy object combined with its rendered aspect
 	 * 
 	 * @param galaxy the galaxy
 	 * @param cosmosRenderer the renderer
 	 */
-	public GalaxyImage(final Galaxy galaxy, final CosmosRenderer cosmosRenderer){
+	public GalaxyImage (final Galaxy galaxy, final CosmosRenderer cosmosRenderer) {
 		this.galaxy = galaxy;
 		this.cosmosRenderer = cosmosRenderer;
 
 		Universe universe = cosmosRenderer.cosmos.getUniverse();
 
-		int spriteWidth = cosmosRenderer.spriteSheetGalaxy.getWidth() / cosmosRenderer.spriteSheetGalaxy.getHorizontalCount() * 2;
-		int spriteHeight = cosmosRenderer.spriteSheetGalaxy.getHeight() / cosmosRenderer.spriteSheetGalaxy.getVerticalCount() * 2;
+		this.sprite = VictusLudusGame.resources.getTextureAtlasCosmos().createSprite(galaxy.getGalaxyType().getPath());
 
-		int x = (int) ((cosmosRenderer.cosmos.getGameDimensions().getWidth() - spriteWidth) / universe.getDiameter() * (galaxy.getxPosition() - galaxy.getRadius()));
-		int y = (int) ((cosmosRenderer.cosmos.getGameDimensions().getHeight() - spriteHeight) / universe.getDiameter() * (galaxy.getyPosition() - galaxy.getRadius()));
+		int spriteWidth = (int)(this.sprite.getWidth() * 1);
+		int spriteHeight = (int)(this.sprite.getHeight() * 1);
+
+		int x = (int)((cosmosRenderer.cosmos.getGameDimensions().getWidth() - spriteWidth) / universe.getDiameter() * (galaxy
+			.getxPosition() - galaxy.getRadius()));
+		int y = (int)((cosmosRenderer.cosmos.getGameDimensions().getHeight() - spriteHeight) / universe.getDiameter() * (galaxy
+			.getyPosition() - galaxy.getRadius()));
 
 		this.actionArea = new ActionArea2D(x, y, spriteWidth, spriteHeight);
 		this.actionArea.setMouseEnterAct(new EnterAction());
 		this.actionArea.setMouseLeaveAct(new LeaveAction());
 		this.actionArea.setMouseClickAct(new ClickAction());
+
+		this.sprite.setBounds(x, y, spriteWidth, spriteHeight);
 	}
 
 	/**
@@ -49,7 +57,7 @@ public class GalaxyImage {
 	 * 
 	 * @return the galaxy associated with this galaxyImage
 	 */
-	public Galaxy getGalaxy() {
+	public Galaxy getGalaxy () {
 		return this.galaxy;
 	}
 
@@ -58,7 +66,7 @@ public class GalaxyImage {
 	 * 
 	 * @return the ActionArea2D associated with this galaxyImage
 	 */
-	public ActionArea2D getActionArea() {
+	public ActionArea2D getActionArea () {
 		return this.actionArea;
 	}
 
@@ -67,55 +75,44 @@ public class GalaxyImage {
 	 * 
 	 * @param deltaT the amount of time since the last render
 	 */
-	public void render(final float deltaT){
-		this.cosmosRenderer.spriteSheetGalaxy.startUse();
-
+	public void render (final SpriteBatch batch, final float deltaT) {
 		this.galaxy.setRotation(this.galaxy.getRotation() + deltaT * this.galaxy.getAngularVelocity());
 
-		this.cosmosRenderer.spriteSheetGalaxy.renderInUse(this.getActionArea().getX(), this.getActionArea().getY(),
-				this.getActionArea().getWidth(),
-				this.getActionArea().getHeight(),
-				(float) this.galaxy.getRotation(),
-				BitmapHandler.getSpriteSheetCol(this.galaxy.getGalaxyType().getSpriteIndex(), this.cosmosRenderer.spriteSheetGalaxy),
-				BitmapHandler.getSpriteSheetRow(this.galaxy.getGalaxyType().getSpriteIndex(), this.cosmosRenderer.spriteSheetGalaxy));
+		this.sprite.setRotation((float)this.galaxy.getRotation());
 
-		this.cosmosRenderer.spriteSheetGalaxy.endUse();
+		this.sprite.draw(batch);
 	}
 
-	private class EnterAction implements Actionable{
+	private class EnterAction implements Actionable {
 		@Override
-		public void act() {
-			System.err.println("enter galaxy " + GalaxyImage.this.getGalaxy());
-			System.err.println("num stars: " + GalaxyImage.this.getGalaxy().getStars().size());
-			
-			GUICosmosUniverseHUD gui = ((GUICosmosUniverseHUD) GalaxyImage.this.cosmosRenderer.cosmos.getCurrentGUI());
+		public void act () {
+			UIUniverseHUD gui = ((UIUniverseHUD)GalaxyImage.this.cosmosRenderer.cosmos.getCurrentUI());
 			Galaxy galaxy = GalaxyImage.this.getGalaxy();
 
 			gui.setSelectedGalaxyName(galaxy.getName());
 			gui.setSelectedGalaxyType(galaxy.getGalaxyType().getProperName());
 			gui.setSelectedGalaxyAge(Cosmology.getFormattedStellarAge(galaxy.getAge()));
-			gui.setSelectedGalaxyStarCount(Integer.toString(galaxy.getStars().size()));
+			gui.setSelectedGalaxyStarCount(Integer.toString(galaxy.getMaxStars()));
 		}
 	}
 
-	private class LeaveAction implements Actionable{
+	private class LeaveAction implements Actionable {
 		@Override
-		public void act() {
-			System.err.println("leave " + GalaxyImage.this.getGalaxy());
+		public void act () {
+
 		}
 	}
 
-	private class ClickAction implements Actionable{
+	private class ClickAction implements Actionable {
 		@Override
-		public void act() {
-			System.err.println("click " + GalaxyImage.this.getGalaxy());
+		public void act () {
 			GalaxyImage.this.cosmosRenderer.cosmos.setGalaxy(GalaxyImage.this.galaxy);
 			GalaxyImage.this.cosmosRenderer.changePerspective(EnumCosmosMode.GALAXY_PERSPECTIVE);
 		}
 	}
 
 	@Override
-	public void finalize(){
+	public void finalize () {
 		this.actionArea.unregisterListeners();
 	}
 }

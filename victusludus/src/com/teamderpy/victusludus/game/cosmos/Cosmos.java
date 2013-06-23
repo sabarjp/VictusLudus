@@ -1,3 +1,4 @@
+
 package com.teamderpy.victusludus.game.cosmos;
 
 import java.math.BigDecimal;
@@ -11,13 +12,15 @@ import com.teamderpy.victusludus.engine.SoundSystem;
 import com.teamderpy.victusludus.game.GameCamera;
 import com.teamderpy.victusludus.game.GameDimensions;
 import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
-import com.teamderpy.victusludus.gui.DialogBox;
-import com.teamderpy.victusludus.gui.GUI;
+import com.teamderpy.victusludus.gui.UI;
 import com.teamderpy.victusludus.gui.eventhandler.MouseListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
 
-public class Cosmos implements IView, MouseListener{
+public class Cosmos implements IView, MouseListener {
+	/** universal seed */
+	private long seed;
+
 	/** the universe */
 	private Universe universe;
 
@@ -39,11 +42,8 @@ public class Cosmos implements IView, MouseListener{
 	/** Signal to terminate the game. */
 	private boolean quitSignal = false;
 
-	/** The current gui. */
-	private GUI currentGUI = null;
-
-	/** The current dialog. */
-	private DialogBox currentDialog = null;
+	/** The current ui. */
+	private UI currentUI = null;
 
 	/** The game camera. */
 	private GameCamera gameCamera;
@@ -55,21 +55,25 @@ public class Cosmos implements IView, MouseListener{
 	private CosmosRenderer cosmosRenderer;
 
 	@Override
-	public void init(final ISettings settings) throws GameException {
-		if(settings == null){
+	public void init (final ISettings settings) throws GameException {
+		if (settings == null) {
 			throw new GameException();
 		}
 
-		UniverseSettings requestedSettings = (UniverseSettings) settings;
+		UniverseSettings requestedSettings = (UniverseSettings)settings;
+		this.seed = requestedSettings.getRequestedSeed();
 
-		this.universe = new Universe();
+		this.universe = new Universe(requestedSettings.getRequestedSeed() + 10523);
 
-		//tick away
-		BigDecimal delta = BigDecimal.valueOf(10000000L);
+		this.universe.create(new BigDecimal(requestedSettings.getRequestedUniAge() * 1000000000));
 
-		for(float i = 0F; i < requestedSettings.getRequestedUniAge()*100; i++){
-			this.universe.tick(delta);
-		}
+		// tick away
+// long tickInterval = 10000000L;
+// BigDecimal delta = BigDecimal.valueOf(tickInterval);
+//
+// for (float i = 0F; i < requestedSettings.getRequestedUniAge() * (1000000000 / tickInterval); i++) {
+// this.universe.tick(delta);
+// }
 
 		this.gameDimensions = new GameDimensions();
 
@@ -80,7 +84,7 @@ public class Cosmos implements IView, MouseListener{
 
 		this.gameCamera = new GameCamera();
 
-		this.gameCamera.setOffsetX(this.gameDimensions.getWidth()/2);
+		this.gameCamera.setOffsetX(this.gameDimensions.getWidth() / 2);
 
 		this.cosmosRenderer = new CosmosRenderer(this);
 
@@ -90,171 +94,143 @@ public class Cosmos implements IView, MouseListener{
 	}
 
 	@Override
-	public void render(final SpriteBatch batch, final float deltaT) {
-		if(this.isRunning){
-			this.cosmosRenderer.render(deltaT);
-
-			// GUI
-			if(this.currentGUI != null) {
-				this.currentGUI.render(batch, deltaT);
-			}
-
-			if(this.currentDialog != null) {
-				this.currentDialog.render(batch, deltaT);
+	public void render (final SpriteBatch batch, final float deltaT) {
+		if (this.isRunning) {
+			this.cosmosRenderer.render(batch, deltaT);
+			if (this.currentUI != null) {
+				this.currentUI.render(batch, deltaT);
 			}
 		}
 	}
 
 	@Override
-	public void tick() {
-		if(this.quitSignal){
+	public void tick () {
+		if (this.quitSignal) {
 			VictusLudusGame.engine.terminateView();
-		} else if(this.isRunning){
-			if(this.currentGUI != null) {
-				this.currentGUI.tick();
-			}
-
-			if(this.currentDialog != null) {
-				this.currentDialog.tick();
-			}
 		}
 	}
 
 	@Override
-	public void registerListeners() {
+	public void registerListeners () {
 		VictusLudusGame.engine.eventHandler.mouseHandler.registerPlease(this);
 	}
 
 	@Override
-	public void unregisterListeners() {
+	public void unregisterListeners () {
 		VictusLudusGame.engine.eventHandler.mouseHandler.unregisterPlease(this);
 		this.gameDimensions.unregisterListeners();
 		this.cosmosRenderer.unregisterListeners();
 
-		this.changeGUI(null);
-		this.displayDialog(null);
+		this.changeUI(null);
 	}
 
 	@Override
-	public boolean isRunning() {
+	public boolean isRunning () {
 		return this.isRunning;
 	}
 
 	@Override
-	public void setRunning(final boolean isRunning) {
+	public void setRunning (final boolean isRunning) {
 		this.isRunning = isRunning;
 	}
 
 	@Override
-	public boolean isQuitSignal() {
+	public boolean isQuitSignal () {
 		return this.quitSignal;
 	}
 
 	@Override
-	public void setQuitSignal(final boolean isQuitting) {
+	public void setQuitSignal (final boolean isQuitting) {
 		this.quitSignal = isQuitting;
 	}
 
 	@Override
-	public boolean onMouseClick(final MouseEvent mouseEvent) {
+	public boolean onMouseClick (final MouseEvent mouseEvent) {
 		return false;
 	}
 
 	@Override
-	public void onMouseMove(final MouseEvent mouseEvent) {
+	public void onMouseMove (final MouseEvent mouseEvent) {
 		return;
 	}
 
 	/**
 	 * Change gui.
-	 *
+	 * 
 	 * @param newGUI the new gui
 	 */
-	public void changeGUI(final GUI newGUI) {
-		if (this.currentGUI != null) {
-			this.currentGUI.unregisterListeners();
+	public void changeUI (final UI newUI) {
+		if (this.currentUI != null) {
+			this.currentUI.dispose();
 		}
-		this.currentGUI = newGUI;
-		VictusLudusGame.engine.inputPoller.forceMouseMove();
-	}
-
-	/**
-	 * Display dialog.
-	 *
-	 * @param dialogGUI the dialog gui
-	 */
-	public void displayDialog(final DialogBox dialogGUI){
-		if (this.currentDialog != null){
-			this.currentDialog.unregisterListeners();
-		}
-		this.currentDialog = dialogGUI;
+		this.currentUI = newUI;
 		VictusLudusGame.engine.inputPoller.forceMouseMove();
 	}
 
 	/**
 	 * Gets the game camera.
-	 *
+	 * 
 	 * @return the game camera
 	 */
-	public GameCamera getGameCamera() {
+	public GameCamera getGameCamera () {
 		return this.gameCamera;
 	}
 
 	/**
 	 * Gets the game dimensions.
-	 *
+	 * 
 	 * @return the game dimensions
 	 */
-	public GameDimensions getGameDimensions() {
+	public GameDimensions getGameDimensions () {
 		return this.gameDimensions;
 	}
 
-	public Universe getUniverse() {
+	public Universe getUniverse () {
 		return this.universe;
 	}
 
-	public Star getStar() {
+	public Star getStar () {
 		return this.star;
 	}
 
-	public void setStar(final Star star) {
+	public void setStar (final Star star) {
 		this.star = star;
 	}
 
-	public Planet getPlanet() {
+	public Planet getPlanet () {
 		return this.planet;
 	}
 
-	public void setPlanet(final Planet planet) {
+	public void setPlanet (final Planet planet) {
 		this.planet = planet;
 	}
 
-	public void setUniverse(final Universe universe) {
+	public void setUniverse (final Universe universe) {
 		this.universe = universe;
 	}
 
-	public Galaxy getGalaxy() {
+	public Galaxy getGalaxy () {
 		return this.galaxy;
 	}
 
-	public void setGalaxy(final Galaxy galaxy) {
+	public void setGalaxy (final Galaxy galaxy) {
 		this.galaxy = galaxy;
 	}
 
-	public EnumCosmosMode getCurrentPerspective() {
+	public EnumCosmosMode getCurrentPerspective () {
 		return this.currentPerspective;
 	}
 
-	public void setCurrentPerspective(final EnumCosmosMode currentPerspective) {
+	public void setCurrentPerspective (final EnumCosmosMode currentPerspective) {
 		this.currentPerspective = currentPerspective;
 	}
 
-	public GUI getCurrentGUI() {
-		return this.currentGUI;
+	public UI getCurrentUI () {
+		return this.currentUI;
 	}
 
 	@Override
-	public boolean onScroll (ScrollEvent scrollEvent) {
+	public boolean onScroll (final ScrollEvent scrollEvent) {
 		return false;
 	}
 }
