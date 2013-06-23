@@ -1,23 +1,24 @@
+
 package com.teamderpy.victusludus.readerwriter;
 
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
-import com.teamderpy.victusludus.VictusLudusGame;
+import com.badlogic.gdx.files.FileHandle;
 import com.teamderpy.victusludus.game.PlayerBackground;
 
-
-/**
- * The Class BackgroundReader.
- */
+/** The Class BackgroundReader. */
 public class BackgroundReader implements IObjectReader {
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.teamderpy.victusludus.readerwriter.IObjectReader#ReadAndLoad(java.lang.String, java.util.Map)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void ReadAndLoad(String path, Map<String, T> hash) {
-		JLDLSerialReader r = new JLDLSerialReader(path);
+	public <T> void ReadAndLoad (final FileHandle f, final Map<String, T> hash) {
+		JLDLSerialReader r = new JLDLSerialReader(f);
 
 		ReadData rd;
 		PlayerBackground bg = null;
@@ -28,7 +29,7 @@ public class BackgroundReader implements IObjectReader {
 				if (rd.getId().equalsIgnoreCase("background")) {
 					bg = new PlayerBackground();
 					bg.setId(rd.getValue());
-					hash.put(bg.getId(), (T) bg);
+					hash.put(bg.getId(), (T)bg);
 
 					enteredData = true;
 				}
@@ -65,8 +66,8 @@ public class BackgroundReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				Gdx.app.log("warning", "<ERROR> background in " + path + " on line " + r.getLineNumber()
-						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
+				Gdx.app.log("warning", "<ERROR> background in " + f.path() + " on line " + r.getLineNumber()
+					+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
 			}
 		}
 

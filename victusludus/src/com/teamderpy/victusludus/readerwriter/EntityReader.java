@@ -1,42 +1,42 @@
+
 package com.teamderpy.victusludus.readerwriter;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
+import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.EnumFlags;
 import com.teamderpy.victusludus.game.entity.behavior.CreateAdjacentBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.MoveBehavior;
 import com.teamderpy.victusludus.game.light.LightEmitter;
 
-
-
-/**
- * The Class EntityReader.
- */
+/** The Class EntityReader. */
 public class EntityReader implements IObjectReader {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.teamderpy.victusludus.readerwriter.IObjectReader#ReadAndLoad(java.lang.String, java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> void ReadAndLoad(final String path, final Map<String, T> hash) {
-		JLDLSerialReader r = new JLDLSerialReader(path);
+	public <T> void ReadAndLoad (final FileHandle f, final Map<String, T> hash) {
+		JLDLSerialReader r = new JLDLSerialReader(f);
 
 		ReadData baseLevel;
 
-		//base level nodes
-		while ((baseLevel = r.getNext()) != null){
+		// base level nodes
+		while ((baseLevel = r.getNext()) != null) {
 			if (baseLevel.getNode().equalsIgnoreCase(JLDLSerialReader.BASE_LEVEL_NODE)) {
 				System.out.println("found base level node");
 
-				//entities
+				// entities
 				if (baseLevel.getId().equalsIgnoreCase("entity")) {
 					System.out.println("found entity node");
 
@@ -45,8 +45,8 @@ public class EntityReader implements IObjectReader {
 					EntityDefinition e = new EntityDefinition();
 					e.setId(baseLevel.getValue());
 
-					//entity children
-					while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("entity")){
+					// entity children
+					while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("entity")) {
 						entityLevel = r.getNext();
 						System.out.println("checking entity children");
 
@@ -55,7 +55,7 @@ public class EntityReader implements IObjectReader {
 
 							ReadData mainLevel;
 
-							while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("main")){
+							while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("main")) {
 								mainLevel = r.getNext();
 								System.out.println("checking entity main node children");
 
@@ -73,7 +73,7 @@ public class EntityReader implements IObjectReader {
 									e.setHeight(Integer.valueOf(mainLevel.getValue()));
 								} else {
 									System.out.println("mainLevel");
-									this.logError(path, r, mainLevel);
+									this.logError(f.path(), r, mainLevel);
 								}
 							}
 						} else if (entityLevel.getId().equalsIgnoreCase("flags")) {
@@ -81,7 +81,7 @@ public class EntityReader implements IObjectReader {
 
 							ReadData flagsLevel;
 
-							while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("flags")){
+							while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("flags")) {
 								flagsLevel = r.getNext();
 								System.out.println("checking entity flags node children");
 
@@ -91,15 +91,15 @@ public class EntityReader implements IObjectReader {
 									e.getFlagSet().add(EnumFlags.valueOf(flagsLevel.getValue()));
 								} else {
 									System.out.println("flagsLevel");
-									this.logError(path, r, flagsLevel);
+									this.logError(f.path(), r, flagsLevel);
 								}
 							}
-						}else if (entityLevel.getId().equalsIgnoreCase("graphics")) {
+						} else if (entityLevel.getId().equalsIgnoreCase("graphics")) {
 							System.out.println("found entity graphics node");
 
 							ReadData graphicsLevel;
 
-							while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("graphics")){
+							while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("graphics")) {
 								graphicsLevel = r.getNext();
 								System.out.println("checking entity graphics children");
 
@@ -108,7 +108,7 @@ public class EntityReader implements IObjectReader {
 
 									ReadData iconLevel;
 
-									while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("icon")){
+									while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("icon")) {
 										iconLevel = r.getNext();
 										System.out.println("checking entity graphics icon children");
 
@@ -122,7 +122,7 @@ public class EntityReader implements IObjectReader {
 											e.loadButtonSpriteSheet(iconLevel.getValue());
 										} else {
 											System.out.println("iconLevel");
-											this.logError(path, r, iconLevel);
+											this.logError(f.path(), r, iconLevel);
 										}
 									}
 								} else if (graphicsLevel.getId().equalsIgnoreCase("light")) {
@@ -134,7 +134,7 @@ public class EntityReader implements IObjectReader {
 									int green = 255;
 									int blue = 255;
 
-									while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("light")){
+									while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("light")) {
 										lightLevel = r.getNext();
 										System.out.println("checking entity graphics light children");
 
@@ -160,11 +160,11 @@ public class EntityReader implements IObjectReader {
 											light.setBrightness(Float.valueOf(lightLevel.getValue()));
 										} else {
 											System.out.println("lightLevel");
-											this.logError(path, r, lightLevel);
+											this.logError(f.path(), r, lightLevel);
 										}
 									}
 
-									light.setColor(new Color((float)red/255, (float)green/255, (float)blue/255, 1));
+									light.setColor(new Color((float)red / 255, (float)green / 255, (float)blue / 255, 1));
 									e.setLight(light);
 								} else if (graphicsLevel.getId().equalsIgnoreCase("animation")) {
 									System.out.println("found entity graphics animation node");
@@ -178,7 +178,7 @@ public class EntityReader implements IObjectReader {
 									int lastFrame = 1;
 									int speed = 1000;
 
-									while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("animation")){
+									while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("animation")) {
 										animationLevel = r.getNext();
 										System.out.println("checking entity graphics animation children");
 
@@ -196,14 +196,15 @@ public class EntityReader implements IObjectReader {
 											speed = Integer.valueOf(animationLevel.getValue());
 										} else {
 											System.out.println("animationLevel");
-											this.logError(path, r, animationLevel);
+											this.logError(f.path(), r, animationLevel);
 										}
 									}
 
-									e.getAnimationHash().put(animationID, BitmapHandler.LoadAnimationSheet("res/" + animationPath, 16, 1, firstFrame, lastFrame, speed));
+									e.getAnimationHash().put(animationID,
+										BitmapHandler.LoadAnimationSheet("res/" + animationPath, 16, 1, firstFrame, lastFrame, speed));
 								} else {
 									System.out.println("graphicsLevel");
-									this.logError(path, r, graphicsLevel);
+									this.logError(f.path(), r, graphicsLevel);
 								}
 							}
 						} else if (entityLevel.getId().equalsIgnoreCase("behavior")) {
@@ -213,7 +214,7 @@ public class EntityReader implements IObjectReader {
 
 							e.setBehaviorList(new ArrayList<EntityBehavior>());
 
-							while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("behavior")){
+							while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("behavior")) {
 								behaviorLevel = r.getNext();
 								System.out.println("found entity behavior children");
 
@@ -224,7 +225,7 @@ public class EntityReader implements IObjectReader {
 
 									CreateAdjacentBehavior cab = new CreateAdjacentBehavior();
 
-									while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("create_adjacent")){
+									while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("create_adjacent")) {
 										cabLevel = r.getNext();
 										System.out.println("checking entity behavior create_adjacent children");
 
@@ -246,7 +247,7 @@ public class EntityReader implements IObjectReader {
 											cab.setRarity(Integer.valueOf(cabLevel.getValue()));
 										} else {
 											System.out.println("cabLevel");
-											this.logError(path, r, cabLevel);
+											this.logError(f.path(), r, cabLevel);
 										}
 									}
 
@@ -258,7 +259,7 @@ public class EntityReader implements IObjectReader {
 
 									MoveBehavior mb = new MoveBehavior();
 
-									while(r.peek()!= null && r.peek().getNode().equalsIgnoreCase("move")){
+									while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("move")) {
 										mbLevel = r.getNext();
 										System.out.println("checking entity behavior move children");
 
@@ -276,7 +277,7 @@ public class EntityReader implements IObjectReader {
 											mb.setRandom(Boolean.valueOf(mbLevel.getValue()));
 										} else {
 											System.out.println("mbLevel");
-											this.logError(path, r, mbLevel);
+											this.logError(f.path(), r, mbLevel);
 										}
 									}
 
@@ -285,36 +286,34 @@ public class EntityReader implements IObjectReader {
 							}
 						} else {
 							System.out.println("entityLevel");
-							this.logError(path, r, entityLevel);
+							this.logError(f.path(), r, entityLevel);
 						}
 					}
 
-					//put entity in hash
+					// put entity in hash
 					Gdx.app.log("warning", "PLACED ENTITY IN HASH");
-					hash.put(e.getId(), (T) e);
+					hash.put(e.getId(), (T)e);
 				} else {
 					System.out.println("baseLevelnode");
-					this.logError(path, r, baseLevel);
+					this.logError(f.path(), r, baseLevel);
 				}
 			} else {
 				System.out.println("baseLevelparent");
-				this.logError(path, r, baseLevel);
+				this.logError(f.path(), r, baseLevel);
 			}
 		}
 
 		r.close();
 	}
 
-	/**
-	 * Log error.
-	 *
+	/** Log error.
+	 * 
 	 * @param path the path
 	 * @param r the r
-	 * @param node the node
-	 */
-	private void logError(final String path, final JLDLSerialReader r, final ReadData node){
+	 * @param node the node */
+	private void logError (final String path, final JLDLSerialReader r, final ReadData node) {
 		Gdx.app.log("severe", "entity in " + path + " on line " + r.getLineNumber() + ":\n\t"
-				+ " bad indentation or unknown keyword '" + node.getNode() + "' -> '" + node.getId() + ":" + node.getValue() + "'");
+			+ " bad indentation or unknown keyword '" + node.getNode() + "' -> '" + node.getId() + ":" + node.getValue() + "'");
 		throw new VictusRuntimeException("Improper formatting for file " + path + " on line " + r.getLineNumber());
 	}
 }

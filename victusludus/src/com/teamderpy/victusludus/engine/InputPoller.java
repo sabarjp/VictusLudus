@@ -1,3 +1,4 @@
+
 package com.teamderpy.victusludus.engine;
 
 import com.badlogic.gdx.InputProcessor;
@@ -11,20 +12,20 @@ import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
 /**
  * Listens for events and re-fires them for our purposes
  */
-public class InputPoller implements InputProcessor{
+public class InputPoller implements InputProcessor {
 	/** The last mouse x. */
 	private int lastMouseX = -1;
-	
+
 	/** The last mouse y. */
 	private int lastMouseY = -1;
 
 	/**
 	 * Force mouse move.
 	 */
-	public void forceMouseMove() {
+	public void forceMouseMove () {
 		int x = this.lastMouseX;
 		int y = this.lastMouseY;
-		
+
 		this.lastMouseX = -1;
 		this.lastMouseY = -1;
 
@@ -32,44 +33,47 @@ public class InputPoller implements InputProcessor{
 	}
 
 	@Override
-	public boolean keyDown (int keycode) {
+	public boolean keyDown (final int keycode) {
 		VictusLudusGame.engine.eventHandler.signal(new KeyDownEvent(VictusLudusGame.engine.eventHandler, keycode));
 		return false;
 	}
 
 	@Override
-	public boolean keyUp (int keycode) {
+	public boolean keyUp (final int keycode) {
 		VictusLudusGame.engine.eventHandler.signal(new KeyUpEvent(VictusLudusGame.engine.eventHandler, keycode));
 		return false;
 	}
 
 	@Override
-	public boolean keyTyped (char character) {
+	public boolean keyTyped (final char character) {
 		VictusLudusGame.engine.eventHandler.signal(new KeyTypedEvent(VictusLudusGame.engine.eventHandler, character));
 		return false;
 	}
 
 	@Override
-	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_CLICK, screenX, screenY, button, true));
+	public boolean touchDown (final int screenX, final int screenY, final int pointer, final int button) {
+		VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_CLICK,
+			screenX, screenY, button, true));
 		return false;
 	}
 
 	@Override
-	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_CLICK, screenX, screenY, button, false));
+	public boolean touchUp (final int screenX, final int screenY, final int pointer, final int button) {
+		VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_CLICK,
+			screenX, screenY, button, false));
 		return false;
 	}
 
 	@Override
-	public boolean touchDragged (int screenX, int screenY, int pointer) {
+	public boolean touchDragged (final int screenX, final int screenY, final int pointer) {
 		return false;
 	}
 
 	@Override
-	public boolean mouseMoved (int screenX, int screenY) {
+	public boolean mouseMoved (final int screenX, final int screenY) {
 		if (screenX != this.lastMouseX || screenY != this.lastMouseY) {
-			VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_MOVE, screenX, screenY, MouseEvent.BUTTON_NONE, false));
+			VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_MOVE,
+				screenX, screenY, -1, false));
 			this.lastMouseX = screenX;
 			this.lastMouseY = screenY;
 		}
@@ -77,7 +81,7 @@ public class InputPoller implements InputProcessor{
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
+	public boolean scrolled (final int amount) {
 		VictusLudusGame.engine.eventHandler.signal(new ScrollEvent(VictusLudusGame.engine.eventHandler, amount));
 		return false;
 	}

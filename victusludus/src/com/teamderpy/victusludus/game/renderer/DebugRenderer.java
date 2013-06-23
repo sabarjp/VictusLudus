@@ -1,56 +1,41 @@
+
 package com.teamderpy.victusludus.game.renderer;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Rectangle;
-
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.game.GameDimensions;
 
-
-/**
- * The Class DebugRenderer.
- */
+/** The Class DebugRenderer. */
 public class DebugRenderer {
 	private GameDimensions dimensions;
 
 	/** The overlay image */
-	private Image debugImage = null;
+	private Texture debugImage = null;
 
-	/**
-	 * Instantiates a new DebugRenderer.
-	 *
-	 * @param gameRenderer the game renderer
-	 */
-	public DebugRenderer(final GameDimensions dimensions){
+	/** Instantiates a new DebugRenderer.
+	 * 
+	 * @param gameRenderer the game renderer */
+	public DebugRenderer (final GameDimensions dimensions) {
 		this.dimensions = dimensions;
 
-		try {
-			this.debugImage = Image.createOffscreenImage(this.dimensions.getWidth(), this.dimensions.getHeight());
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+		this.debugImage = new Texture(new Pixmap(this.dimensions.getWidth(), this.dimensions.getHeight(), Format.RGBA8888));
 	}
 
-	/**
-	 * Render.
-	 */
-	public void render(){
-		this.debugImage.draw(0, 0);
+	/** Render. */
+	public void render (final SpriteBatch batch, final float deltaT) {
+		batch.draw(this.debugImage, 0, 0);
 
-		try {
-			Graphics g = this.debugImage.getGraphics();
-			g.setColor(Color.transparent);
-			g.fill(new Rectangle(0, 0, this.debugImage.getWidth(), this.debugImage.getHeight()));
-			g.flush();
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-
+		// this.debugImage.getTextureData().prepare();
+		Pixmap nextMap = this.debugImage.getTextureData().consumePixmap();
+		nextMap.setColor(Color.CLEAR);
+		nextMap.fill();
+		// this.debugImage.getTextureData().disposePixmap();
 	}
 
-	public Image getDebugImage() {
+	public Texture getDebugImage () {
 		return this.debugImage;
 	}
 }

@@ -1,26 +1,24 @@
+
 package com.teamderpy.victusludus.readerwriter;
 
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
-import com.teamderpy.victusludus.VictusLudusGame;
+import com.badlogic.gdx.files.FileHandle;
 import com.teamderpy.victusludus.parts.Material;
 
-
-
-
-/**
- * The Class MaterialReader.
- */
+/** The Class MaterialReader. */
 public class MaterialReader implements IObjectReader {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.teamderpy.victusludus.readerwriter.IObjectReader#ReadAndLoad(java.lang.String, java.util.Map)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void ReadAndLoad(final String path, final Map<String, T> hash) {
-		JLDLSerialReader r = new JLDLSerialReader(path);
+	public <T> void ReadAndLoad (final FileHandle f, final Map<String, T> hash) {
+		JLDLSerialReader r = new JLDLSerialReader(f);
 
 		ReadData rd;
 		Material m = null;
@@ -32,7 +30,7 @@ public class MaterialReader implements IObjectReader {
 				if (rd.getId().equalsIgnoreCase("material")) {
 					m = new Material();
 					m.setId(rd.getValue());
-					hash.put(m.getId(), (T) m);
+					hash.put(m.getId(), (T)m);
 
 					enteredData = true;
 				}
@@ -94,8 +92,8 @@ public class MaterialReader implements IObjectReader {
 			}
 
 			if (!enteredData) {
-				Gdx.app.log("warning", "<ERROR> material in " + path + " on line " + r.getLineNumber()
-						+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
+				Gdx.app.log("warning", "<ERROR> material in " + f.path() + " on line " + r.getLineNumber()
+					+ ": bad indentation or unknown keyword '" + rd.getId() + "'");
 			}
 		}
 

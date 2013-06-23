@@ -1,3 +1,4 @@
+
 package com.teamderpy.victusludus.game.cosmos;
 
 import java.math.BigDecimal;
@@ -11,10 +12,11 @@ import com.teamderpy.victusludus.VictusLudusGame;
  * 
  * @author Josh
  */
-public class Universe{
+public class Universe {
+	private static int MIN_GALAXY_COUNT = 3;
 	private static int MAX_GALAXY_COUNT = 10;
-	private static BigDecimal MIN_AGE_FOR_STARS = new BigDecimal("400E6");
-	private static BigDecimal MAX_AGE_FOR_STARS = new BigDecimal("10E14");
+	static BigDecimal MIN_AGE_FOR_STARS = new BigDecimal("400E6");
+	static BigDecimal MAX_AGE_FOR_STARS = new BigDecimal("10E14");
 	private static BigDecimal GALAXY_RATIO = new BigDecimal("400E6");
 
 	/** list of galaxies in the universe */
@@ -24,7 +26,7 @@ public class Universe{
 	private StarDate cosmicDate;
 
 	/** the random seed for this universe **/
-	private float seed;
+	private long seed;
 
 	/** the age of the universe in years */
 	private BigDecimal age;
@@ -32,13 +34,90 @@ public class Universe{
 	/** the diameter of the universe in meters */
 	private double diameter;
 
-	public Universe(){
+	/** the max number of galaxies for the universe */
+	private int maxGalaxies;
+
+	public Universe (final long seed) {
+		this.seed = seed;
 		this.cosmicDate = new StarDate();
 		this.age = BigDecimal.ZERO;
-		this.seed = VictusLudus.rand.nextInt()/2;
 
 		this.galaxies = new ArrayList<Galaxy>();
 		this.diameter = Cosmology.LIGHT_YEAR.multiply(new BigDecimal("56000000000")).doubleValue();
+		this.maxGalaxies = this.getRandomGalaxyCount();
+	}
+
+	/**
+	 * Creates a new universe where a certain amount of time has passed since the big bang
+	 * @param timePassed the amount of time that has passed
+	 */
+	public void create (final BigDecimal timePassed) {
+		// create galaxies to match the time passed and some other parameters
+		int galaxiesToCreateCount = (int)timePassed.divideToIntegralValue(Universe.GALAXY_RATIO).doubleValue();
+		galaxiesToCreateCount = Math.max(Universe.MIN_GALAXY_COUNT, Math.min(this.maxGalaxies, galaxiesToCreateCount));
+
+		BigDecimal earliestTime = this.cosmicDate.getYearDecimal().max(Universe.MIN_AGE_FOR_STARS);
+		BigDecimal latestTime = timePassed.min(Universe.MAX_AGE_FOR_STARS);
+
+		if (earliestTime.compareTo(latestTime) >= 0) {
+			return; // no valid time period!
+		}
+
+		VictusLudusGame.sharedRand.setSeed(this.seed + 32487234);
+
+		for (int i = 0; i < galaxiesToCreateCount; i++) {
+			// create the galaxy
+			BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, earliestTime, latestTime,
+				new BigDecimal(VictusLudusGame.sharedRand.nextFloat())).toBigInteger();
+
+			StarDate galaxyBirthDate = new StarDate();
+			galaxyBirthDate.addYears(years);
+
+			Galaxy galaxy = new Galaxy(galaxyBirthDate, this, i);
+
+			galaxy.create(timePassed.subtract(new BigDecimal(years)));
+
+			// try to place the galaxy
+			boolean lookingForEmptySpace = true;
+			int placementAttemptNum = 100;
+
+			double xPos = -1;
+			double yPos = -1;
+			double radius = -1;
+
+			VictusLudusGame.sharedRand.setSeed(galaxy.getSeed() - 56464);
+
+			while (lookingForEmptySpace && placementAttemptNum > 0) {
+				placementAttemptNum--;
+
+				// pick a spot with nothing else in the area, should be easy
+				radius = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, Galaxy.MIN_GALAXY_RADIUS,
+					Galaxy.MAX_GALAXY_RADIUS, new BigDecimal(VictusLudusGame.sharedRand.nextFloat())).doubleValue();
+				xPos = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO,
+					new BigDecimal(this.diameter - radius), new BigDecimal(VictusLudusGame.sharedRand.nextFloat())).doubleValue();
+				yPos = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO,
+					new BigDecimal(this.diameter - radius), new BigDecimal(VictusLudusGame.sharedRand.nextFloat())).doubleValue();
+
+				for (Galaxy g : this.galaxies) {
+					if (xPos - Math.pow(g.getxPosition(), 2) + yPos - Math.pow(g.getyPosition(), 2) < Math.pow(g.getRadius(), 2)) {
+						continue;
+					}
+				}
+
+				lookingForEmptySpace = false;
+			}
+
+			if (placementAttemptNum > 0) {
+				galaxy.setxPosition(xPos);
+				galaxy.setyPosition(yPos);
+				galaxy.setRadius(radius);
+
+				this.galaxies.add(galaxy);
+			}
+		}
+
+		this.cosmicDate.addYears(timePassed.toBigInteger());
+		this.age = this.age.add(timePassed);
 	}
 
 	/**
@@ -46,63 +125,14 @@ public class Universe{
 	 * 
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
-	public void tick(final BigDecimal delta){
-		//make some galaxies
-		//roughly one galaxy every 150 million years should be good...
-		if(this.galaxies.size() < Universe.MAX_GALAXY_COUNT && this.age.compareTo(Universe.MIN_AGE_FOR_STARS) > 0 && this.age.compareTo(Universe.MAX_AGE_FOR_STARS) < 0){
-			if(this.galaxies.size() < this.age.divideToIntegralValue(Universe.GALAXY_RATIO).doubleValue()){
-				if(VictusLudus.rand.nextInt(3) == 0){
-					StarDate galaxyBirthDate = this.cosmicDate.clone();
-					BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, delta, new BigDecimal(VictusLudus.rand.nextFloat())).toBigInteger();
-
-					galaxyBirthDate.addYears(years);
-
-					Galaxy galaxy = new Galaxy(galaxyBirthDate, this);
-
-					boolean lookingForEmptySpace = true;
-					int placementAttemptNum = 100;
-
-					double xPos = -1;
-					double yPos = -1;
-					double radius = -1;
-
-					while(lookingForEmptySpace && placementAttemptNum > 0){
-						placementAttemptNum--;
-
-						//pick a spot with nothing else in the area, should be easy
-						radius = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, Galaxy.MIN_GALAXY_RADIUS, Galaxy.MAX_GALAXY_RADIUS, new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
-						xPos   = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO, new BigDecimal(this.diameter - radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
-						yPos   = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO, new BigDecimal(this.diameter - radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
-
-						for(Galaxy g:this.galaxies){
-							if (xPos - Math.pow(g.getxPosition(), 2) + yPos - Math.pow(g.getyPosition(), 2) < Math.pow(g.getRadius(), 2)){
-								continue;
-							}
-						}
-
-						lookingForEmptySpace = false;
-					}
-
-					if(placementAttemptNum > 0){
-						galaxy.setxPosition(xPos);
-						galaxy.setyPosition(yPos);
-						galaxy.setRadius(radius);
-
-						this.galaxies.add(galaxy);
-
-						//System.err.println("adding galaxy " + galaxy.getGalaxyType());
-					}
-				}
-			}
-		}
-
-		//tick all children
-		for(Galaxy g:this.galaxies){
+	public void tick (final BigDecimal delta) {
+		// tick all children
+		for (Galaxy g : this.galaxies) {
 			BigInteger yearDiff = g.getBirthDate().getYearsSinceBigBang().subtract(this.cosmicDate.getYearsSinceBigBang());
 
-			if(yearDiff.compareTo(BigInteger.ZERO) > 0){
+			if (yearDiff.compareTo(BigInteger.ZERO) > 0) {
 				g.tick(delta.subtract(new BigDecimal(yearDiff)));
-			}else{
+			} else {
 				g.tick(delta);
 			}
 		}
@@ -111,19 +141,29 @@ public class Universe{
 		this.age = this.age.add(delta);
 	}
 
-	public ArrayList<Galaxy> getGalaxies() {
+	public ArrayList<Galaxy> getGalaxies () {
 		return this.galaxies;
 	}
 
-	public StarDate getCosmicDate() {
+	public StarDate getCosmicDate () {
 		return this.cosmicDate;
 	}
 
-	public BigDecimal getAge() {
+	public BigDecimal getAge () {
 		return this.age;
 	}
 
-	public double getDiameter() {
+	public double getDiameter () {
 		return this.diameter;
+	}
+
+	public long getSeed () {
+		return this.seed;
+	}
+
+	public int getRandomGalaxyCount () {
+		double rand = Cosmology.randomNoise((int)this.seed, 3243233);
+		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal(Universe.MIN_GALAXY_COUNT),
+			new BigDecimal(Universe.MAX_GALAXY_COUNT), new BigDecimal(rand)).intValue();
 	}
 }

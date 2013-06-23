@@ -1,3 +1,4 @@
+
 package com.teamderpy.victusludus.game.cosmos;
 
 import java.math.BigDecimal;
@@ -12,9 +13,10 @@ import com.teamderpy.victusludus.VictusLudusGame;
  * @author Josh
  */
 public class Galaxy {
+	private static int MIN_STAR_COUNT = 4;
 	private static int MAX_STAR_COUNT = 20;
 	public static BigDecimal MIN_GALAXY_RADIUS = Cosmology.PARSEC.multiply(new BigDecimal("50"), Cosmology.COSMIC_RND);
-	public static BigDecimal MAX_GALAXY_RADIUS =	Cosmology.PARSEC.multiply(new BigDecimal("25000"), Cosmology.COSMIC_RND);
+	public static BigDecimal MAX_GALAXY_RADIUS = Cosmology.PARSEC.multiply(new BigDecimal("25000"), Cosmology.COSMIC_RND);
 	private static BigDecimal STAR_RATIO = new BigDecimal("80E6");
 
 	/** list of stars in the galaxy */
@@ -22,7 +24,7 @@ public class Galaxy {
 
 	/** the universe this galaxy belongs to */
 	private Universe parentUniverse;
-	
+
 	/** the common name of this galaxy */
 	private String name;
 
@@ -36,7 +38,10 @@ public class Galaxy {
 	private EnumGalaxyType galaxyType;
 
 	/** the random seed for this galaxy **/
-	private float seed;
+	private long seed;
+
+	/** the max number of stars for this galaxy */
+	private int maxStars;
 
 	/** degrees rotated */
 	private double rotation;
@@ -47,10 +52,12 @@ public class Galaxy {
 	private double yPosition;
 	private double radius;
 
-	public Galaxy(final StarDate birthDate, final Universe universe){
-		this.seed = VictusLudus.rand.nextInt()/2;
+	public Galaxy (final StarDate birthDate, final Universe universe, final int id) {
+		VictusLudusGame.sharedRand.setSeed(universe.getSeed() + 39082 + id * 479);
+		this.seed = VictusLudusGame.sharedRand.nextLong();
+
 		this.parentUniverse = universe;
-		this.name = Galaxy.getRandomName();
+		this.name = this.getRandomName();
 
 		this.birthDate = birthDate;
 		this.age = BigDecimal.ZERO;
@@ -59,160 +66,224 @@ public class Galaxy {
 		this.galaxyType = this.getRandomGalaxyType();
 		this.rotation = this.getRandomGalaxyRotation();
 		this.angularVelocity = this.getRandomAngularVelocity();
+		this.maxStars = this.getRandomStarCount();
 	}
 
+	/**
+	 * Creates a galaxy with a certain amount of time passed since its birth
+	 * 
+	 * @param timeYearsPassed
+	 */
+	public void create (final BigDecimal timeYearsPassed) {
+		this.age = this.age.add(timeYearsPassed);
+	}
+
+	/**
+	 * Creates the stars of the galaxy
+	 * 
+	 * @param timePassed
+	 */
+	public void createStars () {
+		int starsToCreateCount = (int)this.age.divideToIntegralValue(Galaxy.STAR_RATIO).doubleValue();
+		starsToCreateCount = Math.max(Galaxy.MIN_STAR_COUNT, Math.min(this.maxStars, starsToCreateCount));
+
+		BigDecimal earliestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang()
+			.max(Universe.MIN_AGE_FOR_STARS.toBigInteger()));
+		BigDecimal latestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang().add(this.age.toBigInteger())
+			.min(Universe.MAX_AGE_FOR_STARS.toBigInteger()));
+
+		if (earliestTime.compareTo(latestTime) >= 0) {
+			return; // no valid time period to make stars!
+		}
+
+		VictusLudusGame.sharedRand.setSeed(this.seed + 234234523);
+
+		for (int i = 0; i < starsToCreateCount; i++) {
+			// create the star
+			BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, earliestTime, latestTime,
+				new BigDecimal(VictusLudusGame.sharedRand.nextFloat())).toBigInteger();
+
+			StarDate starBirthDate = new StarDate();
+			starBirthDate.addYears(years);
+
+			Star star = new Star(starBirthDate, this, i);
+
+			// place the star
+			boolean lookingForEmptySpace = true;
+			int placementAttemptNum = 100;
+
+			double xPos = -1;
+			double yPos = -1;
+
+			VictusLudusGame.sharedRand.setSeed(star.getSeed() - 4508934058L);
+
+			while (lookingForEmptySpace && placementAttemptNum > 0) {
+				placementAttemptNum--;
+
+				// pick a spot with nothing else in the area
+				xPos = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, new BigDecimal(this.xPosition - this.radius),
+					new BigDecimal(this.xPosition + this.radius), new BigDecimal(VictusLudusGame.sharedRand.nextFloat()))
+					.doubleValue();
+				yPos = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, new BigDecimal(this.yPosition - this.radius),
+					new BigDecimal(this.yPosition + this.radius), new BigDecimal(VictusLudusGame.sharedRand.nextFloat()))
+					.doubleValue();
+
+				for (Star s : this.stars) {
+					if (xPos - Math.pow(s.getxPosition(), 2) + yPos - Math.pow(s.getyPosition(), 2) < Math.pow(
+						Star.SOLAR_SYSTEM_RADIUS.doubleValue(), 2)) {
+						continue;
+					}
+				}
+
+				lookingForEmptySpace = false;
+			}
+
+			if (placementAttemptNum > 0) {
+				star.setxPosition(xPos);
+				star.setyPosition(yPos);
+
+				this.stars.add(star);
+
+				// System.err.println("adding star to " + this.hashCode());
+			}
+
+			// sim to current time
+			star.create(new BigDecimal(this.birthDate.getYearsSinceBigBang().add(this.age.toBigInteger())
+				.subtract(star.getBirthDate().getYearsSinceBigBang())));
+		}
+	}
 
 	/**
 	 * A tick of time
 	 * 
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
-	public void tick(final BigDecimal delta){
-		//make stars
-		if(this.stars.size() < Galaxy.MAX_STAR_COUNT){
-			if(this.stars.size() < this.age.divideToIntegralValue(Galaxy.STAR_RATIO).doubleValue()){
-				if(VictusLudus.rand.nextInt(4) == 0){
-					StarDate starBirthDate = this.getParentUniverse().getCosmicDate().clone();
-					starBirthDate.addYears(this.age.toBigInteger());
-
-					BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, delta, new BigDecimal(VictusLudus.rand.nextFloat())).toBigInteger();
-
-					starBirthDate.addYears(years);
-
-					Star star = new Star(starBirthDate, this);
-
-					boolean lookingForEmptySpace = true;
-					int placementAttemptNum = 100;
-
-					double xPos = -1;
-					double yPos = -1;
-
-					while(lookingForEmptySpace && placementAttemptNum > 0){
-						placementAttemptNum--;
-
-						//pick a spot with nothing else in the area
-						xPos   = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, new BigDecimal(this.xPosition - this.radius), new BigDecimal(this.xPosition + this.radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
-						yPos   = Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, new BigDecimal(this.yPosition - this.radius), new BigDecimal(this.yPosition + this.radius), new BigDecimal(VictusLudus.rand.nextFloat())).doubleValue();
-
-						for(Star s:this.stars){
-							if (xPos - Math.pow(s.getxPosition(), 2) + yPos - Math.pow(s.getyPosition(), 2) < Math.pow(Star.SOLAR_SYSTEM_RADIUS.doubleValue(), 2)){
-								continue;
-							}
-						}
-
-						lookingForEmptySpace = false;
-					}
-
-					if(placementAttemptNum > 0){
-						star.setxPosition(xPos);
-						star.setyPosition(yPos);
-
-						this.stars.add(star);
-
-						//System.err.println("adding star to " + this.hashCode());
-					}
-				}
-			}
-		}
-
-		//tick all children
-		for(Star s:this.stars){
+	public void tick (final BigDecimal delta) {
+		// tick all children
+		for (Star s : this.stars) {
 			s.tick(delta);
 		}
 
 		this.age = this.age.add(delta);
 	}
 
-	private EnumGalaxyType getRandomGalaxyType(){
-		return EnumGalaxyType.values()[VictusLudus.rand.nextInt(EnumGalaxyType.values().length)];
+	private EnumGalaxyType getRandomGalaxyType () {
+		VictusLudusGame.sharedRand.setSeed(this.seed + 234);
+		return EnumGalaxyType.values()[VictusLudusGame.sharedRand.nextInt(EnumGalaxyType.values().length)];
 	}
 
-	private double getRandomGalaxyRotation(){
-		return Math.random()*360;
+	private double getRandomGalaxyRotation () {
+		VictusLudusGame.sharedRand.setSeed(this.seed + 102838);
+		return VictusLudusGame.sharedRand.nextDouble() * 360;
 	}
 
-	private double getRandomAngularVelocity(){
-		return Math.random()*10;
+	private double getRandomAngularVelocity () {
+		VictusLudusGame.sharedRand.setSeed(this.seed + 3556);
+		return VictusLudusGame.sharedRand.nextDouble() * 10;
 	}
-	
+
 	/**
 	 * Gets a random galaxy name
 	 * 
 	 * @return a string with the random name
 	 */
-	public static String getRandomName(){
-		return VictusLudus.resources.getCelestialGalaxyNameArray().get(VictusLudus.rand.nextInt(VictusLudus.resources.getCelestialGalaxyNameArray().size()-1));
+	public String getRandomName () {
+		VictusLudusGame.sharedRand.setSeed(this.seed - 3982721);
+
+		return VictusLudusGame.resources.getCelestialGalaxyNameArray().get(
+			VictusLudusGame.sharedRand.nextInt(VictusLudusGame.resources.getCelestialGalaxyNameArray().size() - 1));
 	}
 
-	public ArrayList<Star> getStars() {
+	public ArrayList<Star> getStars () {
 		return this.stars;
 	}
 
-	public StarDate getBirthDate() {
+	public StarDate getBirthDate () {
 		return this.birthDate;
 	}
 
-	public BigDecimal getAge() {
+	public BigDecimal getAge () {
 		return this.age;
 	}
 
-	public double getxPosition() {
+	public double getxPosition () {
 		return this.xPosition;
 	}
 
-	public double getyPosition() {
+	public double getyPosition () {
 		return this.yPosition;
 	}
 
-	public double getRadius() {
+	public double getRadius () {
 		return this.radius;
 	}
 
-	public Universe getParentUniverse() {
+	public Universe getParentUniverse () {
 		return this.parentUniverse;
 	}
 
-	public void setxPosition(final double xPosition) {
+	public void setxPosition (final double xPosition) {
 		this.xPosition = xPosition;
 	}
 
-	public void setyPosition(final double yPosition) {
+	public void setyPosition (final double yPosition) {
 		this.yPosition = yPosition;
 	}
 
-	public void setRadius(final double radius) {
+	public void setRadius (final double radius) {
 		this.radius = radius;
 	}
 
-	public EnumGalaxyType getGalaxyType() {
+	public EnumGalaxyType getGalaxyType () {
 		return this.galaxyType;
 	}
 
-	public double getRotation() {
+	/**
+	 * Get the rotation of the galaxy in degrees
+	 * @return rotation
+	 */
+	public double getRotation () {
 		return this.rotation;
 	}
 
-	public void setRotation(final double rotation) {
-		this.rotation = rotation;
+	public void setRotation (final double rotation) {
+		if (rotation > 360) {
+			this.rotation = rotation - (360 * ((int)rotation / 360));
+		} else if (rotation < -360) {
+			this.rotation = rotation + (360 * ((int)rotation / 360));
+		} else {
+			this.rotation = rotation;
+		}
 	}
 
-	public double getAngularVelocity() {
+	/**
+	 * Gets the angular velocity of the galaxy in degrees per second
+	 * @return the angular velocity
+	 */
+	public double getAngularVelocity () {
 		return this.angularVelocity;
 	}
 
-
-	public float getSeed() {
+	public long getSeed () {
 		return this.seed;
 	}
 
-	public String getName() {
+	public String getName () {
 		return this.name;
 	}
 
+	public int getRandomStarCount () {
+		double rand = Cosmology.randomNoise((int)this.seed, 12983);
+		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal("1"),
+			new BigDecimal(Galaxy.MAX_STAR_COUNT), new BigDecimal(rand)).intValue();
+	}
+
+	public int getMaxStars () {
+		return this.maxStars;
+	}
 
 	@Override
-	public String toString(){
-		return "type: " + this.galaxyType + "\n" +
-				" age: " + Cosmology.getFormattedStellarAge(this.age);
+	public String toString () {
+		return "type: " + this.galaxyType + "\n" + " age: " + Cosmology.getFormattedStellarAge(this.age);
 	}
 }
