@@ -104,84 +104,91 @@ filter: Nearest,Nearest
 repeat: none
 planet/asteroid_field
   rotate: false
-  xy: 0, 0
+  xy: 64, 192
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 planet/barren
   rotate: false
-  xy: 192, 32
+  xy: 64, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/carbon
   rotate: false
-  xy: 192, 0
+  xy: 128, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/gaia
   rotate: false
-  xy: 224, 32
+  xy: 192, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/gas_giant
   rotate: false
-  xy: 64, 0
+  xy: 64, 128
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 planet/ice
   rotate: false
-  xy: 224, 0
+  xy: 224, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/ice_giant
   rotate: false
-  xy: 128, 0
+  xy: 128, 192
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 planet/metal
   rotate: false
-  xy: 256, 32
+  xy: 64, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/molten
   rotate: false
-  xy: 256, 0
+  xy: 96, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/oceanic
   rotate: false
-  xy: 288, 32
+  xy: 128, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
+planet/orbital_line
+  rotate: false
+  xy: 0, 0
+  size: 64, 256
+  orig: 64, 256
+  offset: 0, 0
+  index: -1
 planet/rocky
   rotate: false
-  xy: 288, 0
+  xy: 160, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/toxic
   rotate: false
-  xy: 320, 32
+  xy: 192, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

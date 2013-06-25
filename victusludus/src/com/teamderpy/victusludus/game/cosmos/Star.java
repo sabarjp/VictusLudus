@@ -26,7 +26,6 @@ public class Star {
 	public static BigDecimal PROTOSTAR_START_TEMP = new BigDecimal("1500");
 
 	public static MathContext STELLAR_RND = MathContext.DECIMAL128;
-	public static String BIG_STAR_IMAGE_PATH = "star/sun";
 
 	/** the name of the star */
 	private String name;
