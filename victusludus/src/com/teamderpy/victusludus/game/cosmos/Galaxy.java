@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.language.GreekLatinGenerator;
 
 /**
  * Has lots of stars
@@ -80,8 +81,6 @@ public class Galaxy {
 
 	/**
 	 * Creates the stars of the galaxy
-	 * 
-	 * @param timePassed
 	 */
 	public void createStars () {
 		int starsToCreateCount = (int)this.age.divideToIntegralValue(Galaxy.STAR_RATIO).doubleValue();
@@ -147,10 +146,17 @@ public class Galaxy {
 				// System.err.println("adding star to " + this.hashCode());
 			}
 
-			// sim to current time
+			// simulate to current time
 			star.create(new BigDecimal(this.birthDate.getYearsSinceBigBang().add(this.age.toBigInteger())
 				.subtract(star.getBirthDate().getYearsSinceBigBang())));
 		}
+	}
+
+	/**
+	 * Destroy the stars of the galaxy
+	 */
+	public void removeStars () {
+		this.stars.clear();
 	}
 
 	/**
@@ -190,8 +196,9 @@ public class Galaxy {
 	public String getRandomName () {
 		VictusLudusGame.sharedRand.setSeed(this.seed - 3982721);
 
-		return VictusLudusGame.resources.getCelestialGalaxyNameArray().get(
-			VictusLudusGame.sharedRand.nextInt(VictusLudusGame.resources.getCelestialGalaxyNameArray().size() - 1));
+		GreekLatinGenerator g = new GreekLatinGenerator(this.seed - 3982721);
+
+		return g.getWord();
 	}
 
 	public ArrayList<Star> getStars () {

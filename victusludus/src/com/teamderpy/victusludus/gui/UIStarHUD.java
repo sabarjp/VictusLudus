@@ -14,11 +14,10 @@ import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
 
-public class UIGalaxyHUD extends UI {
-	private Label selectedStarName;
-	private Label selectedStarType;
-	private Label selectedStarAge;
-	private Label selectedStarPlanetCount;
+public class UIStarHUD extends UI {
+	private Label selectedPlanetName;
+	private Label selectedPlanetType;
+	private Label selectedPlanetAge;
 
 	/** The cosmos this hud belongs to */
 	private CosmosRenderer cosmosRenderer;
@@ -44,28 +43,22 @@ public class UIGalaxyHUD extends UI {
 		tableFooter.bottom();
 		this.stage.addActor(tableFooter);
 
-		/************ SELECTED STAR NAME */
+		/************ SELECTED PLANET NAME */
 
-		this.selectedStarName = new Label("", this.skin, "default");
-		tableContent.add(this.selectedStarName).left();
+		this.selectedPlanetName = new Label("", this.skin, "default");
+		tableContent.add(this.selectedPlanetName).left();
 		tableContent.row();
 
-		/************ SELECTED STAR TYPE */
+		/************ SELECTED PLANET TYPE */
 
-		this.selectedStarType = new Label("", this.skin, "default");
-		tableContent.add(this.selectedStarType).left();
+		this.selectedPlanetType = new Label("", this.skin, "default");
+		tableContent.add(this.selectedPlanetType).left();
 		tableContent.row();
 
-		/************ SELECTED STAR AGE */
+		/************ SELECTED PLANET AGE */
 
-		this.selectedStarAge = new Label("", this.skin, "default");
-		tableContent.add(this.selectedStarAge).left();
-		tableContent.row();
-
-		/************ SELECTED STAR PLANET COUNT */
-
-		this.selectedStarPlanetCount = new Label("", this.skin, "default");
-		tableContent.add(this.selectedStarPlanetCount).left();
+		this.selectedPlanetAge = new Label("", this.skin, "default");
+		tableContent.add(this.selectedPlanetAge).left();
 		tableContent.row();
 
 		/************ TOOLTIP */
@@ -83,16 +76,16 @@ public class UIGalaxyHUD extends UI {
 		backButton.addListener(new ChangeListener() {
 			@Override
 			public void changed (final ChangeEvent event, final Actor actor) {
-				UIGalaxyHUD.this.cosmosRenderer.cosmos.getGalaxy().removeStars();
-				UIGalaxyHUD.this.cosmosRenderer.cosmos.setGalaxy(null);
-				UIGalaxyHUD.this.cosmosRenderer.changePerspective(EnumCosmosMode.UNIVERSE_PERSPECTIVE);
+				UIStarHUD.this.cosmosRenderer.cosmos.getStar().removePlanets();
+				UIStarHUD.this.cosmosRenderer.cosmos.setStar(null);
+				UIStarHUD.this.cosmosRenderer.changePerspective(EnumCosmosMode.GALAXY_PERSPECTIVE);
 			}
 		});
 
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
-				tooltipText.setText("Returns to the galaxy select");
+				tooltipText.setText("Returns to the star select");
 			}
 
 			@Override
@@ -111,38 +104,29 @@ public class UIGalaxyHUD extends UI {
 	}
 
 	/**
-	 * Sets the selected star name
+	 * Sets the selected planet name
 	 * 
-	 * @param text the new selected star name
+	 * @param text the new selected planet name
 	 */
-	public void setSelectedStarName (final String text) {
-		this.selectedStarName.setText(text);
+	public void setSelectedPlanetName (final String text) {
+		this.selectedPlanetName.setText(text);
 	}
 
 	/**
-	 * Sets the selected star type
+	 * Sets the selected planet type
 	 * 
-	 * @param text the new selected star type
+	 * @param text the new selected planet type
 	 */
-	public void setSelectedStarType (final String text) {
-		this.selectedStarType.setText(text);
+	public void setSelectedPlanetType (final String text) {
+		this.selectedPlanetType.setText(text);
 	}
 
 	/**
-	 * Sets the selected star age
+	 * Sets the selected planet age
 	 * 
-	 * @param text the new selected star age
+	 * @param text the new selected planet age
 	 */
-	public void setSelectedStarAge (final String text) {
-		this.selectedStarAge.setText(text + " old");
-	}
-
-	/**
-	 * Sets the selected star planet count
-	 * 
-	 * @param text the new selected star planet count
-	 */
-	public void setSelectedStarPlanetCount (final String text) {
-		this.selectedStarPlanetCount.setText(text + " planets detected");
+	public void setSelectedPlanetAge (final String text) {
+		this.selectedPlanetAge.setText(text + " old");
 	}
 }

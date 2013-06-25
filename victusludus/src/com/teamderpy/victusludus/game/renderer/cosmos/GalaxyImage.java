@@ -4,6 +4,7 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.game.cosmos.Cosmology;
@@ -35,6 +36,9 @@ public class GalaxyImage {
 		Universe universe = cosmosRenderer.cosmos.getUniverse();
 
 		this.sprite = VictusLudusGame.resources.getTextureAtlasCosmos().createSprite(galaxy.getGalaxyType().getPath());
+		if (this.sprite == null) {
+			throw new VictusRuntimeException("Failed to load sprite: " + galaxy.getGalaxyType().getPath());
+		}
 
 		int spriteWidth = (int)(this.sprite.getWidth() * 1);
 		int spriteHeight = (int)(this.sprite.getHeight() * 1);
@@ -113,6 +117,10 @@ public class GalaxyImage {
 
 	@Override
 	public void finalize () {
+		this.actionArea.unregisterListeners();
+	}
+
+	public void dispose () {
 		this.actionArea.unregisterListeners();
 	}
 }

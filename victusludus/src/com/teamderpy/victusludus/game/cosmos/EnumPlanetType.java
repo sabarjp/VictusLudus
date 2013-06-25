@@ -1,50 +1,47 @@
+
 package com.teamderpy.victusludus.game.cosmos;
 
 public enum EnumPlanetType {
-	GAS_GIANT(true, 0, "Gas Giant"),
-	ICE_GIANT(true, 1, "Ice Giant"),
-	ROCKY(false, 2, "Rocky"),
-	OCEAN(false, 3, "Oceanic"),
-	ICE(false, 4, "Frozen"),
-	CARBON(false, 5, "Carbon"),
-	GAIA(false, 6, "Gaia"),
-	MOLTEN(false, 7, "Molten"),
-	METAL(false, 8, "Metal"),
-	BARREN(false, 9, "Barren"),
-	ASTEROID_BELT(false, 10, "Asteroid Field");
+	GAS_GIANT(true, "planet/gas_giant", "Gas Giant"),
+	ICE_GIANT(true, "planet/ice_giant", "Ice Giant"),
+	ROCKY(false, "planet/rocky", "Rocky"),
+	OCEAN(false, "planet/oceanic", "Oceanic"),
+	ICE(false, "planet/ice", "Frozen"),
+	CARBON(false, "planet/carbon", "Carbon"),
+	GAIA(false, "planet/gaia", "Gaia"),
+	MOLTEN(false, "planet/molten", "Molten"),
+	METAL(false, "planet/metal", "Metal"),
+	BARREN(false, "planet/barren", "Barren"),
+	ASTEROID_FIELD(false, "planet/asteroid_field", "Asteroid Field"),
+	TOXIC(false, "planet/toxic", "Toxic");
 
 	private boolean isGasGiant;
-	private int spriteIndex;
 	private String properName;
+	private String path;
 
-	EnumPlanetType(final boolean isGasGiant, final int spriteIndex, String properName){
+	EnumPlanetType (final boolean isGasGiant, final String path, final String properName) {
 		this.isGasGiant = isGasGiant;
-		this.spriteIndex = spriteIndex;
 		this.properName = properName;
+		this.path = path;
 	}
 
-	public boolean isGasGiant() {
+	public String getPath () {
+		return this.path;
+	}
+
+	public boolean isGasGiant () {
 		return this.isGasGiant;
-	}
-
-	/**
-	 * Returns the sprite index
-	 * 
-	 * @return the sprite index number of the galaxy
-	 */
-	public int getSpriteIndex() {
-		return this.spriteIndex;
 	}
 
 	/**
 	 * Returns a random planet type
 	 * @return a random planet type
 	 */
-	public static EnumPlanetType randomPlanetType()  {
-		return EnumPlanetType.values()[(int)(Math.random()*EnumPlanetType.values().length)];
+	public static EnumPlanetType randomPlanetType () {
+		return EnumPlanetType.values()[(int)(Math.random() * EnumPlanetType.values().length)];
 	}
 
-	public String getProperName() {
-		return properName;
+	public String getProperName () {
+		return this.properName;
 	}
 }

@@ -4,6 +4,7 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.game.cosmos.Cosmology;
@@ -35,6 +36,9 @@ public class StarImage {
 		Galaxy galaxy = cosmosRenderer.cosmos.getGalaxy();
 
 		this.sprite = VictusLudusGame.resources.getTextureAtlasCosmos().createSprite(star.getStarType().getPath());
+		if (this.sprite == null) {
+			throw new VictusRuntimeException("Failed to load sprite: " + star.getStarType().getPath());
+		}
 
 		float galaxyStartX = (float)(galaxy.getxPosition() - galaxy.getRadius());
 		float galaxyEndX = (float)(galaxy.getxPosition() + galaxy.getRadius());
@@ -94,7 +98,7 @@ public class StarImage {
 			gui.setSelectedStarName(star.getName());
 			gui.setSelectedStarType(star.getStarType().getProperName() + " - " + star.getSpectralClass());
 			gui.setSelectedStarAge(Cosmology.getFormattedStellarAge(star.getAge()));
-			gui.setSelectedStarPlanetCount(Integer.toString(star.getPlanets().size()));
+			gui.setSelectedStarPlanetCount(Integer.toString(star.getMaxPlanets()));
 		}
 	}
 
@@ -108,13 +112,17 @@ public class StarImage {
 	private class ClickAction implements Actionable {
 		@Override
 		public void act () {
-			StarImage.this.cosmosRenderer.cosmos.setGalaxy(null);
-			StarImage.this.cosmosRenderer.changePerspective(EnumCosmosMode.UNIVERSE_PERSPECTIVE);
+			StarImage.this.cosmosRenderer.cosmos.setStar(StarImage.this.star);
+			StarImage.this.cosmosRenderer.changePerspective(EnumCosmosMode.STAR_PERSPECTIVE);
 		}
 	}
 
 	@Override
 	public void finalize () {
+		this.actionArea.unregisterListeners();
+	}
+
+	public void dispose () {
 		this.actionArea.unregisterListeners();
 	}
 }

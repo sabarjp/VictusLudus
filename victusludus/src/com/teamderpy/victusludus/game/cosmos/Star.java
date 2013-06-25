@@ -5,10 +5,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.badlogic.gdx.graphics.Color;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.data.resources.StarColorTuple;
+import com.teamderpy.victusludus.language.ArabicGenerator;
 import com.teamderpy.victusludus.precision.Precision;
 
 /**
@@ -230,6 +232,48 @@ public class Star {
 	}
 
 	/**
+	 * Creates planets up to the point in time the star is at
+	 */
+	public void createPlanets () {
+		BigDecimal earliestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang());
+		BigDecimal latestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang().add(this.age.toBigInteger()))
+			.min(new BigDecimal(this.getBirthDate().getYearsSinceBigBang()).multiply(new BigDecimal("1.20"), Planet.PLANET_RND));
+
+		VictusLudusGame.sharedRand.setSeed(this.seed + 1038459);
+
+		for (int i = 0; i < this.maxPlanets; i++) {
+			// create the planet
+			BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, earliestTime, latestTime,
+				new BigDecimal(VictusLudusGame.sharedRand.nextFloat())).toBigInteger();
+
+			StarDate planetBirthDate = new StarDate();
+			planetBirthDate.addYears(years);
+
+			Planet planet = new Planet(planetBirthDate, this, i);
+
+			// simulate to current time
+			planet.create(new BigDecimal(this.birthDate.getYearsSinceBigBang().add(this.age.toBigInteger())
+				.subtract(planet.getBirthDate().getYearsSinceBigBang())));
+
+			this.planets.add(planet);
+		}
+
+		Collections.sort(this.planets);
+
+		// determine names and order
+		for (int i = 0; i < this.planets.size(); i++) {
+			this.planets.get(i).setName(this.planets.get(i).getName() + " " + Planet.PLANET_SUFFIX_ARRAY[i]);
+		}
+	}
+
+	/**
+	 * Destroy the planets of the star
+	 */
+	public void removePlanets () {
+		this.planets.clear();
+	}
+
+	/**
 	 * A tick of time
 	 * @param deltaYearsPassed the amount of stellar time that has passed since the last tick, in years
 	 */
@@ -342,34 +386,6 @@ public class Star {
 		BigDecimal nextDate = this.age.add(delta);
 		BigDecimal rolloverDelta = BigDecimal.ZERO;
 
-		// make planets
-		if (this.planets.size() < this.maxPlanets) {
-			for (int i = 0; i < this.maxPlanets; i++) {
-				StarDate planetBirthDate = this.getParentGalaxy().getParentUniverse().getCosmicDate().clone();
-				planetBirthDate.addYears(this.age.toBigInteger());
-
-				VictusLudusGame.sharedRand.setSeed(this.seed + 230948 + i);
-
-				BigInteger years = Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, BigDecimal.ZERO, delta,
-					new BigDecimal(VictusLudusGame.sharedRand.nextFloat())).toBigInteger();
-
-				planetBirthDate.addYears(years);
-
-				Planet p = new Planet(planetBirthDate, this);
-				this.planets.add(p);
-
-				// System.err.println("adding planet " + p.hashCode() + " to " + this.hashCode());
-			}
-
-			// done adding planets, so determine their order and names
-			// Collections.sort(this.planets);
-
-			for (int i = 0; i < this.planets.size(); i++) {
-				this.planets.get(i).setName(this.planets.get(i).getName() + " " + Planet.PLANET_SUFFIX_ARRAY[i]);
-				// System.err.println(i + " " + this.planets.get(i).hashCode() + " " + this.planets.get(i).getName());
-			}
-		}
-
 		// is this a failure star?
 		if (this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND).compareTo(new BigDecimal("0.08")) < 0) {
 			this.starType = EnumStarType.BROWN_DWARF;
@@ -378,6 +394,7 @@ public class Star {
 
 			this.surfaceTemperature = this.getBrownDwarfBirthTemperature();
 			this.setStartingPhaseValues();
+			this.age = nextDate;
 			this.tick(rolloverDelta);
 			return;
 		}
@@ -1718,8 +1735,6 @@ public class Star {
 	public Color getStarColor () {
 		for (StarColorTuple tuple : VictusLudusGame.resources.getStarColorMap()) {
 			if (this.surfaceTemperature.doubleValue() > tuple.getTemperature()) {
-				System.err.println(this.surfaceTemperature + " " + tuple.getTemperature() + " " + tuple.getColor());
-
 				return tuple.getColor();
 			}
 		}
@@ -1733,10 +1748,9 @@ public class Star {
 	 * @return a string with the random name
 	 */
 	public String getRandomName () {
-		VictusLudusGame.sharedRand.setSeed(this.seed + 3249832);
+		ArabicGenerator g = new ArabicGenerator(this.seed + 3249832);
 
-		return VictusLudusGame.resources.getCelestialStarNameArray().get(
-			VictusLudusGame.sharedRand.nextInt(VictusLudusGame.resources.getCelestialStarNameArray().size() - 1));
+		return g.getWord();
 	}
 
 	public int getRandomPlanetCount () {
@@ -1769,7 +1783,7 @@ public class Star {
 					p.setPlanetType(EnumPlanetType.METAL);
 					p.calcInitialValues();
 				} else {
-					p.setPlanetType(EnumPlanetType.ASTEROID_BELT);
+					p.setPlanetType(EnumPlanetType.ASTEROID_FIELD);
 				}
 				// System.err.println("smashed planet");
 			} else if (isCalcingHeatFactor) {
@@ -1851,6 +1865,10 @@ public class Star {
 
 	public void setyPosition (final double yPosition) {
 		this.yPosition = yPosition;
+	}
+
+	public int getMaxPlanets () {
+		return this.maxPlanets;
 	}
 
 	public long getSeed () {
