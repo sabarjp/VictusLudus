@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.game.cosmos.Cosmos;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
+import com.teamderpy.victusludus.game.cosmos.Planet;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.game.renderer.BackgroundRenderer;
 import com.teamderpy.victusludus.game.renderer.DebugRenderer;
 import com.teamderpy.victusludus.gui.UIGalaxyHUD;
+import com.teamderpy.victusludus.gui.UIStarHUD;
 import com.teamderpy.victusludus.gui.UIUniverseHUD;
 
 /** The Class CosmosRenderer. */
@@ -30,6 +32,9 @@ public class CosmosRenderer {
 
 	/** A list of stars */
 	protected ArrayList<StarImage> starList;
+
+	/** A list of planets */
+	protected ArrayList<PlanetImage> planetList;
 
 	/** The game. */
 	public Cosmos cosmos;
@@ -69,6 +74,7 @@ public class CosmosRenderer {
 			this.universeRenderer.renderStars(this.starList, batch, deltaT);
 			break;
 		case STAR_PERSPECTIVE:
+			this.universeRenderer.renderPlanets(this.planetList, batch, deltaT);
 			break;
 		case PLANET_PERSPECTIVE:
 			break;
@@ -111,18 +117,33 @@ public class CosmosRenderer {
 				this.starList.add(new StarImage(s, this));
 			}
 
-			System.err.println(this.cosmos.getGalaxy().getSeed());
-
 			this.bgRenderer.setBgImage(NebulaGenerator.createBackgroundNebula(this.cosmos.getGalaxy().getSeed(), this.cosmos
 				.getGameDimensions().getWidth(), this.cosmos.getGameDimensions().getHeight()), true);
 			this.bgRenderer.setStretchingImage(true);
 
-			UIGalaxyHUD hud = new UIGalaxyHUD();
-			hud.setCosmosRenderer(this);
+			UIGalaxyHUD galHUD = new UIGalaxyHUD();
+			galHUD.setCosmosRenderer(this);
 
-			this.cosmos.changeUI(hud);
+			this.cosmos.changeUI(galHUD);
 			break;
 		case STAR_PERSPECTIVE:
+			this.planetList = new ArrayList<PlanetImage>();
+
+			this.cosmos.getStar().createPlanets();
+
+			for (Planet p : this.cosmos.getStar().getPlanets()) {
+				this.planetList.add(new PlanetImage(p, this));
+			}
+
+			this.bgRenderer.setBgImage("background/background_solar", false);
+			this.bgRenderer.setFlipTiling(false);
+			this.bgRenderer.setStretchingImage(false);
+
+			UIStarHUD starHUD = new UIStarHUD();
+			starHUD.setCosmosRenderer(this);
+
+			this.cosmos.changeUI(starHUD);
+
 			break;
 		case PLANET_PERSPECTIVE:
 			break;
@@ -135,7 +156,7 @@ public class CosmosRenderer {
 	public void unregisterListeners () {
 		if (this.galaxyList != null) {
 			for (GalaxyImage g : this.galaxyList) {
-				g.getActionArea().unregisterListeners();
+				g.dispose();
 			}
 
 			this.galaxyList = null;
@@ -143,10 +164,18 @@ public class CosmosRenderer {
 
 		if (this.starList != null) {
 			for (StarImage s : this.starList) {
-				s.getActionArea().unregisterListeners();
+				s.dispose();
 			}
 
 			this.starList = null;
+		}
+
+		if (this.planetList != null) {
+			for (PlanetImage p : this.planetList) {
+				p.dispose();
+			}
+
+			this.planetList = null;
 		}
 	}
 

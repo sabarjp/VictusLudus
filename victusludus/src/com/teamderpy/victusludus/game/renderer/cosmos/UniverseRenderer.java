@@ -5,9 +5,11 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-/** Renders the universe
+/**
+ * Renders the universe
  * 
- * @author Josh */
+ * @author Josh
+ */
 public class UniverseRenderer {
 
 	/** Renders all the galaxies in a universe to the screen */
@@ -24,4 +26,10 @@ public class UniverseRenderer {
 		}
 	}
 
+	/** Renders all the planets in a galaxy to the screen */
+	public void renderPlanets (final ArrayList<PlanetImage> planetList, final SpriteBatch batch, final float deltaT) {
+		for (PlanetImage planetImage : planetList) {
+			planetImage.render(batch, deltaT);
+		}
+	}
 }

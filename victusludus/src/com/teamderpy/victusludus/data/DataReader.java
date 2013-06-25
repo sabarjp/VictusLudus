@@ -131,18 +131,18 @@ public class DataReader {
 		int maxColor = 33000;
 
 		Sprite starColorImage = new Sprite(new Texture(VFile.getFileHandle(starColorChart)));
-		starColorImage.flip(true, false);
+		// starColorImage.flip(true, false);
 
 		starColorImage.getTexture().getTextureData().prepare();
 		Pixmap pixelData = starColorImage.getTexture().getTextureData().consumePixmap();
 
 		for (int i = 0; i < starColorImage.getWidth(); i += 5) {
 			Color color = new Color();
-			Color.rgba8888ToColor(color, pixelData.getPixel(i, 0));
+			Color.rgba8888ToColor(color, pixelData.getPixel((int)(starColorImage.getWidth() - i), 0));
 
 			StarColorTuple tuple = new StarColorTuple(
 				(int)((starColorImage.getWidth() - i) / starColorImage.getWidth() * (maxColor - minColor)), color);
-			// System.err.println("added tuple: " + tuple.getTemperature() + " " + tuple.getColor());
+			System.err.println("added tuple: " + tuple.getTemperature() + " " + tuple.getColor());
 			starColorMap.add(tuple);
 		}
 

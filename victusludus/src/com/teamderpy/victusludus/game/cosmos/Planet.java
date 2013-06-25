@@ -10,9 +10,11 @@ import com.teamderpy.victusludus.precision.Precision;
 
 /** A planet in a solar system orbiting a star */
 public class Planet implements Comparable<Planet> {
-	public static MathContext PLANET_RND = MathContext.DECIMAL128;
+	public static MathContext PLANET_RND = MathContext.DECIMAL64;
 	public static BigDecimal MIN_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 / 400);
 	public static BigDecimal MAX_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 * 400);
+	public static BigDecimal MIN_ORBITAL_DISTANCE = Cosmology.AU.multiply(BigDecimal.valueOf(0.10), Planet.PLANET_RND);
+	public static BigDecimal MAX_ORBITAL_DISTANCE = Cosmology.AU.multiply(BigDecimal.valueOf(80), Planet.PLANET_RND);
 
 	// public static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV", "V", "VI", "VII",
 	// "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
@@ -25,7 +27,7 @@ public class Planet implements Comparable<Planet> {
 	private Star parentStar;
 
 	/** the random seed for this planet **/
-	private float seed;
+	private long seed;
 
 	/** the name of the planet **/
 	private String name;
@@ -56,15 +58,18 @@ public class Planet implements Comparable<Planet> {
 	private BigDecimal orbitAnomaly;
 	private double orbitEccentricity;
 
-	/** the degrees that the planet is rotated against the eccliptical normal with respect to where the north pole is oriented. In
+	/**
+	 * the degrees that the planet is rotated against the eccliptical normal with respect to where the north pole is oriented. In
 	 * other words, the rotational aspect of the axial tilt vector, which by default is 0 degrees, causing an equinox at periapsis
-	 * and apoapsis. */
+	 * and apoapsis.
+	 */
 	private BigDecimal periapsisAxialRotationOffset;
 
-	public Planet (final StarDate birthDate, final Star parentStar) {
+	public Planet (final StarDate birthDate, final Star parentStar, final int id) {
 		this.parentStar = parentStar;
 
-		this.seed = VictusLudusGame.rand.nextInt() / 2;
+		VictusLudusGame.sharedRand.setSeed(parentStar.getSeed() + 234211112 + id * 2719);
+		this.seed = VictusLudusGame.sharedRand.nextLong();
 
 		this.planetType = this.calcPlanetType();
 		this.calcInitialValues();
@@ -85,21 +90,31 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/** A tick of time */
+	public void create (final BigDecimal timeYearsPassed) {
+		this.age = this.age.add(timeYearsPassed);
+	}
+
+	/** A tick of time */
 	public void tick (final BigDecimal delta) {
 		this.age = this.age.add(delta);
 	}
 
-	/** Gets a random planet type from EnumPlanetType
+	/**
+	 * Gets a random planet type from EnumPlanetType
 	 * 
-	 * @return the planet type */
+	 * @return the planet type
+	 */
 	private EnumPlanetType calcPlanetType () {
-		return EnumPlanetType.randomPlanetType();
+		VictusLudusGame.sharedRand.setSeed(this.seed + 2354326);
+		return EnumPlanetType.values()[VictusLudusGame.sharedRand.nextInt(EnumPlanetType.values().length)];
 	}
 
-	/** Generates a random rotational period which is usually close to the rotation of the earth, but is rarely much longer or
+	/**
+	 * Generates a random rotational period which is usually close to the rotation of the earth, but is rarely much longer or
 	 * shorter.
 	 * 
-	 * @return rotational period in seconds */
+	 * @return rotational period in seconds
+	 */
 	private BigDecimal getRandomRotation () {
 		double rand = Cosmology.triangleNoise((int)this.seed, 4392872);
 
@@ -110,9 +125,11 @@ public class Planet implements Comparable<Planet> {
 		}
 	}
 
-	/** Generates a random axial tilt for the planet in degrees, with less tilt being more likely than extreme tilt.
+	/**
+	 * Generates a random axial tilt for the planet in degrees, with less tilt being more likely than extreme tilt.
 	 * 
-	 * @return axial tilt in degrees, greater than or equal to 0 but less than 360.0 */
+	 * @return axial tilt in degrees, greater than or equal to 0 but less than 360.0
+	 */
 	private BigDecimal getRandomAxialTilt () {
 		double rand = Cosmology.gaussianNoise((int)this.seed, 27162233);
 
@@ -120,9 +137,11 @@ public class Planet implements Comparable<Planet> {
 			"359.99999"), BigDecimal.valueOf(rand), new BigDecimal("3"));
 	}
 
-	/** Generates a random angle greater than or equal to 0 and less than 360 degrees.
+	/**
+	 * Generates a random angle greater than or equal to 0 and less than 360 degrees.
 	 * 
-	 * @return rotation in degrees, greater than or equal to 0 but less than 360.0 */
+	 * @return rotation in degrees, greater than or equal to 0 but less than 360.0
+	 */
 	private BigDecimal getRandomAngle () {
 		double rand = Cosmology.randomNoise((int)this.seed, 32123);
 
@@ -130,9 +149,11 @@ public class Planet implements Comparable<Planet> {
 			BigDecimal.valueOf(rand));
 	}
 
-	/** Finds the distance from the star
+	/**
+	 * Finds the distance from the star
 	 * 
-	 * @return distance from the star in meters */
+	 * @return distance from the star in meters
+	 */
 	private BigDecimal getDistanceFromStar () {
 		return Cosmology.calculateKeplerDistance(this.orbitSemiMajorAxis, this.orbitEccentricity, this.orbitAnomaly);
 	}
@@ -144,8 +165,7 @@ public class Planet implements Comparable<Planet> {
 		/* set the long radius of the orbit */
 		rand = Cosmology.leftNoise((int)this.seed, 2918);
 		this.orbitSemiMajorAxis = Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
-			Cosmology.AU.multiply(new BigDecimal("0.10")), Cosmology.AU.multiply(new BigDecimal("80"), Planet.PLANET_RND),
-			BigDecimal.valueOf(rand), new BigDecimal("2"));
+			Planet.MIN_ORBITAL_DISTANCE, Planet.MAX_ORBITAL_DISTANCE, BigDecimal.valueOf(rand), new BigDecimal("2"));
 
 		/* set the eccentricity of the orbit */
 		this.orbitEccentricity = (1.0F + Cosmology.randomNoise((int)this.seed, 34998)) / 6.6F;
@@ -155,31 +175,39 @@ public class Planet implements Comparable<Planet> {
 		this.orbitAnomaly = BigDecimal.ZERO;
 	}
 
-	/** Returns the number of seconds in an hour
+	/**
+	 * Returns the number of seconds in an hour
 	 * 
-	 * @return seconds in an hour */
+	 * @return seconds in an hour
+	 */
 	public BigInteger getHourLength () {
 		return this.getMinuteLength().multiply(new BigInteger("60"));
 	}
 
-	/** Returns the number of seconds in a minute
+	/**
+	 * Returns the number of seconds in a minute
 	 * 
-	 * @return seconds in an minute */
+	 * @return seconds in an minute
+	 */
 	public BigInteger getMinuteLength () {
 		return this.rotationalPeriod.divide(new BigDecimal("1440"), Planet.PLANET_RND).toBigInteger();
 	}
 
-	/** Get the extra number of seconds per day
+	/**
+	 * Get the extra number of seconds per day
 	 * 
-	 * @return the extra seconds per day */
+	 * @return the extra seconds per day
+	 */
 	public BigDecimal getExtraSecondsPerDay () {
 		return this.rotationalPeriod.subtract(new BigDecimal(this.getHourLength())
 			.multiply(new BigDecimal("24"), Planet.PLANET_RND));
 	}
 
-	/** Calculates the birth mass of the planet
+	/**
+	 * Calculates the birth mass of the planet
 	 * 
-	 * @return the birth mass */
+	 * @return the birth mass
+	 */
 	private BigDecimal calcBirthMass () {
 		if (this.planetType.isGasGiant()) {
 			return Cosmology.linearInterpolation(BigDecimal.ZERO, BigDecimal.ONE, Cosmology.PLANET_MASS_GAS_MIN,
@@ -190,16 +218,20 @@ public class Planet implements Comparable<Planet> {
 		}
 	}
 
-	/** Gets the true anomaly angle where the planet will be at the first equinox after periapsis.
+	/**
+	 * Gets the true anomaly angle where the planet will be at the first equinox after periapsis.
 	 * 
-	 * @return the true anomaly angle where the planet will be at the first equinox after periapsis */
+	 * @return the true anomaly angle where the planet will be at the first equinox after periapsis
+	 */
 	private BigDecimal getEquinox1Angle () {
 		return this.periapsisAxialRotationOffset;
 	}
 
-	/** Gets the true anomaly angle where the planet will be at the second equinox after periapsis.
+	/**
+	 * Gets the true anomaly angle where the planet will be at the second equinox after periapsis.
 	 * 
-	 * @return the true anomaly angle where the planet will be at the second equinox after periapsis */
+	 * @return the true anomaly angle where the planet will be at the second equinox after periapsis
+	 */
 	private BigDecimal getEquinox2Angle () {
 		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("180"));
 
@@ -210,9 +242,11 @@ public class Planet implements Comparable<Planet> {
 		return angle;
 	}
 
-	/** Gets the true anomaly angle where the planet will be at the first solstice after periapsis.
+	/**
+	 * Gets the true anomaly angle where the planet will be at the first solstice after periapsis.
 	 * 
-	 * @return the true anomaly angle where the planet will be at the first solstice after periapsis */
+	 * @return the true anomaly angle where the planet will be at the first solstice after periapsis
+	 */
 	private BigDecimal getSolstice1Angle () {
 		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("90"));
 
@@ -223,9 +257,11 @@ public class Planet implements Comparable<Planet> {
 		return angle;
 	}
 
-	/** Gets the true anomaly angle where the planet will be at the second solstice after periapsis.
+	/**
+	 * Gets the true anomaly angle where the planet will be at the second solstice after periapsis.
 	 * 
-	 * @return the true anomaly angle where the planet will be at the second solstice after periapsis */
+	 * @return the true anomaly angle where the planet will be at the second solstice after periapsis
+	 */
 	private BigDecimal getSolstice2Angle () {
 		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("270"));
 
@@ -236,9 +272,11 @@ public class Planet implements Comparable<Planet> {
 		return angle;
 	}
 
-	/** Calculates the radius of a planet
+	/**
+	 * Calculates the radius of a planet
 	 * 
-	 * @return the new radius */
+	 * @return the new radius
+	 */
 	private BigDecimal calcRadius () {
 		switch (this.planetType) {
 		case BARREN:
@@ -277,10 +315,12 @@ public class Planet implements Comparable<Planet> {
 		}
 	}
 
-	/** Random noise generator
+	/**
+	 * Random noise generator
 	 * 
 	 * @param modifier an int to seed the random function
-	 * @return a float between -1.0 and 1.0 */
+	 * @return a float between -1.0 and 1.0
+	 */
 	private float randomNoise (final int modifier) {
 		int h = modifier * 113;
 		h += this.seed;
@@ -288,9 +328,11 @@ public class Planet implements Comparable<Planet> {
 		return 1.0F - (h * (h * h * 4019 + 39916801) + 1073807359 & 0x7fffffff) / 1073741824.0F;
 	}
 
-	/** Gets a random planet name
+	/**
+	 * Gets a random planet name
 	 * 
-	 * @return a string with the random name */
+	 * @return a string with the random name
+	 */
 	public String getParentStarName () {
 		return this.parentStar.getName();
 	}
@@ -445,5 +487,21 @@ public class Planet implements Comparable<Planet> {
 
 	public void setName (final String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Returns a number representing the scale of a planet relative to an ordinary one of its class
+	 * @return
+	 */
+	public double getRelativeScale () {
+		if (this.planetType.isGasGiant()) {
+			return this.radius.divide(
+				Cosmology.PLANET_RADIUS_GAS_MAX.subtract(Cosmology.PLANET_RADIUS_GAS_MIN)
+					.divide(new BigDecimal(2), Planet.PLANET_RND), Planet.PLANET_RND).doubleValue();
+		} else {
+			return this.radius.divide(
+				Cosmology.PLANET_RADIUS_ROCKY_MAX.subtract(Cosmology.PLANET_RADIUS_ROCKY_MIN).divide(new BigDecimal(2),
+					Planet.PLANET_RND), Planet.PLANET_RND).doubleValue();
+		}
 	}
 }
