@@ -88,8 +88,17 @@ public class Galaxy {
 
 		BigDecimal earliestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang()
 			.max(Universe.MIN_AGE_FOR_STARS.toBigInteger()));
-		BigDecimal latestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang().add(this.age.toBigInteger())
-			.min(Universe.MAX_AGE_FOR_STARS.toBigInteger()));
+
+		BigDecimal latestTime;
+
+		if (this.galaxyType.isGalacticNursery()) {
+			latestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang().add(this.age.toBigInteger())
+				.min(Universe.MAX_AGE_FOR_STARS.toBigInteger()));
+		} else {
+			latestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang()
+				.add(this.age.multiply(BigDecimal.valueOf(0.10), Star.STELLAR_RND).toBigInteger())
+				.min(Universe.MAX_AGE_FOR_STARS.toBigInteger()));
+		}
 
 		if (earliestTime.compareTo(latestTime) >= 0) {
 			return; // no valid time period to make stars!

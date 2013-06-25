@@ -14,10 +14,11 @@ import com.teamderpy.victusludus.VictusLudusGame;
  */
 public class Universe {
 	private static int MIN_GALAXY_COUNT = 3;
-	private static int MAX_GALAXY_COUNT = 10;
-	static BigDecimal MIN_AGE_FOR_STARS = new BigDecimal("400E6");
-	static BigDecimal MAX_AGE_FOR_STARS = new BigDecimal("10E14");
-	private static BigDecimal GALAXY_RATIO = new BigDecimal("400E6");
+	private static int MAX_GALAXY_COUNT = 15;
+	public static BigDecimal MIN_AGE_FOR_STARS = new BigDecimal("400E6");
+	public static BigDecimal MAX_AGE_FOR_STARS = new BigDecimal("10E14");
+	public static BigDecimal MAX_AGE_FOR_GALAXIES = new BigDecimal("2E9");
+	private static BigDecimal GALAXY_RATIO = new BigDecimal("50E6");
 
 	/** list of galaxies in the universe */
 	private ArrayList<Galaxy> galaxies;
@@ -57,7 +58,7 @@ public class Universe {
 		galaxiesToCreateCount = Math.max(Universe.MIN_GALAXY_COUNT, Math.min(this.maxGalaxies, galaxiesToCreateCount));
 
 		BigDecimal earliestTime = this.cosmicDate.getYearDecimal().max(Universe.MIN_AGE_FOR_STARS);
-		BigDecimal latestTime = timePassed.min(Universe.MAX_AGE_FOR_STARS);
+		BigDecimal latestTime = timePassed.min(Universe.MAX_AGE_FOR_GALAXIES);
 
 		if (earliestTime.compareTo(latestTime) >= 0) {
 			return; // no valid time period!

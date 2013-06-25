@@ -139,6 +139,7 @@ public class DataReader {
 		for (int i = 0; i < starColorImage.getWidth(); i += 5) {
 			Color color = new Color();
 			Color.rgba8888ToColor(color, pixelData.getPixel((int)(starColorImage.getWidth() - i), 0));
+			color.a = 1.0F;
 
 			StarColorTuple tuple = new StarColorTuple(
 				(int)((starColorImage.getWidth() - i) / starColorImage.getWidth() * (maxColor - minColor)), color);
@@ -148,6 +149,7 @@ public class DataReader {
 
 		Color color = new Color();
 		Color.rgba8888ToColor(color, pixelData.getPixel((int)starColorImage.getWidth(), 0));
+		color.a = 1.0F;
 		starColorMap.add(new StarColorTuple(Integer.MIN_VALUE, color));
 	}
 

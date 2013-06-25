@@ -81,7 +81,7 @@ public class UINewUniverseMenu extends UI {
 		final Label universeAgeLabel = new Label("Universe age", this.skin);
 		final Label universeAgeLessLabel = new Label("Young", this.skin);
 		final Label universeAgeMoreLabel = new Label("Old", this.skin);
-		this.universeAgeSlider = new Slider(3, 33, 3, false, this.skin);
+		this.universeAgeSlider = new Slider(3, 66, 3, false, this.skin);
 		this.universeAgeSlider.setValue(12);
 
 		tableContent.add(universeAgeLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
@@ -194,10 +194,12 @@ public class UINewUniverseMenu extends UI {
 		tableFooter.row();
 	}
 
-	/** Returns a hash code for this string as a long value
+	/**
+	 * Returns a hash code for this string as a long value
 	 * 
 	 * @param string to hash
-	 * @return a long hash code */
+	 * @return a long hash code
+	 */
 	private static long longHashString (final String string) {
 		if (string.isEmpty()) {
 			return VictusLudusGame.rand.nextLong();
