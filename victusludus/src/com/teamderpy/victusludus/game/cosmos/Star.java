@@ -26,6 +26,7 @@ public class Star {
 	public static BigDecimal PROTOSTAR_START_TEMP = new BigDecimal("1500");
 
 	public static MathContext STELLAR_RND = MathContext.DECIMAL128;
+	public static String BIG_STAR_IMAGE_PATH = "star/sun";
 
 	/** the name of the star */
 	private String name;
@@ -251,11 +252,44 @@ public class Star {
 
 			Planet planet = new Planet(planetBirthDate, this, i);
 
+			// place the planet
+			boolean lookingForEmptySpace = true;
+			int placementAttemptNum = 100;
+
+			double semiMajorAxis = -1;
+
+			VictusLudusGame.sharedRand.setSeed(planet.getSeed() + 98748485L);
+
+			while (lookingForEmptySpace && placementAttemptNum > 0) {
+				placementAttemptNum--;
+
+				// pick a spot with nothing else in the area
+				semiMajorAxis = Cosmology.exponentialInterpolation(BigDecimal.ZERO, BigDecimal.ONE, Planet.MIN_ORBITAL_DISTANCE,
+					Planet.MAX_ORBITAL_DISTANCE, BigDecimal.valueOf(VictusLudusGame.sharedRand.nextDouble()), new BigDecimal("2"))
+					.doubleValue();
+
+				lookingForEmptySpace = false;
+
+				for (Planet p : this.planets) {
+					if (Math.pow(semiMajorAxis - p.getOrbitSemiMajorAxis().doubleValue(), 2) < Math
+						.pow(p.getRadius().doubleValue(), 2)) {
+						lookingForEmptySpace = true;
+						break;
+					}
+				}
+			}
+
+			if (placementAttemptNum > 0) {
+				planet.setOrbitSemiMajorAxis(new BigDecimal(semiMajorAxis));
+
+				this.planets.add(planet);
+
+				// System.err.println("adding planet to " + this.hashCode());
+			}
+
 			// simulate to current time
 			planet.create(new BigDecimal(this.birthDate.getYearsSinceBigBang().add(this.age.toBigInteger())
 				.subtract(planet.getBirthDate().getYearsSinceBigBang())));
-
-			this.planets.add(planet);
 		}
 
 		Collections.sort(this.planets);
@@ -1809,6 +1843,26 @@ public class Star {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns a number representing the scale of a star relative to an ordinary one
+	 * @return
+	 */
+	public double getRelativeScale () {
+		if (this.radius.compareTo(Cosmology.SOLAR_RADIUS) <= 0) {
+			return Cosmology.linearInterpolation(Cosmology.STAR_RADIUS_THEORETICAL_MIN, Cosmology.SOLAR_RADIUS,
+				BigDecimal.valueOf(0.05), BigDecimal.valueOf(1), this.radius).doubleValue();
+		}
+
+		if (this.radius.compareTo(Cosmology.SOLAR_RADIUS.multiply(BigDecimal.valueOf(10), Star.STELLAR_RND)) <= 0) {
+			return Cosmology.linearInterpolation(Cosmology.SOLAR_RADIUS,
+				Cosmology.SOLAR_RADIUS.multiply(BigDecimal.valueOf(10), Star.STELLAR_RND), BigDecimal.valueOf(1),
+				BigDecimal.valueOf(4), this.radius).doubleValue();
+		}
+
+		return 4.0D;
+
 	}
 
 	public StarDate getBirthDate () {

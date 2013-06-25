@@ -193,170 +193,177 @@ filter: Nearest,Nearest
 repeat: none
 star/star_black_dwarf
   rotate: false
-  xy: 208, 12
+  xy: 272, 156
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 star/star_black_hole
   rotate: false
-  xy: 192, 16
+  xy: 256, 144
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 star/star_blue_dwarf
   rotate: false
-  xy: 208, 24
+  xy: 320, 216
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 star/star_red_dwarf
   rotate: false
-  xy: 208, 24
+  xy: 320, 216
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 star/star_bright_giant
   rotate: false
-  xy: 0, 0
+  xy: 256, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_giant
   rotate: false
-  xy: 0, 0
+  xy: 256, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_sub_giant
   rotate: false
-  xy: 0, 0
+  xy: 256, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_brown_dwarf
   rotate: false
-  xy: 208, 16
+  xy: 352, 248
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 star/star_proto_star
   rotate: false
-  xy: 208, 16
+  xy: 352, 248
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 star/star_brown_dwarf_dead
   rotate: false
-  xy: 208, 16
+  xy: 352, 248
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 star/star_dust
   rotate: false
-  xy: 32, 0
+  xy: 256, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_helium_white_dwarf
   rotate: false
-  xy: 216, 20
+  xy: 288, 172
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 star/star_hyper_giant
   rotate: false
-  xy: 64, 0
+  xy: 288, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_main_sequence
   rotate: false
-  xy: 192, 0
+  xy: 288, 176
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 star/star_neutron
   rotate: false
-  xy: 96, 0
+  xy: 256, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_pulsar
   rotate: false
-  xy: 96, 0
+  xy: 256, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_planetary_nebula
   rotate: false
-  xy: 128, 0
+  xy: 288, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_supernova_iip
   rotate: false
-  xy: 128, 0
+  xy: 288, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_supernova_iil
   rotate: false
-  xy: 128, 0
+  xy: 288, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_supernova_ib
   rotate: false
-  xy: 128, 0
+  xy: 288, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_supernova_ic
   rotate: false
-  xy: 128, 0
+  xy: 288, 192
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_super_giant
   rotate: false
-  xy: 160, 0
+  xy: 320, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_wolf_rayet
   rotate: false
-  xy: 160, 0
+  xy: 320, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_white_dwarf
   rotate: false
-  xy: 216, 24
+  xy: 256, 136
   size: 8, 8
   orig: 8, 8
+  offset: 0, 0
+  index: -1
+star/sun
+  rotate: false
+  xy: 0, 0
+  size: 256, 256
+  orig: 256, 256
   offset: 0, 0
   index: -1
 

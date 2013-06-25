@@ -49,7 +49,7 @@ public class CosmosRenderer {
 
 		this.bgRenderer = new BackgroundRenderer(this.cosmos.getGameDimensions(), Color.BLACK);
 		// this.debugRenderer = new DebugRenderer(cosmos.getGameDimensions());
-		this.universeRenderer = new UniverseRenderer();
+		this.universeRenderer = new UniverseRenderer(this.cosmos.getGameDimensions());
 
 		this.changePerspective(EnumCosmosMode.UNIVERSE_PERSPECTIVE);
 	}
@@ -74,6 +74,7 @@ public class CosmosRenderer {
 			this.universeRenderer.renderStars(this.starList, batch, deltaT);
 			break;
 		case STAR_PERSPECTIVE:
+			this.universeRenderer.renderBigStar(this.cosmos.getStar(), batch, deltaT);
 			this.universeRenderer.renderPlanets(this.planetList, batch, deltaT);
 			break;
 		case PLANET_PERSPECTIVE:
@@ -111,7 +112,9 @@ public class CosmosRenderer {
 		case GALAXY_PERSPECTIVE:
 			this.starList = new ArrayList<StarImage>();
 
-			this.cosmos.getGalaxy().createStars();
+			if (this.cosmos.getGalaxy().getStars().isEmpty()) {
+				this.cosmos.getGalaxy().createStars();
+			}
 
 			for (Star s : this.cosmos.getGalaxy().getStars()) {
 				this.starList.add(new StarImage(s, this));
@@ -129,7 +132,9 @@ public class CosmosRenderer {
 		case STAR_PERSPECTIVE:
 			this.planetList = new ArrayList<PlanetImage>();
 
-			this.cosmos.getStar().createPlanets();
+			if (this.cosmos.getStar().getPlanets().isEmpty()) {
+				this.cosmos.getStar().createPlanets();
+			}
 
 			for (Planet p : this.cosmos.getStar().getPlanets()) {
 				this.planetList.add(new PlanetImage(p, this));

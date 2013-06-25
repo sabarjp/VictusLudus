@@ -127,14 +127,15 @@ public class Galaxy {
 					new BigDecimal(this.yPosition + this.radius), new BigDecimal(VictusLudusGame.sharedRand.nextFloat()))
 					.doubleValue();
 
+				lookingForEmptySpace = false;
+
 				for (Star s : this.stars) {
-					if (xPos - Math.pow(s.getxPosition(), 2) + yPos - Math.pow(s.getyPosition(), 2) < Math.pow(
+					if (Math.pow(xPos - s.getxPosition(), 2) + Math.pow(yPos - s.getyPosition(), 2) < Math.pow(
 						Star.SOLAR_SYSTEM_RADIUS.doubleValue(), 2)) {
-						continue;
+						lookingForEmptySpace = true;
+						break;
 					}
 				}
-
-				lookingForEmptySpace = false;
 			}
 
 			if (placementAttemptNum > 0) {

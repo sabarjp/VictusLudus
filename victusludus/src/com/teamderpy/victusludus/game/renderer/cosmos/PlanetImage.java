@@ -45,9 +45,9 @@ public class PlanetImage {
 		int spriteWidth = (int)(this.sprite.getWidth() * scale);
 		int spriteHeight = (int)(this.sprite.getHeight() * scale);
 
-		int x = (int)(planet.getOrbitSemiMajorAxis().subtract(star.getRadius())
-			.divide(Planet.MAX_ORBITAL_DISTANCE, Planet.PLANET_RND).doubleValue() * cosmosRenderer.cosmos.getGameDimensions()
-			.getWidth());
+		int x = 256 + (int)(planet.getOrbitSemiMajorAxis().subtract(star.getRadius())
+			.divide(Planet.MAX_ORBITAL_DISTANCE, Planet.PLANET_RND).doubleValue() * (cosmosRenderer.cosmos.getGameDimensions()
+			.getWidth() - 256));
 
 		int y = cosmosRenderer.cosmos.getGameDimensions().getHeight() / 2 - (spriteHeight / 2);
 
