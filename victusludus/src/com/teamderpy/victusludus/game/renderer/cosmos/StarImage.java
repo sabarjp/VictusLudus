@@ -58,6 +58,10 @@ public class StarImage {
 		this.actionArea.setMouseLeaveAct(new LeaveAction());
 		this.actionArea.setMouseClickAct(new ClickAction());
 
+		// if (this.getStar().getStarType() != EnumStarType.BLACK_HOLE) {
+		this.sprite.setColor(this.star.getStarColor());
+		// }
+
 		this.sprite.setBounds(x, y, spriteWidth, spriteHeight);
 	}
 
@@ -85,7 +89,6 @@ public class StarImage {
 	 * @param deltaT the amount of time since the last render
 	 */
 	public void render (final SpriteBatch batch, final float deltaT) {
-		this.sprite.setColor(this.star.getStarColor());
 		this.sprite.draw(batch);
 	}
 
@@ -99,6 +102,8 @@ public class StarImage {
 			gui.setSelectedStarType(star.getStarType().getProperName() + " - " + star.getSpectralClass());
 			gui.setSelectedStarAge(Cosmology.getFormattedStellarAge(star.getAge()));
 			gui.setSelectedStarPlanetCount(Integer.toString(star.getMaxPlanets()));
+
+			System.err.println(star.getStarColor());
 		}
 	}
 

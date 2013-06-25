@@ -131,7 +131,7 @@ public class Star {
 
 		this.parentGalaxy = galaxy;
 
-		this.mass = this.getRandomMass();
+		this.mass = this.getRandomMassFantastical();
 
 		this.startedPhaseMass = this.mass;
 		this.age = BigDecimal.ZERO;
@@ -827,6 +827,9 @@ public class Star {
 		this.radius = this.calcMainSequenceRadius();
 		this.destroyPlanetsTooClose(Cosmology.AU.multiply(new BigDecimal(15), Cosmology.COSMIC_RND), true);
 
+		// age the star
+		this.age = nextDate;
+
 		// proceed to next sequence
 		if (nextDate.compareTo(endOfLife) >= 0) {
 			this.setStartingPhaseValues();
@@ -835,9 +838,6 @@ public class Star {
 
 			this.addHistory(this.birthDate, timeAdvance, this.age, "Evolved into pulsar");
 		}
-
-		// age the star
-		this.age = nextDate;
 
 		// do another tick as we finished this stage early
 		if (rolloverDelta.compareTo(BigDecimal.ZERO) > 0) {
@@ -856,7 +856,9 @@ public class Star {
 		BigDecimal targetTemperature = this.getBlackDwarfTemperature();
 		BigDecimal targetLuminosity = this.getBlackDwarfLuminosity();
 
-		if (this.starType == EnumStarType.PULSAR) {
+		if (this.mass.compareTo(Cosmology.TOV_LIMIT) > 0) {
+			endOfLife = this.startedPhaseAge.add(BigDecimal.ONE);
+		} else if (this.starType == EnumStarType.PULSAR) {
 			endOfLife = this.startedPhaseAge.add(this.calcTimeAsPulsar());
 		} else {
 			endOfLife = this.startedPhaseAge.add(this.calcTimeAsNeutronStar());
@@ -867,6 +869,7 @@ public class Star {
 
 		// will we roll over this tick?
 		if (nextDate.compareTo(endOfLife) > 0) {
+			rolloverDelta = nextDate.subtract(endOfLife);
 			nextDate = endOfLife;
 		}
 
@@ -903,20 +906,10 @@ public class Star {
 			this.starType = EnumStarType.BLACK_HOLE;
 
 			this.addHistory(this.birthDate, timeAdvance, this.age, "Collapsed into black hole");
-
-			// roll over
-			if (nextDate.compareTo(endOfLife) > 0) {
-				rolloverDelta = nextDate.subtract(endOfLife);
-			}
 		} else if (this.starType == EnumStarType.PULSAR && nextDate.compareTo(endOfLife) >= 0) {
 			this.starType = EnumStarType.NEUTRON_STAR;
 
 			this.addHistory(this.birthDate, timeAdvance, this.age, "Evolved into neutron star");
-
-			// roll over
-			if (nextDate.compareTo(endOfLife) > 0) {
-				rolloverDelta = nextDate.subtract(endOfLife);
-			}
 		}
 
 		// do another tick as we finished this stage early
@@ -932,16 +925,10 @@ public class Star {
 	 * @param delta the amount of stellar time that has passed since the last tick, in years
 	 */
 	private void tickBlackHole (final BigDecimal delta) {
-		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsNeutronStar());
 		BigDecimal nextDate = this.age.add(delta);
 
-		// will we roll over this tick?
-		if (nextDate.compareTo(endOfLife) > 0) {
-			nextDate = endOfLife;
-		}
-
 		// age the star
-		this.age = this.age.add(delta);
+		this.age = nextDate;
 	}
 
 	/**
@@ -1206,11 +1193,11 @@ public class Star {
 	}
 
 	/**
-	 * Gets a random mass for a new star
+	 * Gets a random mass for a new star using realistic probabilities
 	 * 
 	 * @return random amount of mass
 	 */
-	private BigDecimal getRandomMass () {
+	private BigDecimal getRandomMassRealistic () {
 		double noise = (1.0F + Cosmology.randomNoise((int)this.seed, 545411)) * 130.0F;
 
 		if (noise < 160.0F) {
@@ -1226,6 +1213,41 @@ public class Star {
 				Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND),
 				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2939)));
 		} else if (noise < 245.0F) {
+			// return a mass between 2.0 and 10.0
+			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
+				Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND),
+				Cosmology.SOLAR_MASS.multiply(new BigDecimal("10.0"), Cosmology.COSMIC_RND),
+				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2940)));
+		} else {
+			// return a mass between 10.0 and 150.0
+			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
+				Cosmology.SOLAR_MASS.multiply(new BigDecimal("10.0"), Cosmology.COSMIC_RND),
+				Cosmology.SOLAR_MASS.multiply(new BigDecimal("150.0"), Cosmology.COSMIC_RND),
+				new BigDecimal(Cosmology.leftNoise((int)this.seed, 2941)));
+		}
+	}
+
+	/**
+	 * Gets a random mass for a new star using fantastical probabilities
+	 * 
+	 * @return random amount of mass
+	 */
+	private BigDecimal getRandomMassFantastical () {
+		double noise = (1.0F + Cosmology.randomNoise((int)this.seed, 1231293)) * 130.0F;
+
+		if (noise < 40.0F) {
+			// return a mass between 0.02 and 0.5
+			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
+				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.02"), Cosmology.COSMIC_RND),
+				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND),
+				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2938)));
+		} else if (noise < 80.0F) {
+			// return a mass between 0.5 and 2.0
+			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
+				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND),
+				Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND),
+				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2939)));
+		} else if (noise < 180.0F) {
 			// return a mass between 2.0 and 10.0
 			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
 				Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND),
