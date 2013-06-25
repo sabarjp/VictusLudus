@@ -10,10 +10,10 @@ public enum EnumPlanetType {
 	CARBON(false, "planet/carbon", "Carbon"),
 	GAIA(false, "planet/gaia", "Gaia"),
 	MOLTEN(false, "planet/molten", "Molten"),
-	METAL(false, "planet/metal", "Metal"),
+	METAL(false, "planet/metal", "Metallic"),
 	BARREN(false, "planet/barren", "Barren"),
 	ASTEROID_FIELD(false, "planet/asteroid_field", "Asteroid Field"),
-	TOXIC(false, "planet/toxic", "Toxic");
+	TOXIC(false, "planet/toxic", "Toxic Oceans");
 
 	private boolean isGasGiant;
 	private String properName;

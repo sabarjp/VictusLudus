@@ -163,9 +163,9 @@ public class Planet implements Comparable<Planet> {
 		double rand;
 
 		/* set the long radius of the orbit */
-		rand = Cosmology.leftNoise((int)this.seed, 2918);
-		this.orbitSemiMajorAxis = Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
-			Planet.MIN_ORBITAL_DISTANCE, Planet.MAX_ORBITAL_DISTANCE, BigDecimal.valueOf(rand), new BigDecimal("2"));
+		// rand = Cosmology.leftNoise((int)this.seed, 2918);
+		// this.orbitSemiMajorAxis = Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
+		// Planet.MIN_ORBITAL_DISTANCE, Planet.MAX_ORBITAL_DISTANCE, BigDecimal.valueOf(rand), new BigDecimal("2"));
 
 		/* set the eccentricity of the orbit */
 		this.orbitEccentricity = (1.0F + Cosmology.randomNoise((int)this.seed, 34998)) / 6.6F;
@@ -472,6 +472,10 @@ public class Planet implements Comparable<Planet> {
 		return this.orbitSemiMajorAxis;
 	}
 
+	public void setOrbitSemiMajorAxis (final BigDecimal orbitSemiMajorAxis) {
+		this.orbitSemiMajorAxis = orbitSemiMajorAxis;
+	}
+
 	public BigDecimal getOrbitAnomaly () {
 		return this.orbitAnomaly;
 	}
@@ -503,5 +507,9 @@ public class Planet implements Comparable<Planet> {
 				Cosmology.PLANET_RADIUS_ROCKY_MAX.subtract(Cosmology.PLANET_RADIUS_ROCKY_MIN).divide(new BigDecimal(2),
 					Planet.PLANET_RND), Planet.PLANET_RND).doubleValue();
 		}
+	}
+
+	public long getSeed () {
+		return this.seed;
 	}
 }
