@@ -3,6 +3,8 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.engine.Actionable;
@@ -20,6 +22,7 @@ import com.teamderpy.victusludus.gui.UIStarHUD;
  */
 public class PlanetImage {
 	public static String ORBIT_LINE_PATH = "planet/orbital_line";
+	private static int RESERVED_STAR_AREA_WIDTH = 256;
 
 	private Planet planet;
 	private ActionArea2D actionArea;
@@ -36,7 +39,7 @@ public class PlanetImage {
 	 * @param galaxy the galaxy
 	 * @param cosmosRenderer the renderer
 	 */
-	public PlanetImage (final Planet planet, final CosmosRenderer cosmosRenderer) {
+	public PlanetImage (final Planet planet, final Array<PlanetImage> collisionList, final CosmosRenderer cosmosRenderer) {
 		this.planet = planet;
 		this.cosmosRenderer = cosmosRenderer;
 
@@ -63,11 +66,61 @@ public class PlanetImage {
 		int spriteWidth = (int)(this.sprite.getWidth() * scale);
 		int spriteHeight = (int)(this.sprite.getHeight() * scale);
 
-		int x = 256 + (int)(planet.getOrbitSemiMajorAxis().subtract(star.getRadius())
-			.divide(Planet.MAX_ORBITAL_DISTANCE, Planet.PLANET_RND).doubleValue() * (cosmosRenderer.cosmos.getGameDimensions()
-			.getWidth() - 256));
+		// find desired x coordinate
+		int x = PlanetImage.RESERVED_STAR_AREA_WIDTH
+			+ (int)(planet.getOrbitSemiMajorAxis().subtract(star.getRadius()).divide(Planet.MAX_ORBITAL_DISTANCE, Planet.PLANET_RND)
+				.doubleValue() * (cosmosRenderer.cosmos.getGameDimensions().getWidth() - PlanetImage.RESERVED_STAR_AREA_WIDTH));
 
 		int y = cosmosRenderer.cosmos.getGameDimensions().getHeight() / 2 - (spriteHeight / 2);
+
+		boolean isPositionDetermined = false;
+		int maxPlaceAttempts = 100;
+		Rectangle desiredPosition = new Rectangle();
+
+		while (!isPositionDetermined && maxPlaceAttempts-- > 0) {
+			boolean didCollisionOccur = false;
+			int collisionAt = 0; // index where collision occured
+			boolean moveSelf = false; // whether to shift this planet right or all prior planets to the left
+
+			// if we collide with something on the list, shift until we fit somewhere
+			for (PlanetImage potentialCollision : collisionList) {
+				desiredPosition.set(x, y, spriteWidth, spriteHeight);
+
+				if (potentialCollision.sprite.getBoundingRectangle().overlaps(desiredPosition)) {
+					// shift and try again
+					if (potentialCollision.sprite.getX() > x
+						&& collisionList.first().sprite.getX() > PlanetImage.RESERVED_STAR_AREA_WIDTH + (spriteWidth / 4)) {
+						moveSelf = false;
+					} else {
+						moveSelf = true;
+					}
+
+					didCollisionOccur = true;
+					break;
+				}
+
+				collisionAt++;
+			}
+
+			if (didCollisionOccur) {
+				if (moveSelf) {
+					x += (spriteWidth / 4);
+				} else {
+					int i = 0;
+					for (PlanetImage potentialCollision : collisionList) {
+						potentialCollision.sprite.setX(potentialCollision.sprite.getX() - (spriteWidth / 4));
+						potentialCollision.orbit.setX(potentialCollision.orbit.getX() - (spriteWidth / 4));
+
+						if (++i > collisionAt) {
+							break;
+						}
+					}
+				}
+
+			} else {
+				isPositionDetermined = true;
+			}
+		}
 
 		this.actionArea = new ActionArea2D(x, y, spriteWidth, spriteHeight);
 		this.actionArea.setMouseEnterAct(new EnterAction());

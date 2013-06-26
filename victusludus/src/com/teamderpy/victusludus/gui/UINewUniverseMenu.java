@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -23,7 +24,10 @@ public class UINewUniverseMenu extends UI {
 	private TextField universeNameField;
 	private TextField universeSeedField;
 	private Slider universeAgeSlider;
-	private Slider universeDensitySlider;
+	private Slider starMassSlider;
+
+	/* whether a name has been typed in */
+	private boolean typedInName = false;
 
 	@Override
 	public void create () {
@@ -72,8 +76,20 @@ public class UINewUniverseMenu extends UI {
 
 		this.universeNameField.addListener(new ClickListener() {
 			@Override
-			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActorr) {
+			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
 				tooltipText.setText("The name of your universe");
+			}
+		});
+
+		this.universeNameField.addListener(new InputListener() {
+			@Override
+			public boolean keyTyped (final InputEvent event, final char character) {
+				if (!UINewUniverseMenu.this.universeNameField.getText().isEmpty()) {
+					UINewUniverseMenu.this.typedInName = true;
+				} else {
+					UINewUniverseMenu.this.typedInName = false;
+				}
+				return true;
 			}
 		});
 
@@ -81,7 +97,7 @@ public class UINewUniverseMenu extends UI {
 		final Label universeAgeLabel = new Label("Universe age", this.skin);
 		final Label universeAgeLessLabel = new Label("Young", this.skin);
 		final Label universeAgeMoreLabel = new Label("Old", this.skin);
-		this.universeAgeSlider = new Slider(3, 66, 3, false, this.skin);
+		this.universeAgeSlider = new Slider(0.5F, 60.5F, 0.5F, false, this.skin);
 		this.universeAgeSlider.setValue(12);
 
 		tableContent.add(universeAgeLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
@@ -92,28 +108,28 @@ public class UINewUniverseMenu extends UI {
 
 		this.universeAgeSlider.addListener(new ClickListener() {
 			@Override
-			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActorr) {
+			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
 				tooltipText.setText("The age of the universe");
 			}
 		});
 
-		/************ UNIVERSE DENSITY */
-		final Label universeDensityLabel = new Label("Universe density", this.skin);
-		final Label universeDensityLessLabel = new Label("Sparse", this.skin);
-		final Label universeDensityMoreLabel = new Label("Dense", this.skin);
-		this.universeDensitySlider = new Slider(0, 1.5F, 0.1F, false, this.skin);
-		this.universeDensitySlider.setValue(0.25F);
+		/************ STAR MASS */
+		final Label starMassLabel = new Label("Average Star Mass", this.skin);
+		final Label starMassLessLabel = new Label("Small", this.skin);
+		final Label starMassMoreLabel = new Label("Massive", this.skin);
+		this.starMassSlider = new Slider(0, 100, 2F, false, this.skin);
+		this.starMassSlider.setValue(24F);
 
-		tableContent.add(universeDensityLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
-		tableContent.add(universeDensityLessLabel).pad(UI.CELL_PADDING).right();
-		tableContent.add(this.universeDensitySlider).pad(UI.CELL_PADDING);
-		tableContent.add(universeDensityMoreLabel).pad(UI.CELL_PADDING).left();
+		tableContent.add(starMassLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
+		tableContent.add(starMassLessLabel).pad(UI.CELL_PADDING).right();
+		tableContent.add(this.starMassSlider).pad(UI.CELL_PADDING);
+		tableContent.add(starMassMoreLabel).pad(UI.CELL_PADDING).left();
 		tableContent.row();
 
-		this.universeDensitySlider.addListener(new ClickListener() {
+		this.starMassSlider.addListener(new ClickListener() {
 			@Override
-			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActorr) {
-				tooltipText.setText("The density of the universe");
+			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
+				tooltipText.setText("How massive the typical star is");
 			}
 		});
 
@@ -132,6 +148,16 @@ public class UINewUniverseMenu extends UI {
 			}
 		});
 
+		this.universeSeedField.addListener(new InputListener() {
+			@Override
+			public boolean keyTyped (final InputEvent event, final char character) {
+				if (!UINewUniverseMenu.this.typedInName) {
+					UINewUniverseMenu.this.universeNameField.setText(UINewUniverseMenu.this.universeSeedField.getText());
+				}
+				return true;
+			}
+		});
+
 		/************ CONTINUE */
 		final TextButton continueButton = new TextButton("Continue", this.skin);
 		tableFooter.add(continueButton).pad(UI.CELL_PADDING);
@@ -146,7 +172,7 @@ public class UINewUniverseMenu extends UI {
 					UniverseSettings requestedSettings = new UniverseSettings();
 
 					requestedSettings.setRequestedUniAge(UINewUniverseMenu.this.universeAgeSlider.getValue());
-					requestedSettings.setRequestedUniDensity(UINewUniverseMenu.this.universeDensitySlider.getValue());
+					requestedSettings.setRequestedStarMassDistribution(UINewUniverseMenu.this.starMassSlider.getValue());
 					requestedSettings.setRequestedSeed(UINewUniverseMenu.longHashString(UINewUniverseMenu.this.universeSeedField
 						.getText()));
 

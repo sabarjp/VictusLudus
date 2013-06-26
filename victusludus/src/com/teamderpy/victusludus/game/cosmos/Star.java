@@ -131,7 +131,7 @@ public class Star {
 
 		this.parentGalaxy = galaxy;
 
-		this.mass = this.getRandomMassFantastical();
+		this.mass = this.getRandomMass();
 
 		this.startedPhaseMass = this.mass;
 		this.age = BigDecimal.ZERO;
@@ -1193,61 +1193,33 @@ public class Star {
 	}
 
 	/**
-	 * Gets a random mass for a new star using realistic probabilities
+	 * Gets a random mass for a new star using weighed probabilities
 	 * 
 	 * @return random amount of mass
 	 */
-	private BigDecimal getRandomMassRealistic () {
-		double noise = (1.0F + Cosmology.randomNoise((int)this.seed, 545411)) * 130.0F;
+	private BigDecimal getRandomMass () {
+		VictusLudusGame.sharedRand.setSeed(this.seed + 349832411L);
 
-		if (noise < 160.0F) {
+		float lowMassProbability = (1F - (this.parentGalaxy.getParentUniverse().getStarMassDistrubution() / 100F)) * 0.66F;
+		float mediumMassProbability = lowMassProbability * 0.55F;
+		float highMassProbability = (1F - lowMassProbability - mediumMassProbability) * 0.7F;
+		// float superMassProbability = (1F - lowMassProbability - mediumMassProbability) * 0.3F;
+
+		float dice = VictusLudusGame.sharedRand.nextFloat();
+
+		if (dice <= lowMassProbability) {
 			// return a mass between 0.02 and 0.5
 			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
 				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.02"), Cosmology.COSMIC_RND),
 				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND),
 				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2938)));
-		} else if (noise < 230.0F) {
+		} else if (dice <= lowMassProbability + mediumMassProbability) {
 			// return a mass between 0.5 and 2.0
 			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
 				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND),
 				Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND),
 				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2939)));
-		} else if (noise < 245.0F) {
-			// return a mass between 2.0 and 10.0
-			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
-				Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND),
-				Cosmology.SOLAR_MASS.multiply(new BigDecimal("10.0"), Cosmology.COSMIC_RND),
-				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2940)));
-		} else {
-			// return a mass between 10.0 and 150.0
-			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
-				Cosmology.SOLAR_MASS.multiply(new BigDecimal("10.0"), Cosmology.COSMIC_RND),
-				Cosmology.SOLAR_MASS.multiply(new BigDecimal("150.0"), Cosmology.COSMIC_RND),
-				new BigDecimal(Cosmology.leftNoise((int)this.seed, 2941)));
-		}
-	}
-
-	/**
-	 * Gets a random mass for a new star using fantastical probabilities
-	 * 
-	 * @return random amount of mass
-	 */
-	private BigDecimal getRandomMassFantastical () {
-		double noise = (1.0F + Cosmology.randomNoise((int)this.seed, 1231293)) * 130.0F;
-
-		if (noise < 40.0F) {
-			// return a mass between 0.02 and 0.5
-			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
-				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.02"), Cosmology.COSMIC_RND),
-				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND),
-				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2938)));
-		} else if (noise < 80.0F) {
-			// return a mass between 0.5 and 2.0
-			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
-				Cosmology.SOLAR_MASS.multiply(new BigDecimal("0.5"), Cosmology.COSMIC_RND),
-				Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND),
-				new BigDecimal(Cosmology.randomNoise((int)this.seed, 2939)));
-		} else if (noise < 180.0F) {
+		} else if (dice <= lowMassProbability + mediumMassProbability + highMassProbability) {
 			// return a mass between 2.0 and 10.0
 			return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
 				Cosmology.SOLAR_MASS.multiply(new BigDecimal("2.0"), Cosmology.COSMIC_RND),
@@ -1731,6 +1703,7 @@ public class Star {
 		d.addYears(age.toBigInteger());
 
 		this.historyLog.add(StarDate.getFormattedStarDate(d) + "\n    Age " + Cosmology.getFormattedStellarAge(age) + "\n    "
+			+ "Mass " + this.mass + "\n    " + "Temp " + this.surfaceTemperature + "\n    " + "Lum " + this.luminosity + "\n    "
 			+ text + "\n");
 	}
 

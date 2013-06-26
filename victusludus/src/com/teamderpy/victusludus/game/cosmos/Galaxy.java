@@ -14,11 +14,10 @@ import com.teamderpy.victusludus.language.GreekLatinGenerator;
  * @author Josh
  */
 public class Galaxy {
-	private static int MIN_STAR_COUNT = 4;
-	private static int MAX_STAR_COUNT = 20;
+	private static int MIN_STAR_COUNT = 8;
+	private static int MAX_STAR_COUNT = 28;
 	public static BigDecimal MIN_GALAXY_RADIUS = Cosmology.PARSEC.multiply(new BigDecimal("50"), Cosmology.COSMIC_RND);
 	public static BigDecimal MAX_GALAXY_RADIUS = Cosmology.PARSEC.multiply(new BigDecimal("25000"), Cosmology.COSMIC_RND);
-	private static BigDecimal STAR_RATIO = new BigDecimal("80E6");
 
 	/** list of stars in the galaxy */
 	private ArrayList<Star> stars;
@@ -83,8 +82,7 @@ public class Galaxy {
 	 * Creates the stars of the galaxy
 	 */
 	public void createStars () {
-		int starsToCreateCount = (int)this.age.divideToIntegralValue(Galaxy.STAR_RATIO).doubleValue();
-		starsToCreateCount = Math.max(Galaxy.MIN_STAR_COUNT, Math.min(this.maxStars, starsToCreateCount));
+		int starsToCreateCount = Math.max(Galaxy.MIN_STAR_COUNT, this.maxStars);
 
 		BigDecimal earliestTime = new BigDecimal(this.getBirthDate().getYearsSinceBigBang()
 			.max(Universe.MIN_AGE_FOR_STARS.toBigInteger()));
@@ -291,7 +289,7 @@ public class Galaxy {
 
 	public int getRandomStarCount () {
 		double rand = Cosmology.randomNoise((int)this.seed, 12983);
-		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal("1"),
+		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal(Galaxy.MIN_STAR_COUNT),
 			new BigDecimal(Galaxy.MAX_STAR_COUNT), new BigDecimal(rand)).intValue();
 	}
 

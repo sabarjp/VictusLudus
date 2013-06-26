@@ -200,28 +200,28 @@ filter: Nearest,Nearest
 repeat: none
 star/star_black_dwarf
   rotate: false
-  xy: 272, 156
+  xy: 336, 220
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
   index: -1
 star/star_black_hole
   rotate: false
-  xy: 256, 144
+  xy: 320, 208
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 star/star_blue_dwarf
   rotate: false
-  xy: 320, 216
+  xy: 256, 120
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 star/star_red_dwarf
   rotate: false
-  xy: 320, 216
+  xy: 256, 120
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -249,21 +249,21 @@ star/star_sub_giant
   index: -1
 star/star_brown_dwarf
   rotate: false
-  xy: 352, 248
+  xy: 288, 152
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 star/star_proto_star
   rotate: false
-  xy: 352, 248
+  xy: 288, 152
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 star/star_brown_dwarf_dead
   rotate: false
-  xy: 352, 248
+  xy: 288, 152
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -277,7 +277,7 @@ star/star_dust
   index: -1
 star/star_helium_white_dwarf
   rotate: false
-  xy: 288, 172
+  xy: 352, 236
   size: 4, 4
   orig: 4, 4
   offset: 0, 0
@@ -291,19 +291,12 @@ star/star_hyper_giant
   index: -1
 star/star_main_sequence
   rotate: false
-  xy: 288, 176
+  xy: 352, 240
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 star/star_neutron
-  rotate: false
-  xy: 256, 160
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-star/star_pulsar
   rotate: false
   xy: 256, 160
   size: 32, 32
@@ -345,25 +338,32 @@ star/star_supernova_ic
   orig: 32, 32
   offset: 0, 0
   index: -1
-star/star_super_giant
+star/star_pulsar
   rotate: false
   xy: 320, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-star/star_wolf_rayet
+star/star_super_giant
   rotate: false
-  xy: 320, 224
+  xy: 256, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star/star_white_dwarf
   rotate: false
-  xy: 256, 136
+  xy: 320, 200
   size: 8, 8
   orig: 8, 8
+  offset: 0, 0
+  index: -1
+star/star_wolf_rayet
+  rotate: false
+  xy: 288, 160
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 star/sun

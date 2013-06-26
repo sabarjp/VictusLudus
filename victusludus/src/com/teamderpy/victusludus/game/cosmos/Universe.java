@@ -13,8 +13,8 @@ import com.teamderpy.victusludus.VictusLudusGame;
  * @author Josh
  */
 public class Universe {
-	private static int MIN_GALAXY_COUNT = 3;
-	private static int MAX_GALAXY_COUNT = 15;
+	private static int MIN_GALAXY_COUNT = 8;
+	private static int MAX_GALAXY_COUNT = 32;
 	public static BigDecimal MIN_AGE_FOR_STARS = new BigDecimal("400E6");
 	public static BigDecimal MAX_AGE_FOR_STARS = new BigDecimal("10E14");
 	public static BigDecimal MAX_AGE_FOR_GALAXIES = new BigDecimal("2E9");
@@ -38,10 +38,14 @@ public class Universe {
 	/** the max number of galaxies for the universe */
 	private int maxGalaxies;
 
-	public Universe (final long seed) {
+	/** the star mass distribution for the universe */
+	private float starMassDistrubution;
+
+	public Universe (final long seed, final float starMassDistrubution) {
 		this.seed = seed;
 		this.cosmicDate = new StarDate();
 		this.age = BigDecimal.ZERO;
+		this.starMassDistrubution = starMassDistrubution;
 
 		this.galaxies = new ArrayList<Galaxy>();
 		this.diameter = Cosmology.LIGHT_YEAR.multiply(new BigDecimal("56000000000")).doubleValue();
@@ -51,6 +55,7 @@ public class Universe {
 	/**
 	 * Creates a new universe where a certain amount of time has passed since the big bang
 	 * @param timePassed the amount of time that has passed
+	 * @param f
 	 */
 	public void create (final BigDecimal timePassed) {
 		// create galaxies to match the time passed and some other parameters
@@ -166,5 +171,9 @@ public class Universe {
 		double rand = Cosmology.randomNoise((int)this.seed, 3243233);
 		return Cosmology.linearInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE, new BigDecimal(Universe.MIN_GALAXY_COUNT),
 			new BigDecimal(Universe.MAX_GALAXY_COUNT), new BigDecimal(rand)).intValue();
+	}
+
+	public float getStarMassDistrubution () {
+		return this.starMassDistrubution;
 	}
 }

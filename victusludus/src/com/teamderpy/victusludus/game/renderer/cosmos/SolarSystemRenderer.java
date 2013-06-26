@@ -1,10 +1,9 @@
 
 package com.teamderpy.victusludus.game.renderer.cosmos;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.game.GameDimensions;
@@ -15,10 +14,10 @@ public class SolarSystemRenderer implements IUniverseRenderer {
 	public static String BACKGROUND_PATH = "background/background_solar";
 
 	private GameDimensions gameDimensions;
-	private ArrayList<PlanetImage> planetList;
+	private Array<PlanetImage> planetList;
 	private Sprite starSprite;
 
-	public SolarSystemRenderer (final GameDimensions gameDimensions, final ArrayList<PlanetImage> planetList, final Star star) {
+	public SolarSystemRenderer (final GameDimensions gameDimensions, final Array<PlanetImage> planetList, final Star star) {
 		this.gameDimensions = gameDimensions;
 		this.planetList = planetList;
 
