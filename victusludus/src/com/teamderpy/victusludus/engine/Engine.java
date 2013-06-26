@@ -454,7 +454,6 @@ public class Engine implements ResizeListener {
 			this.currentUI.render(batch, deltaTime);
 		}
 
-		EasyGL.freePoolResources();
 		this.lastFrameDrawTime = Time.getTime();
 	}
 

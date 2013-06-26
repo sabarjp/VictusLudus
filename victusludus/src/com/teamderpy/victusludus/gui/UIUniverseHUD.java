@@ -128,6 +128,6 @@ public class UIUniverseHUD extends UI {
 	 * @param text the new selected galaxy star count
 	 */
 	public void setSelectedGalaxyStarCount (final String text) {
-		this.selectedGalaxyStarCount.setText(text + " stars detected");
+		this.selectedGalaxyStarCount.setText("~" + text + " stars detected");
 	}
 }

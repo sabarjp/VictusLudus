@@ -1,10 +1,9 @@
 
 package com.teamderpy.victusludus.game.renderer.cosmos;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.game.cosmos.Cosmos;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
@@ -28,13 +27,13 @@ public class CosmosRenderer {
 	private IUniverseRenderer iuniRenderer;
 
 	/** A list of galaxies */
-	protected ArrayList<GalaxyImage> galaxyList;
+	protected Array<GalaxyImage> galaxyList;
 
 	/** A list of stars */
-	protected ArrayList<StarImage> starList;
+	protected Array<StarImage> starList;
 
 	/** A list of planets */
-	protected ArrayList<PlanetImage> planetList;
+	protected Array<PlanetImage> planetList;
 
 	/** The game. */
 	public Cosmos cosmos;
@@ -94,10 +93,10 @@ public class CosmosRenderer {
 		// change perspectives
 		switch (newPerspective) {
 		case UNIVERSE_PERSPECTIVE:
-			this.galaxyList = new ArrayList<GalaxyImage>();
+			this.galaxyList = new Array<GalaxyImage>();
 
 			for (Galaxy g : this.cosmos.getUniverse().getGalaxies()) {
-				this.galaxyList.add(new GalaxyImage(g, this));
+				this.galaxyList.add(new GalaxyImage(g, this.galaxyList, this));
 			}
 
 			this.bgRenderer.setBgImage(GalaxyRenderer.BACKGROUND_PATH, false);
@@ -110,14 +109,14 @@ public class CosmosRenderer {
 
 			break;
 		case GALAXY_PERSPECTIVE:
-			this.starList = new ArrayList<StarImage>();
+			this.starList = new Array<StarImage>();
 
 			if (this.cosmos.getGalaxy().getStars().isEmpty()) {
 				this.cosmos.getGalaxy().createStars();
 			}
 
 			for (Star s : this.cosmos.getGalaxy().getStars()) {
-				this.starList.add(new StarImage(s, this));
+				this.starList.add(new StarImage(s, this.starList, this));
 			}
 
 			this.bgRenderer.setBgImage(NebulaGenerator.createBackgroundNebula(this.cosmos.getGalaxy().getSeed(), this.cosmos
@@ -133,14 +132,14 @@ public class CosmosRenderer {
 
 			break;
 		case STAR_PERSPECTIVE:
-			this.planetList = new ArrayList<PlanetImage>();
+			this.planetList = new Array<PlanetImage>();
 
 			if (this.cosmos.getStar().getPlanets().isEmpty()) {
 				this.cosmos.getStar().createPlanets();
 			}
 
 			for (Planet p : this.cosmos.getStar().getPlanets()) {
-				this.planetList.add(new PlanetImage(p, this));
+				this.planetList.add(new PlanetImage(p, this.planetList, this));
 			}
 
 			this.bgRenderer.setBgImage(SolarSystemRenderer.BACKGROUND_PATH, false);

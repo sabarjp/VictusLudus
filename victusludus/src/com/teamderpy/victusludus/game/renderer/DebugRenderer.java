@@ -1,7 +1,6 @@
 
 package com.teamderpy.victusludus.game.renderer;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,9 +14,11 @@ public class DebugRenderer {
 	/** The overlay image */
 	private Texture debugImage = null;
 
-	/** Instantiates a new DebugRenderer.
+	/**
+	 * Instantiates a new DebugRenderer.
 	 * 
-	 * @param gameRenderer the game renderer */
+	 * @param gameRenderer the game renderer
+	 */
 	public DebugRenderer (final GameDimensions dimensions) {
 		this.dimensions = dimensions;
 
@@ -27,12 +28,6 @@ public class DebugRenderer {
 	/** Render. */
 	public void render (final SpriteBatch batch, final float deltaT) {
 		batch.draw(this.debugImage, 0, 0);
-
-		// this.debugImage.getTextureData().prepare();
-		Pixmap nextMap = this.debugImage.getTextureData().consumePixmap();
-		nextMap.setColor(Color.CLEAR);
-		nextMap.fill();
-		// this.debugImage.getTextureData().disposePixmap();
 	}
 
 	public Texture getDebugImage () {

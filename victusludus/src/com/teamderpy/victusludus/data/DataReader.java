@@ -12,7 +12,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
@@ -130,27 +129,28 @@ public class DataReader {
 		int minColor = 0;
 		int maxColor = 33000;
 
-		Sprite starColorImage = new Sprite(new Texture(VFile.getFileHandle(starColorChart)));
-		// starColorImage.flip(true, false);
+		Texture starColorImage = new Texture(VFile.getFileHandle(starColorChart));
 
-		starColorImage.getTexture().getTextureData().prepare();
-		Pixmap pixelData = starColorImage.getTexture().getTextureData().consumePixmap();
+		starColorImage.getTextureData().prepare();
+		Pixmap pixelData = starColorImage.getTextureData().consumePixmap();
 
-		for (int i = 0; i < starColorImage.getWidth(); i += 5) {
+		for (int i = 1; i < starColorImage.getWidth(); i += 5) {
 			Color color = new Color();
-			Color.rgba8888ToColor(color, pixelData.getPixel((int)(starColorImage.getWidth() - i), 0));
+			Color.rgba8888ToColor(color, pixelData.getPixel(starColorImage.getWidth() - i, 0));
 			color.a = 1.0F;
 
 			StarColorTuple tuple = new StarColorTuple(
-				(int)((starColorImage.getWidth() - i) / starColorImage.getWidth() * (maxColor - minColor)), color);
+				(int)((float)(starColorImage.getWidth() - i) / starColorImage.getWidth() * (maxColor - minColor)), color);
 			System.err.println("added tuple: " + tuple.getTemperature() + " " + tuple.getColor());
 			starColorMap.add(tuple);
 		}
 
 		Color color = new Color();
-		Color.rgba8888ToColor(color, pixelData.getPixel((int)starColorImage.getWidth(), 0));
+		Color.rgba8888ToColor(color, pixelData.getPixel(starColorImage.getWidth(), 0));
 		color.a = 1.0F;
 		starColorMap.add(new StarColorTuple(Integer.MIN_VALUE, color));
+
+		starColorImage.dispose();
 	}
 
 	/**

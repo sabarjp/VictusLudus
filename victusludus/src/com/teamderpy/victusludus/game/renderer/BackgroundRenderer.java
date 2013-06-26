@@ -12,18 +12,16 @@ import com.teamderpy.victusludus.game.GameDimensions;
 public class BackgroundRenderer {
 	private GameDimensions dimensions;
 
-	/** The bg color. */
-	private Color bgColor = null;
-
 	/** The background image */
 	private Texture bgImage = null;
+	private Texture bgColor = null;
 
 	/** whether or not the background tiles flip as they are laid out */
 	private boolean isFlipTiling = true;
 	private boolean isStretchingImage = true;
 
-	/** whether the texture was generated on the fly or not */
-	private boolean isTextureTemporary = false;
+	/** whether or not to dispose the background image when done using it */
+	private boolean isDisposeBGImgWhenDone = false;
 
 	/**
 	 * Instantiates a new background renderer using a background color
@@ -33,7 +31,7 @@ public class BackgroundRenderer {
 	 */
 	public BackgroundRenderer (final GameDimensions dimensions, final Color bgColor) {
 		this.dimensions = dimensions;
-		this.bgColor = bgColor;
+		this.bgColor = EasyGL.getPixelTexture(bgColor, 1, 1);
 	}
 
 	/**
@@ -42,23 +40,20 @@ public class BackgroundRenderer {
 	 * @param gameRenderer the game renderer
 	 * @param path the path to the background image
 	 */
-	public BackgroundRenderer (final GameDimensions dimensions, final String path) {
+	public BackgroundRenderer (final GameDimensions dimensions, final String path, final boolean isDisposeBGImgWhenDone) {
 		this.dimensions = dimensions;
-
+		this.isDisposeBGImgWhenDone = isDisposeBGImgWhenDone;
 		this.bgImage = VictusLudusGame.resources.getTextureAtlasGUI().findRegion(path).getTexture();
+		this.bgColor = EasyGL.getPixelTexture(Color.BLACK, 1, 1);
 	}
 
 	/** Render. */
 	public void render (final SpriteBatch batch, final float deltaT) {
 		if (this.bgColor != null) {
-			EasyGL.drawRect(batch, this.bgColor, 0, 0, this.dimensions.getWidth(), this.dimensions.getHeight());
-			EasyGL.freePoolResources();
+			batch.draw(this.bgColor, 0, 0, this.dimensions.getWidth(), this.dimensions.getHeight());
 		}
 
 		if (this.bgImage != null) {
-			EasyGL.drawRect(batch, Color.BLACK, 0, 0, this.dimensions.getWidth(), this.dimensions.getHeight());
-			EasyGL.freePoolResources();
-
 			if (this.isStretchingImage) {
 				batch.draw(this.bgImage, 0, 0, this.dimensions.getWidth(), this.dimensions.getHeight());
 			} else {
@@ -98,44 +93,77 @@ public class BackgroundRenderer {
 	 * 
 	 * @return the bg color
 	 */
-	public Color getBgColor () {
+	public Texture getBgColor () {
 		return this.bgColor;
 	}
 
 	/**
-	 * Sets the bg color.
+	 * Sets the background color
 	 * 
-	 * @param bgColor the new bg color
+	 * @param bgColor the new background color
 	 */
 	public void setBgColor (final Color bgColor) {
-		this.bgColor = bgColor;
+		if (this.isDisposeBGImgWhenDone && this.bgImage != null) {
+			this.bgImage.dispose();
+		}
+
+		if (this.bgColor != null) {
+			this.bgColor.dispose();
+		}
+
+		this.bgColor = EasyGL.getPixelTexture(bgColor, 1, 1);
 		this.bgImage = null;
 	}
 
-	public void setBgImage (final String path, final boolean isTextureTemporary) {
-		if (this.isTextureTemporary && this.bgImage != null) {
+	/**
+	 * Sets the background image to a texture at a path and sets the background color to black
+	 * 
+	 * @param path the path of the texture to load
+	 */
+	public void setBgImage (final String path, final boolean isDisposeBGImgWhenDone) {
+		if (this.isDisposeBGImgWhenDone && this.bgImage != null) {
 			this.bgImage.dispose();
+		}
+
+		if (this.bgColor != null) {
+			this.bgColor.dispose();
 		}
 
 		this.bgImage = VictusLudusGame.resources.getTextureAtlasCosmos().findRegion(path).getTexture();
-		this.bgColor = null;
-
-		this.isTextureTemporary = isTextureTemporary;
+		this.bgColor = EasyGL.getPixelTexture(Color.BLACK, 1, 1);
+		this.isDisposeBGImgWhenDone = isDisposeBGImgWhenDone;
 	}
 
-	public void setBgImage (final Texture bgImage, final boolean isTextureTemporary) {
-		if (this.isTextureTemporary && this.bgImage != null) {
+	/**
+	 * Sets the background image to a texture at a path and sets the background color to black
+	 * 
+	 * @param bgImage the background image to load
+	 */
+	public void setBgImage (final Texture bgImage, final boolean isDisposeBGImgWhenDone) {
+		if (this.isDisposeBGImgWhenDone && this.bgImage != null) {
 			this.bgImage.dispose();
 		}
 
-		this.bgImage = bgImage;
+		if (this.bgColor != null) {
+			this.bgColor.dispose();
+		}
 
-		this.isTextureTemporary = isTextureTemporary;
+		this.bgImage = bgImage;
+		this.bgColor = EasyGL.getPixelTexture(Color.BLACK, 1, 1);
+
+		this.isDisposeBGImgWhenDone = isDisposeBGImgWhenDone;
 	}
 
+	/**
+	 * Dispose of textures
+	 */
 	public void dispose () {
-		if (this.isTextureTemporary && this.bgImage != null) {
+		if (this.isDisposeBGImgWhenDone && this.bgImage != null) {
 			this.bgImage.dispose();
+		}
+
+		if (this.bgColor != null) {
+			this.bgColor.dispose();
 		}
 	}
 
@@ -160,11 +188,19 @@ public class BackgroundRenderer {
 		this.isStretchingImage = isStretchingImage;
 	}
 
-	public boolean isTextureTemporary () {
-		return this.isTextureTemporary;
+	/**
+	 * Whether or not the texture will be disposed
+	 * @return
+	 */
+	public boolean isDisposeBGImgWhenDone () {
+		return this.isDisposeBGImgWhenDone;
 	}
 
-	public void setTextureTemporary (final boolean isTextureTemporary) {
-		this.isTextureTemporary = isTextureTemporary;
+	/**
+	 * Sets whether or not the texture will be disposed
+	 * @param disposeBackgroundImageWhenDone
+	 */
+	public void setDisposeBGImgWhenDone (final boolean isDisposeBGImgWhenDone) {
+		this.isDisposeBGImgWhenDone = isDisposeBGImgWhenDone;
 	}
 }

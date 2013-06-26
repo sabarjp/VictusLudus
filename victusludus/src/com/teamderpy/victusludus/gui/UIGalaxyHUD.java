@@ -143,6 +143,6 @@ public class UIGalaxyHUD extends UI {
 	 * @param text the new selected star planet count
 	 */
 	public void setSelectedStarPlanetCount (final String text) {
-		this.selectedStarPlanetCount.setText(text + " planets detected");
+		this.selectedStarPlanetCount.setText("~" + text + " planets detected");
 	}
 }

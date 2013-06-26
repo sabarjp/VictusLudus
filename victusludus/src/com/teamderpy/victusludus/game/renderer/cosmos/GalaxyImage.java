@@ -3,6 +3,8 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.engine.Actionable;
@@ -27,9 +29,10 @@ public class GalaxyImage {
 	 * Instantiates a new galaxy image, which is basically the galaxy object combined with its rendered aspect
 	 * 
 	 * @param galaxy the galaxy
+	 * @param collisionList the other galaxy images that we might collide with
 	 * @param cosmosRenderer the renderer
 	 */
-	public GalaxyImage (final Galaxy galaxy, final CosmosRenderer cosmosRenderer) {
+	public GalaxyImage (final Galaxy galaxy, final Array<GalaxyImage> collisionList, final CosmosRenderer cosmosRenderer) {
 		this.galaxy = galaxy;
 		this.cosmosRenderer = cosmosRenderer;
 
@@ -43,10 +46,39 @@ public class GalaxyImage {
 		int spriteWidth = (int)(this.sprite.getWidth() * 1);
 		int spriteHeight = (int)(this.sprite.getHeight() * 1);
 
+		// find desired x,y coordinate
 		int x = (int)((cosmosRenderer.cosmos.getGameDimensions().getWidth() - spriteWidth) / universe.getDiameter() * (galaxy
 			.getxPosition() - galaxy.getRadius()));
 		int y = (int)((cosmosRenderer.cosmos.getGameDimensions().getHeight() - spriteHeight) / universe.getDiameter() * (galaxy
 			.getyPosition() - galaxy.getRadius()));
+
+		boolean isPositionDetermined = false;
+		int maxPlaceAttempts = 100;
+		Rectangle desiredPosition = new Rectangle();
+
+		while (!isPositionDetermined && maxPlaceAttempts-- > 0) {
+			boolean didCollisionOccur = false;
+
+			// if we collide with something on the list, shift until we fit somewhere
+			for (GalaxyImage potentialCollision : collisionList) {
+				desiredPosition.set(x, y, spriteWidth, spriteHeight);
+
+				if (potentialCollision.sprite.getBoundingRectangle().overlaps(desiredPosition)) {
+					// shift and try again
+					didCollisionOccur = true;
+					break;
+				}
+			}
+
+			if (didCollisionOccur) {
+				VictusLudusGame.sharedRand.setSeed(galaxy.getSeed() + 6544324 + maxPlaceAttempts * 37);
+
+				x += spriteWidth * (VictusLudusGame.sharedRand.nextInt(3) - 1);
+				y += spriteHeight * (VictusLudusGame.sharedRand.nextInt(3) - 1);
+			} else {
+				isPositionDetermined = true;
+			}
+		}
 
 		this.actionArea = new ActionArea2D(x, y, spriteWidth, spriteHeight);
 		this.actionArea.setMouseEnterAct(new EnterAction());

@@ -1,16 +1,15 @@
 
 package com.teamderpy.victusludus.game.renderer.cosmos;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.game.GameDimensions;
 
 public class StarRenderer implements IUniverseRenderer {
 	private GameDimensions gameDimensions;
-	private ArrayList<StarImage> starList;
+	private Array<StarImage> starList;
 
-	public StarRenderer (final GameDimensions gameDimensions, final ArrayList<StarImage> starList) {
+	public StarRenderer (final GameDimensions gameDimensions, final Array<StarImage> starList) {
 		this.gameDimensions = gameDimensions;
 		this.starList = starList;
 	}

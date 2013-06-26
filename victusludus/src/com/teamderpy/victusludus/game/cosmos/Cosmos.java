@@ -62,17 +62,9 @@ public class Cosmos implements IView, MouseListener {
 		UniverseSettings requestedSettings = (UniverseSettings)settings;
 		this.seed = requestedSettings.getRequestedSeed();
 
-		this.universe = new Universe(requestedSettings.getRequestedSeed() + 10523);
+		this.universe = new Universe(requestedSettings.getRequestedSeed() + 10523, requestedSettings.getRequestedStarMassDistribution());
 
 		this.universe.create(new BigDecimal(requestedSettings.getRequestedUniAge() * 1000000000));
-
-		// tick away
-// long tickInterval = 10000000L;
-// BigDecimal delta = BigDecimal.valueOf(tickInterval);
-//
-// for (float i = 0F; i < requestedSettings.getRequestedUniAge() * (1000000000 / tickInterval); i++) {
-// this.universe.tick(delta);
-// }
 
 		this.gameDimensions = new GameDimensions();
 

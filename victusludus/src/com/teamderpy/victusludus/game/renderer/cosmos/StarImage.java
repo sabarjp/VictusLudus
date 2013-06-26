@@ -3,12 +3,15 @@ package com.teamderpy.victusludus.game.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.game.cosmos.Cosmology;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
+import com.teamderpy.victusludus.game.cosmos.EnumStarType;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.gui.UIGalaxyHUD;
@@ -29,7 +32,7 @@ public class StarImage {
 	 * @param galaxy the galaxy
 	 * @param cosmosRenderer the renderer
 	 */
-	public StarImage (final Star star, final CosmosRenderer cosmosRenderer) {
+	public StarImage (final Star star, final Array<StarImage> collisionList, final CosmosRenderer cosmosRenderer) {
 		this.star = star;
 		this.cosmosRenderer = cosmosRenderer;
 
@@ -48,19 +51,48 @@ public class StarImage {
 		int spriteWidth = (int)(this.sprite.getWidth() * 2);
 		int spriteHeight = (int)(this.sprite.getHeight() * 2);
 
+		// find desired x,y coordinate
 		int x = (int)((cosmosRenderer.cosmos.getGameDimensions().getWidth() - spriteWidth) / ((galaxyEndX - galaxyStartX) / (star
 			.getxPosition() - star.getRadius().doubleValue() - galaxyStartX)));
 		int y = (int)((cosmosRenderer.cosmos.getGameDimensions().getHeight() - spriteHeight) / ((galaxyEndY - galaxyStartY) / (star
 			.getyPosition() - star.getRadius().doubleValue() - galaxyStartY)));
+
+		boolean isPositionDetermined = false;
+		int maxPlaceAttempts = 100;
+		Rectangle desiredPosition = new Rectangle();
+
+		while (!isPositionDetermined && maxPlaceAttempts-- > 0) {
+			boolean didCollisionOccur = false;
+
+			// if we collide with something on the list, shift until we fit somewhere
+			for (StarImage potentialCollision : collisionList) {
+				desiredPosition.set(x, y, spriteWidth, spriteHeight);
+
+				if (potentialCollision.sprite.getBoundingRectangle().overlaps(desiredPosition)) {
+					// shift and try again
+					didCollisionOccur = true;
+					break;
+				}
+			}
+
+			if (didCollisionOccur) {
+				VictusLudusGame.sharedRand.setSeed(star.getSeed() + 121476 + maxPlaceAttempts * 117);
+
+				x += spriteWidth * (VictusLudusGame.sharedRand.nextInt(3) - 1);
+				y += spriteHeight * (VictusLudusGame.sharedRand.nextInt(3) - 1);
+			} else {
+				isPositionDetermined = true;
+			}
+		}
 
 		this.actionArea = new ActionArea2D(x, y, spriteWidth, spriteHeight);
 		this.actionArea.setMouseEnterAct(new EnterAction());
 		this.actionArea.setMouseLeaveAct(new LeaveAction());
 		this.actionArea.setMouseClickAct(new ClickAction());
 
-		// if (this.getStar().getStarType() != EnumStarType.BLACK_HOLE) {
-		this.sprite.setColor(this.star.getStarColor());
-		// }
+		if (this.getStar().getStarType() != EnumStarType.BLACK_HOLE) {
+			this.sprite.setColor(this.star.getStarColor());
+		}
 
 		this.sprite.setBounds(x, y, spriteWidth, spriteHeight);
 	}
@@ -103,7 +135,8 @@ public class StarImage {
 			gui.setSelectedStarAge(Cosmology.getFormattedStellarAge(star.getAge()));
 			gui.setSelectedStarPlanetCount(Integer.toString(star.getMaxPlanets()));
 
-			System.err.println(star.getStarColor());
+			System.err.println(star.getHistory());
+			System.err.println(star.toString());
 		}
 	}
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.data.ResourceBin;
 import com.teamderpy.victusludus.engine.Engine;
@@ -97,14 +98,16 @@ public class VictusLudusGame implements ApplicationListener {
 
 				this.batch.disableBlending();
 
-				EasyGL
-					.drawRect(this.batch, Color.BLACK, loadingBarX - 2, loadingBarY - 2, loadingBarLength + 4, loadingBarHeight + 4);
-				EasyGL.drawRect(this.batch, Color.CYAN, loadingBarX, loadingBarY, (int)(loadingBarLength * progress),
-					loadingBarHeight);
+				Texture loadingBarBackground = EasyGL.getPixelTexture(Color.BLACK, 1, 1);
+				Texture loadingBarForeground = EasyGL.getPixelTexture(Color.CYAN, 1, 1);
+
+				this.batch.draw(loadingBarBackground, loadingBarX - 2, loadingBarY - 2, loadingBarLength + 4, loadingBarHeight + 4);
+				this.batch.draw(loadingBarForeground, loadingBarX, loadingBarY, (int)(loadingBarLength * progress), loadingBarHeight);
 
 				this.batch.end();
 
-				EasyGL.freePoolResources();
+				loadingBarBackground.dispose();
+				loadingBarForeground.dispose();
 			}
 		}
 	}
