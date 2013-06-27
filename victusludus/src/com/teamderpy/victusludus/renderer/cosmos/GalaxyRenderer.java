@@ -1,9 +1,9 @@
 
-package com.teamderpy.victusludus.game.renderer.cosmos;
+package com.teamderpy.victusludus.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.teamderpy.victusludus.game.GameDimensions;
+import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 
 public class GalaxyRenderer implements IUniverseRenderer {
 	public static String BACKGROUND_PATH = "background/background_universe";

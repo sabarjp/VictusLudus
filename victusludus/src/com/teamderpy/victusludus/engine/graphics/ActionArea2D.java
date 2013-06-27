@@ -42,10 +42,10 @@ public class ActionArea2D implements MouseListener, HoverListener {
 	private Actionable mouseClickAct;
 
 	public ActionArea2D (final int x, final int y, final int width, final int height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+		this.x = (x);
+		this.y = (y);
+		this.width = (width);
+		this.height = (height);
 
 		this.isDisabled = false;
 		this.isVisible = true;
@@ -131,8 +131,11 @@ public class ActionArea2D implements MouseListener, HoverListener {
 	 * @return the boolean
 	 */
 	public Boolean isInside (final int x, final int y) {
-		if (x >= this.x && x <= this.x + this.getWidth()) {
-			if (y >= this.y && y <= this.y + this.getHeight()) {
+		float xScale = VictusLudusGame.engine.getCameraXScale();
+		float yScale = VictusLudusGame.engine.getCameraYScale();
+
+		if (x >= this.x * xScale && x <= this.x * xScale + this.getWidth() * xScale) {
+			if (y >= this.y * yScale && y <= this.y * yScale + this.getHeight() * yScale) {
 				return true;
 			}
 		}
@@ -145,7 +148,7 @@ public class ActionArea2D implements MouseListener, HoverListener {
 	}
 
 	public void setX (final int x) {
-		this.x = x;
+		this.x = (x);
 	}
 
 	public int getY () {
@@ -153,7 +156,7 @@ public class ActionArea2D implements MouseListener, HoverListener {
 	}
 
 	public void setY (final int y) {
-		this.y = y;
+		this.y = (y);
 	}
 
 	public boolean isDisabled () {
@@ -187,7 +190,7 @@ public class ActionArea2D implements MouseListener, HoverListener {
 	 * @param height the new height
 	 */
 	public void setHeight (final int height) {
-		this.height = height;
+		this.height = (height);
 	}
 
 	/**
@@ -205,7 +208,7 @@ public class ActionArea2D implements MouseListener, HoverListener {
 	 * @param width the new width
 	 */
 	public void setWidth (final int width) {
-		this.width = width;
+		this.width = (width);
 	}
 
 	/** Unregister listeners. */

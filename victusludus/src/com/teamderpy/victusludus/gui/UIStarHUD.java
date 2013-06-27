@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
-import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
+import com.teamderpy.victusludus.renderer.cosmos.CosmosRenderer;
 
 public class UIStarHUD extends UI {
 	private Label selectedPlanetName;

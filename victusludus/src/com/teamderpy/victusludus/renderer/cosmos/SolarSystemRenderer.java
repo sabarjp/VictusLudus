@@ -1,12 +1,12 @@
 
-package com.teamderpy.victusludus.game.renderer.cosmos;
+package com.teamderpy.victusludus.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
-import com.teamderpy.victusludus.game.GameDimensions;
+import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 import com.teamderpy.victusludus.game.cosmos.Star;
 
 public class SolarSystemRenderer implements IUniverseRenderer {
@@ -30,11 +30,12 @@ public class SolarSystemRenderer implements IUniverseRenderer {
 
 		int spriteWidth = (int)(this.starSprite.getWidth() * scale);
 		int spriteHeight = (int)(this.starSprite.getHeight() * scale);
-		int offset = Math.max(spriteWidth - 128, 0);
+		int offset = Math.max(spriteWidth - (PlanetImage.RESERVED_STAR_AREA_WIDTH / 2), 0);
 
 		this.starSprite.setColor(star.getStarColor());
 
-		this.starSprite.setBounds(0 - offset, this.gameDimensions.getHeight() / 2 - (spriteHeight / 2), spriteWidth, spriteHeight);
+		this.starSprite.setBounds(0 - offset, this.gameDimensions.getRenderHeight() / 2 - (spriteHeight / 2), spriteWidth,
+			spriteHeight);
 	}
 
 	@Override

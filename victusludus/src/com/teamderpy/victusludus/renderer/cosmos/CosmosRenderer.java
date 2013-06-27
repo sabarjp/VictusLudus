@@ -1,22 +1,27 @@
 
-package com.teamderpy.victusludus.game.renderer.cosmos;
+package com.teamderpy.victusludus.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.game.cosmos.Cosmos;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Planet;
 import com.teamderpy.victusludus.game.cosmos.Star;
-import com.teamderpy.victusludus.game.renderer.BackgroundRenderer;
-import com.teamderpy.victusludus.game.renderer.DebugRenderer;
 import com.teamderpy.victusludus.gui.UIGalaxyHUD;
 import com.teamderpy.victusludus.gui.UIStarHUD;
 import com.teamderpy.victusludus.gui.UIUniverseHUD;
+import com.teamderpy.victusludus.renderer.common.BackgroundRenderer;
+import com.teamderpy.victusludus.renderer.common.DebugRenderer;
 
 /** The Class CosmosRenderer. */
 public class CosmosRenderer {
+	/** The size of the render which gets scaled to the display */
+	public static final int COSMOS_DISPLAY_WIDTH = 640;
+	public static final int COSMOS_DISPLAY_HEIGHT = 480;
+
 	/** The bg renderer. */
 	private BackgroundRenderer bgRenderer;
 
@@ -45,6 +50,8 @@ public class CosmosRenderer {
 	 */
 	public CosmosRenderer (final Cosmos cosmos) {
 		this.cosmos = cosmos;
+
+		VictusLudusGame.engine.changeCamera(CosmosRenderer.COSMOS_DISPLAY_WIDTH, CosmosRenderer.COSMOS_DISPLAY_HEIGHT);
 
 		this.bgRenderer = new BackgroundRenderer(this.cosmos.getGameDimensions(), Color.BLACK);
 		// this.debugRenderer = new DebugRenderer(cosmos.getGameDimensions());

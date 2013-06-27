@@ -1,5 +1,5 @@
 
-package com.teamderpy.victusludus.game.renderer.cosmos;
+package com.teamderpy.victusludus.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -48,13 +48,13 @@ public class StarImage {
 		float galaxyStartY = (float)(galaxy.getyPosition() - galaxy.getRadius());
 		float galaxyEndY = (float)(galaxy.getyPosition() + galaxy.getRadius());
 
-		int spriteWidth = (int)(this.sprite.getWidth() * 2);
-		int spriteHeight = (int)(this.sprite.getHeight() * 2);
+		int spriteWidth = (int)(this.sprite.getWidth() * 1);
+		int spriteHeight = (int)(this.sprite.getHeight() * 1);
 
 		// find desired x,y coordinate
-		int x = (int)((cosmosRenderer.cosmos.getGameDimensions().getWidth() - spriteWidth) / ((galaxyEndX - galaxyStartX) / (star
+		int x = (int)((cosmosRenderer.cosmos.getGameDimensions().getRenderWidth() - spriteWidth) / ((galaxyEndX - galaxyStartX) / (star
 			.getxPosition() - star.getRadius().doubleValue() - galaxyStartX)));
-		int y = (int)((cosmosRenderer.cosmos.getGameDimensions().getHeight() - spriteHeight) / ((galaxyEndY - galaxyStartY) / (star
+		int y = (int)((cosmosRenderer.cosmos.getGameDimensions().getRenderHeight() - spriteHeight) / ((galaxyEndY - galaxyStartY) / (star
 			.getyPosition() - star.getRadius().doubleValue() - galaxyStartY)));
 
 		boolean isPositionDetermined = false;
@@ -135,8 +135,8 @@ public class StarImage {
 			gui.setSelectedStarAge(Cosmology.getFormattedStellarAge(star.getAge()));
 			gui.setSelectedStarPlanetCount(Integer.toString(star.getMaxPlanets()));
 
-			System.err.println(star.getHistory());
-			System.err.println(star.toString());
+			// System.err.println(star.getHistory());
+			// System.err.println(star.toString());
 		}
 	}
 

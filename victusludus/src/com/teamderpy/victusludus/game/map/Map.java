@@ -8,8 +8,8 @@ import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.entity.GameEntityManager;
-import com.teamderpy.victusludus.game.renderer.LightMap;
 import com.teamderpy.victusludus.game.tile.GameTile;
+import com.teamderpy.victusludus.renderer.game.LightMap;
 
 
 /**

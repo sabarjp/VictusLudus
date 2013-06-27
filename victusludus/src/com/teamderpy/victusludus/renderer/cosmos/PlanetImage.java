@@ -1,6 +1,7 @@
 
-package com.teamderpy.victusludus.game.renderer.cosmos;
+package com.teamderpy.victusludus.renderer.cosmos;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,8 +22,15 @@ import com.teamderpy.victusludus.gui.UIStarHUD;
  * @author Josh
  */
 public class PlanetImage {
+	public static String GAS_GIANT_SMALL_PATH = "planet/gas_giant_small";
+	public static String GAS_GIANT_NORMAL_PATH = "planet/gas_giant_normal";
+	public static String GAS_GIANT_LARGE_PATH = "planet/gas_giant_large";
+	public static String ROCKY_SMALL_PATH = "planet/rocky_small";
+	public static String ROCKY_NORMAL_PATH = "planet/rocky_normal";
+	public static String ROCKY_LARGE_PATH = "planet/rocky_large";
+	public static String ASTEROID_FIELD_PATH = "planet/asteroid_field";
 	public static String ORBIT_LINE_PATH = "planet/orbital_line";
-	private static int RESERVED_STAR_AREA_WIDTH = 256;
+	public static int RESERVED_STAR_AREA_WIDTH = 256;
 
 	private Planet planet;
 	private ActionArea2D actionArea;
@@ -45,10 +53,15 @@ public class PlanetImage {
 
 		Star star = cosmosRenderer.cosmos.getStar();
 
-		this.sprite = VictusLudusGame.resources.getTextureAtlasCosmos().createSprite(planet.getPlanetType().getPath());
+		this.sprite = VictusLudusGame.resources.getTextureAtlasCosmos().createSprite(this.getPlanetImagePath());
 		if (this.sprite == null) {
-			throw new VictusRuntimeException("Failed to load sprite: " + planet.getPlanetType().getPath());
+			throw new VictusRuntimeException("Failed to load sprite: " + this.getPlanetImagePath());
 		}
+
+		Texture overlay = VictusLudusGame.resources.getTextureAtlasCosmos().findRegion(this.planet.getPlanetType().getPath())
+			.getTexture();
+
+		// overlay.dispose();
 
 		this.orbit = VictusLudusGame.resources.getTextureAtlasCosmos().createSprite(PlanetImage.ORBIT_LINE_PATH);
 		if (this.orbit == null) {
@@ -61,21 +74,20 @@ public class PlanetImage {
 			this.angularVelocity = VictusLudusGame.sharedRand.nextDouble() * 10;
 		}
 
-		double scale = planet.getRelativeScale();
-
-		int spriteWidth = (int)(this.sprite.getWidth() * scale);
-		int spriteHeight = (int)(this.sprite.getHeight() * scale);
+		int spriteWidth = (int)(this.sprite.getWidth());
+		int spriteHeight = (int)(this.sprite.getHeight());
 
 		// find desired x coordinate
 		int x = PlanetImage.RESERVED_STAR_AREA_WIDTH
 			+ (int)(planet.getOrbitSemiMajorAxis().subtract(star.getRadius()).divide(Planet.MAX_ORBITAL_DISTANCE, Planet.PLANET_RND)
-				.doubleValue() * (cosmosRenderer.cosmos.getGameDimensions().getWidth() - PlanetImage.RESERVED_STAR_AREA_WIDTH));
+				.doubleValue() * (cosmosRenderer.cosmos.getGameDimensions().getRenderWidth() - PlanetImage.RESERVED_STAR_AREA_WIDTH));
 
-		int y = cosmosRenderer.cosmos.getGameDimensions().getHeight() / 2 - (spriteHeight / 2);
+		int y = cosmosRenderer.cosmos.getGameDimensions().getRenderHeight() / 2 - (spriteHeight / 2);
 
 		boolean isPositionDetermined = false;
 		int maxPlaceAttempts = 100;
 		Rectangle desiredPosition = new Rectangle();
+		float overlapAmount = 0;
 
 		while (!isPositionDetermined && maxPlaceAttempts-- > 0) {
 			boolean didCollisionOccur = false;
@@ -88,8 +100,15 @@ public class PlanetImage {
 
 				if (potentialCollision.sprite.getBoundingRectangle().overlaps(desiredPosition)) {
 					// shift and try again
-					if (potentialCollision.sprite.getX() > x
-						&& collisionList.first().sprite.getX() > PlanetImage.RESERVED_STAR_AREA_WIDTH + (spriteWidth / 4)) {
+					if (potentialCollision.sprite.getX() > x) {
+						overlapAmount = 1 + (potentialCollision.sprite.getWidth()) + (potentialCollision.sprite.getX() - x);
+					} else {
+						overlapAmount = 1 + (potentialCollision.sprite.getWidth()) - (x - potentialCollision.sprite.getX());
+					}
+
+					if ((potentialCollision.sprite.getX() > x || x + spriteWidth + overlapAmount >= cosmosRenderer.cosmos
+						.getGameDimensions().getRenderWidth())
+						&& collisionList.first().sprite.getX() > PlanetImage.RESERVED_STAR_AREA_WIDTH / 2 + overlapAmount) {
 						moveSelf = false;
 					} else {
 						moveSelf = true;
@@ -104,16 +123,26 @@ public class PlanetImage {
 
 			if (didCollisionOccur) {
 				if (moveSelf) {
-					x += (spriteWidth / 4);
+					x += overlapAmount;
+					// System.err.println("moving " + planet.getName() + " to " + x + " with olap " + overlapAmount);
 				} else {
 					int i = 0;
 					for (PlanetImage potentialCollision : collisionList) {
-						potentialCollision.sprite.setX(potentialCollision.sprite.getX() - (spriteWidth / 4));
-						potentialCollision.orbit.setX(potentialCollision.orbit.getX() - (spriteWidth / 4));
+						potentialCollision.sprite.setX(potentialCollision.sprite.getX() - overlapAmount);
+						potentialCollision.orbit.setX(potentialCollision.orbit.getX() - overlapAmount);
+						potentialCollision.actionArea.setX((int)(potentialCollision.actionArea.getX() - overlapAmount));
 
 						if (++i > collisionAt) {
 							break;
 						}
+					}
+
+					// System.err.println("moving others for " + planet.getName() + " with olap " + overlapAmount);
+
+					// if we are out of bounds, try to move back a bit
+					if (x + overlapAmount >= cosmosRenderer.cosmos.getGameDimensions().getRenderWidth() - spriteWidth) {
+						x -= overlapAmount;
+						// System.err.println("moving " + planet.getName() + " back in-bounds");
 					}
 				}
 
@@ -127,9 +156,10 @@ public class PlanetImage {
 		this.actionArea.setMouseLeaveAct(new LeaveAction());
 		this.actionArea.setMouseClickAct(new ClickAction());
 
+		this.sprite.setOrigin(spriteWidth / 2, spriteHeight / 2);
 		this.sprite.setBounds(x, y, spriteWidth, spriteHeight);
 		this.orbit.setBounds(x + (spriteWidth / 2 - this.orbit.getWidth() / 2), 0, this.orbit.getWidth(), cosmosRenderer.cosmos
-			.getGameDimensions().getHeight());
+			.getGameDimensions().getRenderHeight());
 	}
 
 	public void setRotation (final double rotation) {
@@ -172,6 +202,31 @@ public class PlanetImage {
 		this.sprite.setRotation((float)this.rotation);
 
 		this.sprite.draw(batch);
+	}
+
+	/*
+	 * Get the planet's image depending on its type and size
+	 */
+	private String getPlanetImagePath () {
+		if (this.planet.getPlanetType().isGasGiant()) {
+			if (this.planet.getRelativeScale() >= 1.5) {
+				return PlanetImage.GAS_GIANT_LARGE_PATH;
+			} else if (this.planet.getRelativeScale() <= 0.5) {
+				return PlanetImage.GAS_GIANT_SMALL_PATH;
+			} else {
+				return PlanetImage.GAS_GIANT_NORMAL_PATH;
+			}
+		} else {
+			if (this.planet.getPlanetType() == EnumPlanetType.ASTEROID_FIELD) {
+				return PlanetImage.ASTEROID_FIELD_PATH;
+			} else if (this.planet.getRelativeScale() >= 1.5) {
+				return PlanetImage.ROCKY_LARGE_PATH;
+			} else if (this.planet.getRelativeScale() <= 0.5) {
+				return PlanetImage.ROCKY_SMALL_PATH;
+			} else {
+				return PlanetImage.ROCKY_NORMAL_PATH;
+			}
+		}
 	}
 
 	private class EnterAction implements Actionable {

@@ -494,7 +494,8 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
-	 * Returns a number representing the scale of a planet relative to an ordinary one of its class
+	 * Returns a number representing the scale of a planet relative to an ordinary one of its class.
+	 * 
 	 * @return
 	 */
 	public double getRelativeScale () {

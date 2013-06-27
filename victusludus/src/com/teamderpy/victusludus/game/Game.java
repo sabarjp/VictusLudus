@@ -14,10 +14,10 @@ import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.ISettings;
 import com.teamderpy.victusludus.engine.IView;
 import com.teamderpy.victusludus.engine.MousePointer;
+import com.teamderpy.victusludus.engine.graphics.GameCamera;
+import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.map.Map;
-import com.teamderpy.victusludus.game.renderer.GameRenderer;
-import com.teamderpy.victusludus.game.renderer.RenderUtil;
 import com.teamderpy.victusludus.game.tile.GameTile;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.GUIGameHUD;
@@ -30,6 +30,8 @@ import com.teamderpy.victusludus.gui.eventhandler.event.KeyUpEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.RenderEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
+import com.teamderpy.victusludus.renderer.game.GameRenderer;
+import com.teamderpy.victusludus.renderer.game.RenderUtil;
 
 /** The Class Game. */
 public class Game implements IView, KeyboardListener, MouseListener {

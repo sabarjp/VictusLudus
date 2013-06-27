@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.game;
+package com.teamderpy.victusludus.engine.graphics;
 
 
 /**
