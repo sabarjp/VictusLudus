@@ -1,11 +1,11 @@
 
-package com.teamderpy.victusludus.game.renderer;
+package com.teamderpy.victusludus.renderer.common;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.teamderpy.victusludus.game.GameDimensions;
+import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 
 /** The Class DebugRenderer. */
 public class DebugRenderer {
@@ -22,7 +22,8 @@ public class DebugRenderer {
 	public DebugRenderer (final GameDimensions dimensions) {
 		this.dimensions = dimensions;
 
-		this.debugImage = new Texture(new Pixmap(this.dimensions.getWidth(), this.dimensions.getHeight(), Format.RGBA8888));
+		this.debugImage = new Texture(new Pixmap(this.dimensions.getRenderWidth(), this.dimensions.getRenderHeight(),
+			Format.RGBA8888));
 	}
 
 	/** Render. */

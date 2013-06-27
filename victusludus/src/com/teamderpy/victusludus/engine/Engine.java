@@ -593,6 +593,31 @@ public class Engine implements ResizeListener {
 		return this.tickCount;
 	}
 
+	/**
+	 * Changes the camera viewport
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	public void changeCamera (final int width, final int height) {
+		this.camera.setToOrtho(true, width, height);
+		this.camera.update();
+	}
+
+	/*
+	 * Get the ratio of the display width to the camera width
+	 */
+	public float getCameraXScale () {
+		return this.X_RESOLUTION() / this.camera.viewportWidth;
+	}
+
+	/*
+	 * Get the ratio of the display height to the camera height
+	 */
+	public float getCameraYScale () {
+		return this.Y_RESOLUTION() / this.camera.viewportHeight;
+	}
+
 	@Override
 	public void onResize (final ResizeEvent resizeEvent) {
 		this.currentDisplayMode = new FlexibleDisplayMode(resizeEvent.getWidth(), resizeEvent.getHeight(), false);

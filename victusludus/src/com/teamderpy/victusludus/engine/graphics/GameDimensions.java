@@ -1,14 +1,14 @@
-package com.teamderpy.victusludus.game;
+
+package com.teamderpy.victusludus.engine.graphics;
 
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.gui.eventhandler.ResizeListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 
-
 /**
  * The Class GameDimensions.
  */
-public class GameDimensions implements ResizeListener{
+public class GameDimensions implements ResizeListener {
 
 	/** The grid width. */
 	private int gridWidth = 16;
@@ -31,186 +31,212 @@ public class GameDimensions implements ResizeListener{
 	/** The layer height. */
 	private int layerHeight = 16;
 
-	/** The width. */
+	/** The width of the display */
 	private int width;
 
-	/** The height. */
+	/** The height of the display */
 	private int height;
+
+	/** The width of the internal render */
+	private int renderWidth;
+
+	/** The height of the internal render */
+	private int renderHeight;
 
 	/**
 	 * Instantiates a new game dimensions.
 	 */
-	public GameDimensions(){
+	public GameDimensions () {
 		this.registerListeners();
 	}
 
 	/**
 	 * Gets the grid width.
-	 *
+	 * 
 	 * @return the grid width
 	 */
-	public int getGridWidth() {
+	public int getGridWidth () {
 		return this.gridWidth;
 	}
 
 	/**
 	 * Sets the grid width.
-	 *
+	 * 
 	 * @param gridWidth the new grid width
 	 */
-	public void setGridWidth(final int gridWidth) {
+	public void setGridWidth (final int gridWidth) {
 		this.gridWidth = gridWidth;
 	}
 
 	/**
 	 * Gets the grid height.
-	 *
+	 * 
 	 * @return the grid height
 	 */
-	public int getGridHeight() {
+	public int getGridHeight () {
 		return this.gridHeight;
 	}
 
 	/**
 	 * Sets the grid height.
-	 *
+	 * 
 	 * @param gridHeight the new grid height
 	 */
-	public void setGridHeight(final int gridHeight) {
+	public void setGridHeight (final int gridHeight) {
 		this.gridHeight = gridHeight;
 	}
 
 	/**
 	 * Gets the tile height.
-	 *
+	 * 
 	 * @return the tile height
 	 */
-	public int getTileHeight() {
+	public int getTileHeight () {
 		return this.tileHeight;
 	}
 
 	/**
 	 * Sets the tile height.
-	 *
+	 * 
 	 * @param tileHeight the new tile height
 	 */
-	public void setTileHeight(final int tileHeight) {
+	public void setTileHeight (final int tileHeight) {
 		this.tileHeight = tileHeight;
 	}
 
 	/**
 	 * Gets the tile width.
-	 *
+	 * 
 	 * @return the tile width
 	 */
-	public int getTileWidth() {
+	public int getTileWidth () {
 		return this.tileWidth;
 	}
 
 	/**
 	 * Sets the tile width.
-	 *
+	 * 
 	 * @param tileWidth the new tile width
 	 */
-	public void setTileWidth(final int tileWidth) {
+	public void setTileWidth (final int tileWidth) {
 		this.tileWidth = tileWidth;
 	}
 
 	/**
 	 * Gets the wall width.
-	 *
+	 * 
 	 * @return the wall width
 	 */
-	public int getWallWidth() {
+	public int getWallWidth () {
 		return this.wallWidth;
 	}
 
 	/**
 	 * Sets the wall width.
-	 *
+	 * 
 	 * @param wallWidth the new wall width
 	 */
-	public void setWallWidth(final int wallWidth) {
+	public void setWallWidth (final int wallWidth) {
 		this.wallWidth = wallWidth;
 	}
 
 	/**
 	 * Gets the wall height.
-	 *
+	 * 
 	 * @return the wall height
 	 */
-	public int getWallHeight() {
+	public int getWallHeight () {
 		return this.wallHeight;
 	}
 
 	/**
 	 * Sets the wall height.
-	 *
+	 * 
 	 * @param wallHeight the new wall height
 	 */
-	public void setWallHeight(final int wallHeight) {
+	public void setWallHeight (final int wallHeight) {
 		this.wallHeight = wallHeight;
 	}
 
 	/**
 	 * Gets the layer height.
-	 *
+	 * 
 	 * @return the layer height
 	 */
-	public int getLayerHeight() {
+	public int getLayerHeight () {
 		return this.layerHeight;
 	}
 
 	/**
 	 * Sets the layer height.
-	 *
+	 * 
 	 * @param layerHeight the new layer height
 	 */
-	public void setLayerHeight(final int layerHeight) {
+	public void setLayerHeight (final int layerHeight) {
 		this.layerHeight = layerHeight;
 	}
 
 	/**
 	 * Gets the width.
-	 *
+	 * 
 	 * @return the width
 	 */
-	public int getWidth() {
+	public int getWidth () {
 		return this.width;
 	}
 
 	/**
 	 * Sets the width.
-	 *
+	 * 
 	 * @param width the new width
 	 */
-	public void setWidth(final int width) {
+	public void setWidth (final int width) {
 		this.width = width;
 	}
 
 	/**
 	 * Gets the height.
-	 *
+	 * 
 	 * @return the height
 	 */
-	public int getHeight() {
+	public int getHeight () {
 		return this.height;
 	}
 
 	/**
 	 * Sets the height.
-	 *
+	 * 
 	 * @param height the new height
 	 */
-	public void setHeight(final int height) {
+	public void setHeight (final int height) {
 		this.height = height;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.ResizeListener#onResize(com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent)
+	public int getRenderWidth () {
+		return this.renderWidth;
+	}
+
+	public void setRenderWidth (final int renderWidth) {
+		this.renderWidth = renderWidth;
+	}
+
+	public int getRenderHeight () {
+		return this.renderHeight;
+	}
+
+	public void setRenderHeight (final int renderHeight) {
+		this.renderHeight = renderHeight;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.ResizeListener#onResize(com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent
+	 * )
 	 */
 	@Override
-	public void onResize(final ResizeEvent resizeEvent) {
+	public void onResize (final ResizeEvent resizeEvent) {
 		this.setWidth(resizeEvent.getWidth());
 		this.setHeight(resizeEvent.getHeight());
 	}
@@ -218,22 +244,24 @@ public class GameDimensions implements ResizeListener{
 	/**
 	 * Register listeners.
 	 */
-	public void registerListeners() {
+	public void registerListeners () {
 		VictusLudusGame.engine.eventHandler.resizeHandler.registerPlease(this);
 	}
 
 	/**
 	 * Unregister listeners.
 	 */
-	public void unregisterListeners() {
+	public void unregisterListeners () {
 		VictusLudusGame.engine.eventHandler.resizeHandler.unregisterPlease(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#finalize()
 	 */
 	@Override
-	protected void finalize() {
+	protected void finalize () {
 		this.unregisterListeners();
 	}
 }

@@ -1,5 +1,5 @@
 
-package com.teamderpy.victusludus.game.renderer.cosmos;
+package com.teamderpy.victusludus.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

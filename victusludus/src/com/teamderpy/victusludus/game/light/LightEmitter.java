@@ -5,7 +5,7 @@ import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.ScreenCoord;
 import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.map.Map;
-import com.teamderpy.victusludus.game.renderer.RenderUtil;
+import com.teamderpy.victusludus.renderer.game.RenderUtil;
 
 
 /**

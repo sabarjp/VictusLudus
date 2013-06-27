@@ -1,12 +1,12 @@
 
-package com.teamderpy.victusludus.game.renderer;
+package com.teamderpy.victusludus.renderer.common;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.engine.graphics.EasyGL;
-import com.teamderpy.victusludus.game.GameDimensions;
+import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 
 /** The Class BackgroundRenderer. */
 public class BackgroundRenderer {
@@ -50,15 +50,15 @@ public class BackgroundRenderer {
 	/** Render. */
 	public void render (final SpriteBatch batch, final float deltaT) {
 		if (this.bgColor != null) {
-			batch.draw(this.bgColor, 0, 0, this.dimensions.getWidth(), this.dimensions.getHeight());
+			batch.draw(this.bgColor, 0, 0, this.dimensions.getRenderWidth(), this.dimensions.getRenderHeight());
 		}
 
 		if (this.bgImage != null) {
 			if (this.isStretchingImage) {
-				batch.draw(this.bgImage, 0, 0, this.dimensions.getWidth(), this.dimensions.getHeight());
+				batch.draw(this.bgImage, 0, 0, this.dimensions.getRenderWidth(), this.dimensions.getRenderHeight());
 			} else {
-				for (int i = 0; i < this.dimensions.getWidth(); i += this.bgImage.getWidth()) {
-					for (int j = 0; j < this.dimensions.getHeight(); j += this.bgImage.getHeight()) {
+				for (int i = 0; i < this.dimensions.getRenderWidth(); i += this.bgImage.getWidth()) {
+					for (int j = 0; j < this.dimensions.getRenderHeight(); j += this.bgImage.getHeight()) {
 						if (this.isFlipTiling) {
 							int imod = i / this.bgImage.getWidth() % 2;
 							int jmod = j / this.bgImage.getHeight() % 2;

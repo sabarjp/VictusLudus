@@ -11,8 +11,6 @@ import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.VictusLudusGame.enginengine.Actionable;
 import com.teamderpy.victusludus.game.cosmos.Cosmos;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
-import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
-import com.teamderpy.victusludus.game.renderer.cosmos.StarImage;
 import com.teamderpy.victusludus.gui.element.GUIElement;
 import com.teamderpy.victusludus.gui.element.GUIImageButton;
 import com.teamderpy.victusludus.gui.element.GUIText;
@@ -25,6 +23,8 @@ import com.teamderpy.victusludus.gui.eventhandler.event.KeyDownEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ResizeEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.SelectEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.TooltipEvent;
+import com.teamderpy.victusludus.renderer.cosmos.CosmosRenderer;
+import com.teamderpy.victusludus.renderer.cosmos.StarImage;
 
 
 public class GUICosmosGalaxyHUD extends GUI implements KeyboardListener, ResizeListener, TooltipListener{

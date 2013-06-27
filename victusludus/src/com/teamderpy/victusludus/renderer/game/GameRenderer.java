@@ -1,8 +1,10 @@
-package com.teamderpy.victusludus.game.renderer;
+package com.teamderpy.victusludus.renderer.game;
 
 import org.newdawn.slick.Color;
 import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.map.Map;
+import com.teamderpy.victusludus.renderer.common.BackgroundRenderer;
+import com.teamderpy.victusludus.renderer.common.DebugRenderer;
 
 
 /**

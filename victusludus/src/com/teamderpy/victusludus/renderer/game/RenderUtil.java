@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.game.renderer;
+package com.teamderpy.victusludus.renderer.game;
 
 import com.teamderpy.victusludus.game.EnumWallFacing;
 import com.teamderpy.victusludus.game.Game;

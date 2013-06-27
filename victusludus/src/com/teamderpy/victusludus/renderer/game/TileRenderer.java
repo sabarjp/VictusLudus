@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.game.renderer;
+package com.teamderpy.victusludus.renderer.game;
 
 import java.util.ArrayList;
 import java.util.Collections;

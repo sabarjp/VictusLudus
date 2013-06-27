@@ -8,13 +8,13 @@ import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.ISettings;
 import com.teamderpy.victusludus.engine.IView;
-import com.teamderpy.victusludus.game.GameCamera;
-import com.teamderpy.victusludus.game.GameDimensions;
-import com.teamderpy.victusludus.game.renderer.cosmos.CosmosRenderer;
+import com.teamderpy.victusludus.engine.graphics.GameCamera;
+import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 import com.teamderpy.victusludus.gui.UI;
 import com.teamderpy.victusludus.gui.eventhandler.MouseListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
+import com.teamderpy.victusludus.renderer.cosmos.CosmosRenderer;
 
 public class Cosmos implements IView, MouseListener {
 	/** universal seed */
@@ -62,7 +62,8 @@ public class Cosmos implements IView, MouseListener {
 		UniverseSettings requestedSettings = (UniverseSettings)settings;
 		this.seed = requestedSettings.getRequestedSeed();
 
-		this.universe = new Universe(requestedSettings.getRequestedSeed() + 10523, requestedSettings.getRequestedStarMassDistribution());
+		this.universe = new Universe(requestedSettings.getRequestedSeed() + 10523,
+			requestedSettings.getRequestedStarMassDistribution());
 
 		this.universe.create(new BigDecimal(requestedSettings.getRequestedUniAge() * 1000000000));
 
@@ -70,6 +71,8 @@ public class Cosmos implements IView, MouseListener {
 
 		this.gameDimensions.setWidth(VictusLudusGame.engine.X_RESOLUTION());
 		this.gameDimensions.setHeight(VictusLudusGame.engine.Y_RESOLUTION());
+		this.gameDimensions.setRenderHeight(CosmosRenderer.COSMOS_DISPLAY_HEIGHT);
+		this.gameDimensions.setRenderWidth(CosmosRenderer.COSMOS_DISPLAY_WIDTH);
 
 		this.registerListeners();
 

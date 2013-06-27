@@ -1,5 +1,5 @@
 
-package com.teamderpy.victusludus.game.renderer.cosmos;
+package com.teamderpy.victusludus.renderer.cosmos;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -47,9 +47,9 @@ public class GalaxyImage {
 		int spriteHeight = (int)(this.sprite.getHeight() * 1);
 
 		// find desired x,y coordinate
-		int x = (int)((cosmosRenderer.cosmos.getGameDimensions().getWidth() - spriteWidth) / universe.getDiameter() * (galaxy
+		int x = (int)((cosmosRenderer.cosmos.getGameDimensions().getRenderWidth() - spriteWidth) / universe.getDiameter() * (galaxy
 			.getxPosition() - galaxy.getRadius()));
-		int y = (int)((cosmosRenderer.cosmos.getGameDimensions().getHeight() - spriteHeight) / universe.getDiameter() * (galaxy
+		int y = (int)((cosmosRenderer.cosmos.getGameDimensions().getRenderHeight() - spriteHeight) / universe.getDiameter() * (galaxy
 			.getyPosition() - galaxy.getRadius()));
 
 		boolean isPositionDetermined = false;

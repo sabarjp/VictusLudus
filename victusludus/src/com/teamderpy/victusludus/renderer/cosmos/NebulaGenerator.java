@@ -1,5 +1,5 @@
 
-package com.teamderpy.victusludus.game.renderer.cosmos;
+package com.teamderpy.victusludus.renderer.cosmos;
 
 import java.nio.ByteBuffer;
 
