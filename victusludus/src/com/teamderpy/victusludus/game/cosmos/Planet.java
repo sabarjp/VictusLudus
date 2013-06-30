@@ -26,6 +26,9 @@ public class Planet implements Comparable<Planet> {
 	/** the star that this planet orbits */
 	private Star parentStar;
 
+	/** the world that belongs on this planet */
+	private World surfaceWorld;
+
 	/** the random seed for this planet **/
 	private long seed;
 
@@ -100,6 +103,13 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
+	 * Creates the surface world for this planet
+	 */
+	public void createSurfaceWorld () {
+		this.surfaceWorld = new World(this.seed);
+	}
+
+	/**
 	 * Gets a random planet type from EnumPlanetType
 	 * 
 	 * @return the planet type
@@ -160,13 +170,6 @@ public class Planet implements Comparable<Planet> {
 
 	/** Creates a random orbit for this planet */
 	private void createRandomOrbit () {
-		double rand;
-
-		/* set the long radius of the orbit */
-		// rand = Cosmology.leftNoise((int)this.seed, 2918);
-		// this.orbitSemiMajorAxis = Cosmology.exponentialInterpolation(Cosmology.NEGATIVE_ONE, BigDecimal.ONE,
-		// Planet.MIN_ORBITAL_DISTANCE, Planet.MAX_ORBITAL_DISTANCE, BigDecimal.valueOf(rand), new BigDecimal("2"));
-
 		/* set the eccentricity of the orbit */
 		this.orbitEccentricity = (1.0F + Cosmology.randomNoise((int)this.seed, 34998)) / 6.6F;
 
@@ -508,6 +511,10 @@ public class Planet implements Comparable<Planet> {
 				Cosmology.PLANET_RADIUS_ROCKY_MAX.subtract(Cosmology.PLANET_RADIUS_ROCKY_MIN).divide(new BigDecimal(2),
 					Planet.PLANET_RND), Planet.PLANET_RND).doubleValue();
 		}
+	}
+
+	public World getSurfaceWorld () {
+		return this.surfaceWorld;
 	}
 
 	public long getSeed () {

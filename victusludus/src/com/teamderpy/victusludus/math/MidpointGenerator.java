@@ -1,7 +1,8 @@
 
-package com.teamderpy.victusludus.game.map;
+package com.teamderpy.victusludus.math;
 
 import java.util.Random;
+
 
 /** The Class MidpointGenerator. */
 public class MidpointGenerator implements INoiseGenerator {
@@ -272,10 +273,17 @@ public class MidpointGenerator implements INoiseGenerator {
 		}
 
 		// seed corners
-		array[0][0] = this.randomNoise(0, 0);
-		array[actualSize][0] = this.randomNoise(actualSize, 0);
-		array[0][actualSize] = this.randomNoise(0, actualSize);
-		array[actualSize][actualSize] = this.randomNoise(actualSize, actualSize);
+		if (blur) {
+			array[0][0] = this.simpleGaussianNoise(0, 0);
+			array[actualSize][0] = this.simpleGaussianNoise(actualSize, 0);
+			array[0][actualSize] = this.simpleGaussianNoise(0, actualSize);
+			array[actualSize][actualSize] = this.simpleGaussianNoise(actualSize, actualSize);
+		} else {
+			array[0][0] = this.randomNoise(0, 0);
+			array[actualSize][0] = this.randomNoise(actualSize, 0);
+			array[0][actualSize] = this.randomNoise(0, actualSize);
+			array[actualSize][actualSize] = this.randomNoise(actualSize, actualSize);
+		}
 
 		// find midpoints
 		int squareSize = actualSize;
@@ -298,15 +306,28 @@ public class MidpointGenerator implements INoiseGenerator {
 					float averageSouth = (cornerSEValue + cornerSWValue) / 2.0F;
 					float averageWest = (cornerNWValue + cornerSWValue) / 2.0F;
 
-					array[midX][midY] = (float)(averageCenter + Math.pow(this.persistence, iteration) * this.randomNoise(midX, midY));
+					float finalCenter, finalNorth, finalEast, finalSouth, finalWest;
 
-					array[midX][y] = (float)(averageNorth + Math.pow(this.persistence, iteration) * this.randomNoise(midX, midY));
-					array[midX][y + squareSize] = (float)(averageSouth + Math.pow(this.persistence, iteration)
-						* this.randomNoise(midX, y + squareSize));
+					if (blur) {
+						finalCenter = this.simpleGaussianNoise(midX, midY);
+						finalNorth = this.simpleGaussianNoise(midX, midY);
+						finalEast = this.simpleGaussianNoise(x + squareSize, midY);
+						finalSouth = this.simpleGaussianNoise(midX, y + squareSize);
+						finalWest = this.simpleGaussianNoise(x, midY);
+					} else {
+						finalCenter = this.randomNoise(midX, midY);
+						finalNorth = this.randomNoise(midX, midY);
+						finalEast = this.randomNoise(x + squareSize, midY);
+						finalSouth = this.randomNoise(midX, y + squareSize);
+						finalWest = this.randomNoise(x, midY);
+					}
+					array[midX][midY] = (float)(averageCenter + Math.pow(this.persistence, iteration) * finalCenter);
 
-					array[x][midY] = (float)(averageWest + Math.pow(this.persistence, iteration) * this.randomNoise(x, midY));
-					array[x + squareSize][midY] = (float)(averageEast + Math.pow(this.persistence, iteration)
-						* this.randomNoise(x + squareSize, midY));
+					array[midX][y] = (float)(averageNorth + Math.pow(this.persistence, iteration) * finalNorth);
+					array[midX][y + squareSize] = (float)(averageSouth + Math.pow(this.persistence, iteration) * finalSouth);
+
+					array[x][midY] = (float)(averageWest + Math.pow(this.persistence, iteration) * finalWest);
+					array[x + squareSize][midY] = (float)(averageEast + Math.pow(this.persistence, iteration) * finalEast);
 				}
 			}
 

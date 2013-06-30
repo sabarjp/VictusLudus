@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.teamderpy.victusludus.game.map.MidpointGenerator;
+import com.teamderpy.victusludus.math.MidpointGenerator;
 
 /**
  * Generates a nebula image
@@ -25,16 +25,16 @@ public class NebulaGenerator {
 		int modifier = 8;
 
 		MidpointGenerator noiseGenerator = new MidpointGenerator(0.56F, seed);
-		float[][] noiseArrayRed = noiseGenerator.generateFloat(width / modifier, height / modifier, 0F, 255F, true);
+		float[][] noiseArrayRed = noiseGenerator.generateFloat(width / modifier, height / modifier, 0F, 255F, false);
 
 		noiseGenerator.seed(seed + 234556);
-		float[][] noiseArrayGreen = noiseGenerator.generateFloat(width / modifier, height / modifier, 0F, 255F, true);
+		float[][] noiseArrayGreen = noiseGenerator.generateFloat(width / modifier, height / modifier, 0F, 255F, false);
 
 		noiseGenerator.seed(seed + 4353452);
-		float[][] noiseArrayBlue = noiseGenerator.generateFloat(width / modifier, height / modifier, 0F, 255F, true);
+		float[][] noiseArrayBlue = noiseGenerator.generateFloat(width / modifier, height / modifier, 0F, 255F, false);
 
 		noiseGenerator.seed(seed + 345345);
-		float[][] noiseArrayAlpha = noiseGenerator.generateFloat(width / modifier, height / modifier, 0F, 255F, true);
+		float[][] noiseArrayAlpha = noiseGenerator.generateFloat(width / modifier, height / modifier, 0F, 255F, false);
 
 		Pixmap imageBuffer = new Pixmap(width / modifier, height / modifier, Format.RGBA8888);
 		ByteBuffer imageBufferByteArray = imageBuffer.getPixels();

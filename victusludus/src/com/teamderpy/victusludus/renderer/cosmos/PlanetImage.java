@@ -15,6 +15,7 @@ import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.game.cosmos.EnumPlanetType;
 import com.teamderpy.victusludus.game.cosmos.Planet;
 import com.teamderpy.victusludus.game.cosmos.Star;
+import com.teamderpy.victusludus.gui.UIPlanetHUD;
 import com.teamderpy.victusludus.gui.UIStarHUD;
 
 /**
@@ -251,9 +252,13 @@ public class PlanetImage {
 	private class ClickAction implements Actionable {
 		@Override
 		public void act () {
-			PlanetImage.this.cosmosRenderer.cosmos.getStar().removePlanets();
-			PlanetImage.this.cosmosRenderer.cosmos.setStar(null);
-			PlanetImage.this.cosmosRenderer.changePerspective(EnumCosmosMode.GALAXY_PERSPECTIVE);
+			PlanetImage.this.cosmosRenderer.cosmos.setPlanet(PlanetImage.this.getPlanet());
+			PlanetImage.this.cosmosRenderer.changePerspective(EnumCosmosMode.PLANET_PERSPECTIVE);
+
+			UIPlanetHUD gui = ((UIPlanetHUD)PlanetImage.this.cosmosRenderer.cosmos.getCurrentUI());
+			gui.setSelectedPlanetName(PlanetImage.this.getPlanet().getName());
+			gui.setSelectedPlanetType(PlanetImage.this.getPlanet().getPlanetType().getProperName());
+			gui.setSelectedPlanetAge(Cosmology.getFormattedStellarAge(PlanetImage.this.getPlanet().getAge()));
 		}
 	}
 

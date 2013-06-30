@@ -27,6 +27,9 @@ public class Engine implements ResizeListener {
 	/** The is debugging. */
 	public boolean IS_DEBUGGING = false;
 
+	/** Whether shaders are enabled or not. */
+	public boolean IS_SHADERS_ENABLED = true;
+
 	/** The is fullscreen. */
 	public boolean IS_FULLSCREEN = false;
 

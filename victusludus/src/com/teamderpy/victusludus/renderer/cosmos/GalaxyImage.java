@@ -1,12 +1,15 @@
 
 package com.teamderpy.victusludus.renderer.cosmos;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
+import com.teamderpy.victusludus.data.VFile;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.game.cosmos.Cosmology;
@@ -24,6 +27,8 @@ public class GalaxyImage {
 	private ActionArea2D actionArea;
 	private CosmosRenderer cosmosRenderer;
 	private Sprite sprite;
+
+	private static ShaderProgram shader = null;
 
 	/**
 	 * Instantiates a new galaxy image, which is basically the galaxy object combined with its rendered aspect
@@ -113,7 +118,6 @@ public class GalaxyImage {
 	 */
 	public void render (final SpriteBatch batch, final float deltaT) {
 		this.galaxy.setRotation(this.galaxy.getRotation() + deltaT * this.galaxy.getAngularVelocity());
-
 		this.sprite.setRotation((float)this.galaxy.getRotation());
 
 		this.sprite.draw(batch);
@@ -154,5 +158,34 @@ public class GalaxyImage {
 
 	public void dispose () {
 		this.actionArea.unregisterListeners();
+	}
+
+	/**
+	 * Prepares the shader for use
+	 */
+	public static void prepareShader () {
+		FileHandle vertexShader = VFile.getFileHandle("com/teamderpy/victusludus/engine/graphics/galaxyShader.vert");
+		FileHandle fragmentShader = VFile.getFileHandle("com/teamderpy/victusludus/engine/graphics/galaxyShader.frag");
+		ShaderProgram.pedantic = false;
+		GalaxyImage.shader = new ShaderProgram(vertexShader, fragmentShader);
+
+		if (!GalaxyImage.shader.isCompiled()) {
+			throw new VictusRuntimeException("Failed to compile shader: \n" + GalaxyImage.shader.getLog());
+		} else {
+			System.out.println("compiled shader\n" + GalaxyImage.shader.getLog());
+		}
+	}
+
+	/**
+	 * Releases resources associated with the shader
+	 */
+	public static void disposeShader () {
+		if (GalaxyImage.shader != null) {
+			GalaxyImage.shader.dispose();
+		}
+	}
+
+	public static ShaderProgram getShader () {
+		return GalaxyImage.shader;
 	}
 }

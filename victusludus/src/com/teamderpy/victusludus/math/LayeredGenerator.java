@@ -1,7 +1,8 @@
 
-package com.teamderpy.victusludus.game.map;
+package com.teamderpy.victusludus.math;
 
 import java.util.Random;
+
 
 /** The Class LayeredGenerator. */
 public class LayeredGenerator implements INoiseGenerator {
