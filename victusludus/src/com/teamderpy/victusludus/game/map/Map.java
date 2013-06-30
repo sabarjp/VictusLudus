@@ -9,6 +9,9 @@ import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.entity.GameEntityManager;
 import com.teamderpy.victusludus.game.tile.GameTile;
+import com.teamderpy.victusludus.math.HeightCapper;
+import com.teamderpy.victusludus.math.LayeredGenerator;
+import com.teamderpy.victusludus.math.Smoother;
 import com.teamderpy.victusludus.renderer.game.LightMap;
 
 

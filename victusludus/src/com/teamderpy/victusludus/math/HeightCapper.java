@@ -1,4 +1,4 @@
-package com.teamderpy.victusludus.game.map;
+package com.teamderpy.victusludus.math;
 
 
 /**

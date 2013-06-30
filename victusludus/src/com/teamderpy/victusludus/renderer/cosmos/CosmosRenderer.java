@@ -11,6 +11,7 @@ import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Planet;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.gui.UIGalaxyHUD;
+import com.teamderpy.victusludus.gui.UIPlanetHUD;
 import com.teamderpy.victusludus.gui.UIStarHUD;
 import com.teamderpy.victusludus.gui.UIUniverseHUD;
 import com.teamderpy.victusludus.renderer.common.BackgroundRenderer;
@@ -82,6 +83,7 @@ public class CosmosRenderer {
 			this.iuniRenderer.render(batch, deltaT);
 			break;
 		case PLANET_PERSPECTIVE:
+			this.iuniRenderer.render(batch, deltaT);
 			break;
 		}
 
@@ -162,6 +164,19 @@ public class CosmosRenderer {
 
 			break;
 		case PLANET_PERSPECTIVE:
+			this.cosmos.getPlanet().createSurfaceWorld();
+
+			this.bgRenderer.setBgImage(SolarSystemRenderer.BACKGROUND_PATH, false);
+			this.bgRenderer.setFlipTiling(false);
+			this.bgRenderer.setStretchingImage(false);
+
+			UIPlanetHUD planetHUD = new UIPlanetHUD();
+			planetHUD.setCosmosRenderer(this);
+
+			this.cosmos.changeUI(planetHUD);
+
+			this.iuniRenderer = new WorldRenderer(this.cosmos.getGameDimensions(), this.cosmos.getPlanet());
+
 			break;
 		}
 
