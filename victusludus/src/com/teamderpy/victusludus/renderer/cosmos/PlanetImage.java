@@ -16,7 +16,7 @@ import com.teamderpy.victusludus.game.cosmos.EnumPlanetType;
 import com.teamderpy.victusludus.game.cosmos.Planet;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.gui.UIPlanetHUD;
-import com.teamderpy.victusludus.gui.UIStarHUD;
+import com.teamderpy.victusludus.gui.UIStellarSystemHUD;
 
 /**
  * A planet and its corresponding image to render
@@ -233,7 +233,7 @@ public class PlanetImage {
 	private class EnterAction implements Actionable {
 		@Override
 		public void act () {
-			UIStarHUD gui = ((UIStarHUD)PlanetImage.this.cosmosRenderer.cosmos.getCurrentUI());
+			UIStellarSystemHUD gui = ((UIStellarSystemHUD)PlanetImage.this.cosmosRenderer.cosmos.getCurrentUI());
 			Planet planet = PlanetImage.this.getPlanet();
 
 			gui.setSelectedPlanetName(planet.getName());

@@ -43,24 +43,6 @@ public class UIPlanetHUD extends UI {
 		tableFooter.bottom();
 		this.stage.addActor(tableFooter);
 
-		/************ SELECTED PLANET NAME */
-
-		this.currentPlanetName = new Label("", this.skin, "default");
-		tableContent.add(this.currentPlanetName).left();
-		tableContent.row();
-
-		/************ SELECTED PLANET TYPE */
-
-		this.currentPlanetType = new Label("", this.skin, "default");
-		tableContent.add(this.currentPlanetType).left();
-		tableContent.row();
-
-		/************ SELECTED PLANET AGE */
-
-		this.currentPlanetAge = new Label("", this.skin, "default");
-		tableContent.add(this.currentPlanetAge).left();
-		tableContent.row();
-
 		/************ TOOLTIP */
 
 		final Label tooltipText = new Label("", this.skin);
@@ -92,6 +74,24 @@ public class UIPlanetHUD extends UI {
 				tooltipText.setText("");
 			}
 		});
+
+		/************ SELECTED PLANET NAME */
+
+		this.currentPlanetName = new Label("", this.skin, "default");
+		tableContent.add(this.currentPlanetName).left();
+		tableContent.row();
+
+		/************ SELECTED PLANET TYPE */
+
+		this.currentPlanetType = new Label("", this.skin, "default");
+		tableContent.add(this.currentPlanetType).left();
+		tableContent.row();
+
+		/************ SELECTED PLANET AGE */
+
+		this.currentPlanetAge = new Label("", this.skin, "default");
+		tableContent.add(this.currentPlanetAge).left();
+		tableContent.row();
 	}
 
 	public void setCosmosRenderer (final CosmosRenderer cosmosRenderer) {

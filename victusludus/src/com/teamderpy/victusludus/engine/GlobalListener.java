@@ -7,6 +7,7 @@ import com.teamderpy.victusludus.gui.eventhandler.KeyboardListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyDownEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyTypedEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyUpEvent;
+import com.teamderpy.victusludus.math.heightmap.MidpointGenerator;
 
 /**
  * The listener interface for receiving global events. The class that is interested in processing a global event implements this
@@ -64,6 +65,19 @@ public class GlobalListener implements KeyboardListener {
 			return true;
 		} else if (keyboardEvent.getKey() == Keys.F4) {
 			VictusLudusGame.engine.IS_SHADERS_ENABLED = !VictusLudusGame.engine.IS_SHADERS_ENABLED;
+			return true;
+		} else if (keyboardEvent.getKey() == Keys.F5) {
+			MidpointGenerator gen = new MidpointGenerator(0.66F, 203498230498L);
+
+			float[][] test = gen.generateFloat(64, 64, 0, 255, false);
+
+			for (int i = 0; i < test.length; i++) {
+				for (int j = 0; j < test[i].length; j++) {
+					System.err.print(test[i][j] + " ");
+				}
+				System.err.println();
+			}
+
 			return true;
 		}
 

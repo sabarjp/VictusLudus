@@ -102,6 +102,20 @@ cosmos_spritesheet4.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+planet/artificial
+  rotate: false
+  xy: 164, 96
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+planet/metal
+  rotate: false
+  xy: 164, 96
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 planet/asteroid_field
   rotate: false
   xy: 400, 206
@@ -111,21 +125,21 @@ planet/asteroid_field
   index: -1
 planet/barren
   rotate: false
-  xy: 164, 96
+  xy: 450, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/carbon
   rotate: false
-  xy: 450, 224
+  xy: 240, 144
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/gaia
   rotate: false
-  xy: 240, 144
+  xy: 272, 160
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -160,7 +174,7 @@ planet/gas_giant_small
   index: -1
 planet/ice
   rotate: false
-  xy: 272, 160
+  xy: 164, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -170,13 +184,6 @@ planet/ice_giant
   xy: 336, 192
   size: 64, 64
   orig: 64, 64
-  offset: 0, 0
-  index: -1
-planet/metal
-  rotate: false
-  xy: 164, 64
-  size: 32, 32
-  orig: 32, 32
   offset: 0, 0
   index: -1
 planet/molten

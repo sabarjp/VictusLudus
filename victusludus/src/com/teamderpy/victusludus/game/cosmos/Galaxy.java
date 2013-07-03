@@ -9,7 +9,7 @@ import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.language.GreekLatinGenerator;
 
 /**
- * Has lots of stars
+ * A galaxy is made up of stars
  * 
  * @author Josh
  */

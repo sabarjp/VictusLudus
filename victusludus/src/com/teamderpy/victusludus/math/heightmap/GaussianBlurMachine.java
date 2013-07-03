@@ -1,10 +1,10 @@
-package com.teamderpy.victusludus.math;
 
+package com.teamderpy.victusludus.math.heightmap;
 
 /**
- * The Class GaussianBlur.
+ * A gaussian blur machine that assists with applying a gaussian blur to a 2d array
  */
-public class GaussianBlur {
+public class GaussianBlurMachine {
 
 	/** The gaussian matrix. */
 	private float[][] matrix;
@@ -20,12 +20,12 @@ public class GaussianBlur {
 
 	/**
 	 * Instantiates a new gaussian blur machine.
-	 *
+	 * 
 	 * @param pixelRadius the pixel radius to blur
 	 * @param sigma the sigma value used in the gaussian std dev
 	 */
-	public GaussianBlur(int pixelRadius, final float sigma){
-		if(pixelRadius < 1){
+	public GaussianBlurMachine (int pixelRadius, final float sigma) {
+		if (pixelRadius < 1) {
 			pixelRadius = 1;
 		}
 
@@ -40,29 +40,29 @@ public class GaussianBlur {
 
 	/**
 	 * Gets the gaussian matrix (that should be calculated)
-	 *
+	 * 
 	 * @return the gaussian matrix
 	 */
-	public float[][] getGaussianMatrix(){
+	public float[][] getGaussianMatrix () {
 		return this.matrix;
 	}
 
 	/**
 	 * Make sure the matrix can be used for weighted summation
 	 */
-	private void normalizeMatrix(){
+	private void normalizeMatrix () {
 		float sum = 0.0F;
 
-		//find sum
+		// find sum
 		for (float[] row : this.matrix) {
 			for (float element : row) {
 				sum += element;
 			}
 		}
 
-		//modify weights
-		for(int i=0; i<this.matrix.length; i++){
-			for(int j=0; j<this.matrix[i].length;j++){
+		// modify weights
+		for (int i = 0; i < this.matrix.length; i++) {
+			for (int j = 0; j < this.matrix[i].length; j++) {
 				this.matrix[i][j] /= sum;
 			}
 		}
@@ -71,28 +71,28 @@ public class GaussianBlur {
 	/**
 	 * Calculate matrix using the gauss function
 	 */
-	private void calculateMatrix(){
-		for(int i=0; i<this.matrix.length; i++){
-			for(int j=0; j<this.matrix[i].length;j++){
-				this.matrix[i][j] = this.gauss(i-this.centerPoint,j-this.centerPoint);
+	private void calculateMatrix () {
+		for (int i = 0; i < this.matrix.length; i++) {
+			for (int j = 0; j < this.matrix[i].length; j++) {
+				this.matrix[i][j] = this.gauss(i - this.centerPoint, j - this.centerPoint);
 			}
 		}
 	}
 
 	/**
 	 * The gaussian function
-	 *
+	 * 
 	 * @param x the x coordinate offset from the origin
 	 * @param y the y coordinate offset from the origin
 	 * @return the float of the gaussian function calculation
 	 */
-	private float gauss(final int x, final int y){
+	private float gauss (final int x, final int y) {
 		float sigma = this.sigma;
 
-		return (float) (1.0F / (2.0F * Math.PI * (sigma * sigma)) * Math.pow(Math.E, - (x * x + y * y) / (2.0F * (sigma * sigma))));
+		return (float)(1.0F / (2.0F * Math.PI * (sigma * sigma)) * Math.pow(Math.E, -(x * x + y * y) / (2.0F * (sigma * sigma))));
 	}
 
-	public int getPixelRadius() {
+	public int getPixelRadius () {
 		return this.pixelRadius;
 	}
 }
