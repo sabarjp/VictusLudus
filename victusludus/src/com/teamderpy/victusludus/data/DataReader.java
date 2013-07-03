@@ -141,7 +141,7 @@ public class DataReader {
 
 			StarColorTuple tuple = new StarColorTuple(
 				(int)((float)(starColorImage.getWidth() - i) / starColorImage.getWidth() * (maxColor - minColor)), color);
-			System.err.println("added tuple: " + tuple.getTemperature() + " " + tuple.getColor());
+			// System.err.println("added tuple: " + tuple.getTemperature() + " " + tuple.getColor());
 			starColorMap.add(tuple);
 		}
 

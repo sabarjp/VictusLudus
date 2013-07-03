@@ -39,30 +39,6 @@ public class UIUniverseHUD extends UI {
 		tableFooter.bottom();
 		this.stage.addActor(tableFooter);
 
-		/************ SELECTED GALAXY NAME */
-
-		this.selectedGalaxyName = new Label("", this.skin, "default");
-		tableContent.add(this.selectedGalaxyName).left();
-		tableContent.row();
-
-		/************ SELECTED GALAXY NAME */
-
-		this.selectedGalaxyType = new Label("", this.skin, "default");
-		tableContent.add(this.selectedGalaxyType).left();
-		tableContent.row();
-
-		/************ SELECTED GALAXY NAME */
-
-		this.selectedGalaxyAge = new Label("", this.skin, "default");
-		tableContent.add(this.selectedGalaxyAge).left();
-		tableContent.row();
-
-		/************ SELECTED GALAXY NAME */
-
-		this.selectedGalaxyStarCount = new Label("", this.skin, "default");
-		tableContent.add(this.selectedGalaxyStarCount).left();
-		tableContent.row();
-
 		/************ TOOLTIP */
 
 		final Label tooltipText = new Label("", this.skin);
@@ -93,6 +69,30 @@ public class UIUniverseHUD extends UI {
 				tooltipText.setText("");
 			}
 		});
+
+		/************ SELECTED GALAXY NAME */
+
+		this.selectedGalaxyName = new Label("", this.skin, "default");
+		tableContent.add(this.selectedGalaxyName).left();
+		tableContent.row();
+
+		/************ SELECTED GALAXY NAME */
+
+		this.selectedGalaxyType = new Label("", this.skin, "default");
+		tableContent.add(this.selectedGalaxyType).left();
+		tableContent.row();
+
+		/************ SELECTED GALAXY NAME */
+
+		this.selectedGalaxyAge = new Label("", this.skin, "default");
+		tableContent.add(this.selectedGalaxyAge).left();
+		tableContent.row();
+
+		/************ SELECTED GALAXY NAME */
+
+		this.selectedGalaxyStarCount = new Label("", this.skin, "default");
+		tableContent.add(this.selectedGalaxyStarCount).left();
+		tableContent.row();
 	}
 
 	/**

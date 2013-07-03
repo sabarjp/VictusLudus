@@ -1,8 +1,9 @@
 
-package com.teamderpy.victusludus.math;
+package com.teamderpy.victusludus.math.heightmap;
 
 import java.util.Random;
 
+import com.teamderpy.victusludus.math.VMath;
 
 /** The Class LayeredGenerator. */
 public class LayeredGenerator implements INoiseGenerator {
@@ -28,10 +29,12 @@ public class LayeredGenerator implements INoiseGenerator {
 		this.seed();
 	}
 
-	/** Instantiates a new layered generator.
+	/**
+	 * Instantiates a new layered generator.
 	 * 
 	 * @param passes the passes
-	 * @param persistence the persistence */
+	 * @param persistence the persistence
+	 */
 	public LayeredGenerator (final int passes, final float persistence) {
 		this.passes = passes;
 		this.persistence = persistence;
@@ -46,11 +49,13 @@ public class LayeredGenerator implements INoiseGenerator {
 		this.seed = this.rand.nextInt() / 2;
 	}
 
-	/** Smooth noise using basic blur function.
+	/**
+	 * Smooth noise using basic blur function.
 	 * 
 	 * @param x the x coord
 	 * @param y the y coord
-	 * @return the float */
+	 * @return the float
+	 */
 	private float smoothNoise (final int x, final int y) {
 		float corners = this.randomNoise(x - 1, y - 1) + this.randomNoise(x - 1, y + 1) + this.randomNoise(x + 1, y - 1)
 			+ this.randomNoise(x + 1, y + 1);
@@ -61,11 +66,13 @@ public class LayeredGenerator implements INoiseGenerator {
 		return corners / 16 + sides / 8 + center / 4;
 	}
 
-	/** Smooth noise using simple gaussian blur function.
+	/**
+	 * Smooth noise using simple gaussian blur function.
 	 * 
 	 * @param x the x coord
 	 * @param y the y coord
-	 * @return the float */
+	 * @return the float
+	 */
 	private float simpleGaussianNoise (final int x, final int y) {
 		float corners = this.randomNoise(x - 1, y - 1) + this.randomNoise(x - 1, y + 1) + this.randomNoise(x + 1, y - 1)
 			+ this.randomNoise(x + 1, y + 1);
@@ -76,12 +83,14 @@ public class LayeredGenerator implements INoiseGenerator {
 		return 0.09470416F * corners + 0.118318F * sides + 0.147761F * center;
 	}
 
-	/** Smooth noise using gaussian blur function.
+	/**
+	 * Smooth noise using gaussian blur function.
 	 * 
 	 * @param x the x coord
 	 * @param y the y coord
-	 * @return the float */
-	private float gaussianNoise (final int x, final int y, final GaussianBlur blurMachine) {
+	 * @return the float
+	 */
+	private float gaussianNoise (final int x, final int y, final GaussianBlurMachine blurMachine) {
 		float[][] blurMatrix = blurMachine.getGaussianMatrix();
 
 		float sum = 0.0F;
@@ -96,11 +105,13 @@ public class LayeredGenerator implements INoiseGenerator {
 		return sum;
 	}
 
-	/** Random noise.
+	/**
+	 * Random noise.
 	 * 
 	 * @param x the x coord
 	 * @param y the y coord
-	 * @return the float */
+	 * @return the float
+	 */
 	private float randomNoise (final int x, final int y) {
 		int h = x * 29 + y * 113;
 		h += this.seed;
@@ -127,7 +138,7 @@ public class LayeredGenerator implements INoiseGenerator {
 
 		// generate terrain
 		for (int p = 1; p < this.passes + 1; p++) {
-			GaussianBlur blurMachine = new GaussianBlur(p, 1.5F);
+			GaussianBlurMachine blurMachine = new GaussianBlurMachine(p, 1.5F);
 
 			for (int i = 0; i < array.length; i++) {
 				for (int j = 0; j < array[i].length; j++) {
@@ -179,7 +190,7 @@ public class LayeredGenerator implements INoiseGenerator {
 
 		// generate terrain
 		for (int p = 1; p < this.passes + 1; p++) {
-			GaussianBlur blurMachine = new GaussianBlur(p, 1.5F);
+			GaussianBlurMachine blurMachine = new GaussianBlurMachine(p, 1.5F);
 
 			for (int i = 0; i < array.length; i++) {
 				for (int j = 0; j < array[i].length; j++) {
@@ -206,59 +217,46 @@ public class LayeredGenerator implements INoiseGenerator {
 		// normalize
 		for (int i = 0; i < array.length; i++) {
 			for (int j = 0; j < array[i].length; j++) {
-				array[i][j] = LayeredGenerator.linearInterpolation(lowestPoint, highestPoint, minValue, maxValue, array[i][j]);
+				array[i][j] = VMath.linearInterpolation(lowestPoint, highestPoint, minValue, maxValue, array[i][j]);
 			}
 		}
 
 		return array;
 	}
 
-	/** Gets the passes.
+	/**
+	 * Gets the passes.
 	 * 
-	 * @return the passes */
+	 * @return the passes
+	 */
 	public int getPasses () {
 		return this.passes;
 	}
 
-	/** Sets the passes.
+	/**
+	 * Sets the passes.
 	 * 
-	 * @param passes the new passes */
+	 * @param passes the new passes
+	 */
 	public void setPasses (final int passes) {
 		this.passes = passes;
 	}
 
-	/** Gets the persistence.
+	/**
+	 * Gets the persistence.
 	 * 
-	 * @return the persistence */
+	 * @return the persistence
+	 */
 	public float getPersistence () {
 		return this.persistence;
 	}
 
-	/** Sets the persistence.
+	/**
+	 * Sets the persistence.
 	 * 
-	 * @param persistence the new persistence */
+	 * @param persistence the new persistence
+	 */
 	public void setPersistence (final float persistence) {
 		this.persistence = persistence;
 	}
-
-	/** Linear interpolation between two known points
-	 * 
-	 * @param x1
-	 * @param x2
-	 * @param y1
-	 * @param y2
-	 * @param desiredX the x at which we desire an interpolated Y
-	 * @return the interpolated Y */
-	private static float linearInterpolation (final float x1, final float x2, final float y1, final float y2, final float desiredX) {
-		float result = y1 + (y2 - y1) * (desiredX - x1 / (x2 - x1));
-
-		if (result < y1) {
-			result = y1;
-		} else if (result > y2) {
-			result = y2;
-		}
-
-		return result;
-	}
-
 }

@@ -8,7 +8,11 @@ import java.math.MathContext;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.precision.Precision;
 
-/** A planet in a solar system orbiting a star */
+/**
+ * A planet has a surface world
+ * @author Josh
+ * 
+ */
 public class Planet implements Comparable<Planet> {
 	public static MathContext PLANET_RND = MathContext.DECIMAL64;
 	public static BigDecimal MIN_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 / 400);
@@ -106,7 +110,7 @@ public class Planet implements Comparable<Planet> {
 	 * Creates the surface world for this planet
 	 */
 	public void createSurfaceWorld () {
-		this.surfaceWorld = new World(this.seed);
+		this.surfaceWorld = new World(this, this.seed);
 	}
 
 	/**

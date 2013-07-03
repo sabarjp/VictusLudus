@@ -12,7 +12,7 @@ import com.teamderpy.victusludus.game.cosmos.Planet;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.gui.UIGalaxyHUD;
 import com.teamderpy.victusludus.gui.UIPlanetHUD;
-import com.teamderpy.victusludus.gui.UIStarHUD;
+import com.teamderpy.victusludus.gui.UIStellarSystemHUD;
 import com.teamderpy.victusludus.gui.UIUniverseHUD;
 import com.teamderpy.victusludus.renderer.common.BackgroundRenderer;
 import com.teamderpy.victusludus.renderer.common.DebugRenderer;
@@ -155,7 +155,7 @@ public class CosmosRenderer {
 			this.bgRenderer.setFlipTiling(false);
 			this.bgRenderer.setStretchingImage(false);
 
-			UIStarHUD starHUD = new UIStarHUD();
+			UIStellarSystemHUD starHUD = new UIStellarSystemHUD();
 			starHUD.setCosmosRenderer(this);
 
 			this.cosmos.changeUI(starHUD);

@@ -1,13 +1,13 @@
 
-package com.teamderpy.victusludus.math;
+package com.teamderpy.victusludus.math.heightmap;
 
 /**
- * The Interface INoiseGenerator.
+ * Generates random noise on a 2d matrix
  */
 public interface INoiseGenerator {
 
 	/**
-	 * Generate.
+	 * Generate noise and return an integer matrix
 	 * 
 	 * @param height the height
 	 * @param width the width
@@ -17,7 +17,7 @@ public interface INoiseGenerator {
 	public int[][] generateInt (int height, int width, boolean normalize);
 
 	/**
-	 * Generate.
+	 * Generate noise and return a float matrix
 	 * 
 	 * @param height the height
 	 * @param width the width

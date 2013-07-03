@@ -14,8 +14,7 @@ import com.teamderpy.victusludus.language.ArabicGenerator;
 import com.teamderpy.victusludus.precision.Precision;
 
 /**
- * A giant ellipsoid ball of plasma that is powered by nuclear fusion during the primary stages of life. May have planets
- * orbiting.
+ * A star that has planets
  * 
  * @author Josh
  */

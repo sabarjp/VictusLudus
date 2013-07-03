@@ -1,12 +1,19 @@
 
-package com.teamderpy.victusludus.math;
+package com.teamderpy.victusludus.math.heightmap;
 
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.teamderpy.victusludus.math.MatrixMath;
 
-/** The Class MidpointGenerator. */
+/**
+ * Uses midpoint displacement to calculate random noise. Would most likely be MUCH faster using GPU compute or multiple threads.
+ */
 public class MidpointGenerator implements INoiseGenerator {
-
 	/** The seed. */
 	private long seed;
 
@@ -15,6 +22,10 @@ public class MidpointGenerator implements INoiseGenerator {
 
 	/** The persistence. */
 	private float persistence;
+
+	/** multithreading worker pool for matrix math */
+	private ExecutorService workerPool = Executors.newFixedThreadPool(8, Executors.defaultThreadFactory());
+	private ArrayList<Callable<Boolean>> workers = new ArrayList<Callable<Boolean>>();
 
 	/** Instantiates a new MidpointGenerator generator. */
 	public MidpointGenerator () {
@@ -49,23 +60,6 @@ public class MidpointGenerator implements INoiseGenerator {
 	}
 
 	/**
-	 * Smooth noise using basic blur function.
-	 * 
-	 * @param x the x coord
-	 * @param y the y coord
-	 * @return the float
-	 */
-	private float smoothNoise (final int x, final int y) {
-		float corners = this.randomNoise(x - 1, y - 1) + this.randomNoise(x - 1, y + 1) + this.randomNoise(x + 1, y - 1)
-			+ this.randomNoise(x + 1, y + 1);
-		float sides = this.randomNoise(x, y - 1) + this.randomNoise(x, y + 1) + this.randomNoise(x + 1, y)
-			+ this.randomNoise(x - 1, y);
-		float center = this.randomNoise(x, y);
-
-		return corners / 16 + sides / 8 + center / 4;
-	}
-
-	/**
 	 * Smooth noise using simple gaussian blur function.
 	 * 
 	 * @param x the x coord
@@ -83,28 +77,6 @@ public class MidpointGenerator implements INoiseGenerator {
 	}
 
 	/**
-	 * Smooth noise using gaussian blur function.
-	 * 
-	 * @param x the x coord
-	 * @param y the y coord
-	 * @return the float
-	 */
-	private float gaussianNoise (final int x, final int y, final GaussianBlur blurMachine) {
-		float[][] blurMatrix = blurMachine.getGaussianMatrix();
-
-		float sum = 0.0F;
-
-		for (int i = 0; i < blurMatrix.length; i++) {
-			for (int j = 0; j < blurMatrix[i].length; j++) {
-				sum += this.randomNoise(x + i - blurMachine.getPixelRadius(), y + j - blurMachine.getPixelRadius())
-					* blurMatrix[i][j];
-			}
-		}
-
-		return sum;
-	}
-
-	/**
 	 * Random noise.
 	 * 
 	 * @param x the x coord
@@ -118,29 +90,6 @@ public class MidpointGenerator implements INoiseGenerator {
 		return 1.0F - (h * (h * h * 15731 + 789221) + 1376312589 & 0x7fffffff) / 1073741824.0F;
 	}
 
-	private boolean isPowerOfTwo (final int number) {
-		if ((number & -number) == number) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private int getNextPowerOfTwo (final int number) {
-		int nextPowerOfTwo = 2;
-
-		while (number > nextPowerOfTwo) {
-			nextPowerOfTwo *= 2;
-		}
-
-		return nextPowerOfTwo;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.teamderpy.victusludus.game.map.INoiseGenerator#generate(int, int)
-	 */
 	@Override
 	public int[][] generateInt (final int width, final int height, final boolean normalize) {
 		int[][] array;
@@ -149,11 +98,11 @@ public class MidpointGenerator implements INoiseGenerator {
 		// array must be a multiple of 2^x + 1
 		int maxSide = Math.max(width, height);
 
-		if (this.isPowerOfTwo(maxSide)) {
+		if (MathUtils.isPowerOfTwo(maxSide)) {
 			array = new int[maxSide + 1][maxSide + 1];
 			actualSize = maxSide;
 		} else {
-			int num = this.getNextPowerOfTwo(Math.max(width, height));
+			int num = MathUtils.nextPowerOfTwo(Math.max(width, height));
 			array = new int[num + 1][num + 1];
 			actualSize = num;
 		}
@@ -252,19 +201,16 @@ public class MidpointGenerator implements INoiseGenerator {
 		// array must be a multiple of 2^x + 1
 		int maxSide = Math.max(width, height);
 
-		if (this.isPowerOfTwo(maxSide)) {
+		if (MathUtils.isPowerOfTwo(maxSide)) {
 			array = new float[maxSide + 1][maxSide + 1];
 			actualSize = maxSide;
 		} else {
-			int num = this.getNextPowerOfTwo(Math.max(width, height));
+			int num = MathUtils.nextPowerOfTwo(Math.max(width, height));
 			array = new float[num + 1][num + 1];
 			actualSize = num;
 		}
 
 		// System.err.println("requested area " + width + "x" + height + "  and created " + actualSize + "x" + actualSize);
-
-		float highestPoint = 0;
-		float lowestPoint = 9999;
 
 		for (int i = 0; i < array.length; i++) {
 			for (int j = 0; j < array[i].length; j++) {
@@ -288,74 +234,30 @@ public class MidpointGenerator implements INoiseGenerator {
 		// find midpoints
 		int squareSize = actualSize;
 		int iteration = 1;
-		while (squareSize >= 1) {
+
+		this.workers.clear();
+
+		while (squareSize > 1) {
 			for (int x = 0; x < actualSize; x += squareSize) {
 				for (int y = 0; y < actualSize; y += squareSize) {
-					// create middle point
-					int midX = x + squareSize / 2;
-					int midY = y + squareSize / 2;
-
-					float cornerNWValue = array[x][y];
-					float cornerNEValue = array[x + squareSize][y];
-					float cornerSEValue = array[x + squareSize][y + squareSize];
-					float cornerSWValue = array[x][y + squareSize];
-
-					float averageCenter = (cornerNWValue + cornerNEValue + cornerSEValue + cornerSWValue) / 4.0F;
-					float averageNorth = (cornerNWValue + cornerNEValue) / 2.0F;
-					float averageEast = (cornerNEValue + cornerSEValue) / 2.0F;
-					float averageSouth = (cornerSEValue + cornerSWValue) / 2.0F;
-					float averageWest = (cornerNWValue + cornerSWValue) / 2.0F;
-
-					float finalCenter, finalNorth, finalEast, finalSouth, finalWest;
-
-					if (blur) {
-						finalCenter = this.simpleGaussianNoise(midX, midY);
-						finalNorth = this.simpleGaussianNoise(midX, midY);
-						finalEast = this.simpleGaussianNoise(x + squareSize, midY);
-						finalSouth = this.simpleGaussianNoise(midX, y + squareSize);
-						finalWest = this.simpleGaussianNoise(x, midY);
-					} else {
-						finalCenter = this.randomNoise(midX, midY);
-						finalNorth = this.randomNoise(midX, midY);
-						finalEast = this.randomNoise(x + squareSize, midY);
-						finalSouth = this.randomNoise(midX, y + squareSize);
-						finalWest = this.randomNoise(x, midY);
-					}
-					array[midX][midY] = (float)(averageCenter + Math.pow(this.persistence, iteration) * finalCenter);
-
-					array[midX][y] = (float)(averageNorth + Math.pow(this.persistence, iteration) * finalNorth);
-					array[midX][y + squareSize] = (float)(averageSouth + Math.pow(this.persistence, iteration) * finalSouth);
-
-					array[x][midY] = (float)(averageWest + Math.pow(this.persistence, iteration) * finalWest);
-					array[x + squareSize][midY] = (float)(averageEast + Math.pow(this.persistence, iteration) * finalEast);
+					this.workers.add(new MidpointThread(array, x, y, squareSize, blur, iteration));
 				}
+			}
+
+			try {
+				this.workerPool.invokeAll(this.workers);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 
 			// downsize square
 			squareSize /= 2;
 			iteration++;
+
+			this.workers.clear();
 		}
 
-		// high and low points
-		for (float[] element : array) {
-			for (float element2 : element) {
-				if (element2 > highestPoint) {
-					highestPoint = element2;
-				}
-				if (element2 < lowestPoint) {
-					lowestPoint = element2;
-				}
-			}
-		}
-
-		// System.err.println("high: " + highestPoint + "  low: " + lowestPoint);
-
-		// normalize
-		for (int i = 0; i < array.length; i++) {
-			for (int j = 0; j < array[i].length; j++) {
-				array[i][j] = MidpointGenerator.linearInterpolation(lowestPoint, highestPoint, minValue, maxValue, array[i][j]);
-			}
-		}
+		MatrixMath.normalize(array, minValue, maxValue);
 
 		// resize
 		float[][] returnArray = new float[width][height];
@@ -368,28 +270,6 @@ public class MidpointGenerator implements INoiseGenerator {
 		// System.err.println("returning size of " + width + "x" + height);
 
 		return returnArray;
-	}
-
-	/**
-	 * Linear interpolation between two known points
-	 * 
-	 * @param x1
-	 * @param x2
-	 * @param y1
-	 * @param y2
-	 * @param desiredX the x at which we desire an interpolated Y
-	 * @return the interpolated Y
-	 */
-	private static float linearInterpolation (final float x1, final float x2, final float y1, final float y2, final float desiredX) {
-		float result = y1 + (y2 - y1) * (desiredX - x1 / (x2 - x1));
-
-		if (result < y1) {
-			result = y1;
-		} else if (result > y2) {
-			result = y2;
-		}
-
-		return result;
 	}
 
 	/**
@@ -408,6 +288,75 @@ public class MidpointGenerator implements INoiseGenerator {
 	 */
 	public void setPersistence (final float persistence) {
 		this.persistence = persistence;
+	}
+
+	private class MidpointThread implements Callable<Boolean> {
+		private float[][] array;
+		private int x;
+		private int y;
+		private int squareSize;
+		private boolean blur;
+		private int iteration;
+
+		public MidpointThread (final float[][] array, final int x, final int y, final int squareSize, final boolean blur,
+			final int iteration) {
+			this.array = array;
+			this.x = x;
+			this.y = y;
+			this.squareSize = squareSize;
+			this.blur = blur;
+			this.iteration = iteration;
+		}
+
+		@Override
+		public Boolean call () throws Exception {
+			// create middle point
+			int midX = this.x + this.squareSize / 2;
+			int midY = this.y + this.squareSize / 2;
+
+			float cornerNWValue = this.array[this.x][this.y];
+			float cornerNEValue = this.array[this.x + this.squareSize][this.y];
+			float cornerSEValue = this.array[this.x + this.squareSize][this.y + this.squareSize];
+			float cornerSWValue = this.array[this.x][this.y + this.squareSize];
+
+			float averageCenter = (cornerNWValue + cornerNEValue + cornerSEValue + cornerSWValue) / 4.0F;
+			float averageNorth = (cornerNWValue + cornerNEValue) / 2.0F;
+			float averageEast = (cornerNEValue + cornerSEValue) / 2.0F;
+			float averageSouth = (cornerSEValue + cornerSWValue) / 2.0F;
+			float averageWest = (cornerNWValue + cornerSWValue) / 2.0F;
+
+			float finalCenter, finalNorth, finalEast, finalSouth, finalWest;
+
+			if (this.blur) {
+				finalCenter = MidpointGenerator.this.simpleGaussianNoise(midX, midY);
+				finalNorth = MidpointGenerator.this.simpleGaussianNoise(midX, midY);
+				finalEast = MidpointGenerator.this.simpleGaussianNoise(this.x + this.squareSize, midY);
+				finalSouth = MidpointGenerator.this.simpleGaussianNoise(midX, this.y + this.squareSize);
+				finalWest = MidpointGenerator.this.simpleGaussianNoise(this.x, midY);
+			} else {
+				finalCenter = MidpointGenerator.this.randomNoise(midX, midY);
+				finalNorth = MidpointGenerator.this.randomNoise(midX, midY);
+				finalEast = MidpointGenerator.this.randomNoise(this.x + this.squareSize, midY);
+				finalSouth = MidpointGenerator.this.randomNoise(midX, this.y + this.squareSize);
+				finalWest = MidpointGenerator.this.randomNoise(this.x, midY);
+			}
+
+			// calculate the side points
+			this.array[midX][midY] = (float)(averageCenter + Math.pow(MidpointGenerator.this.persistence, this.iteration)
+				* finalCenter);
+
+			this.array[midX][this.y] = (float)(averageNorth + Math.pow(MidpointGenerator.this.persistence, this.iteration)
+				* finalNorth);
+			this.array[midX][this.y + this.squareSize] = (float)(averageSouth + Math.pow(MidpointGenerator.this.persistence,
+				this.iteration) * finalSouth);
+
+			this.array[this.x][midY] = (float)(averageWest + Math.pow(MidpointGenerator.this.persistence, this.iteration)
+				* finalWest);
+			this.array[this.x + this.squareSize][midY] = (float)(averageEast + Math.pow(MidpointGenerator.this.persistence,
+				this.iteration) * finalEast);
+
+			return true;
+		}
 	}
 
 }

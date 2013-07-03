@@ -78,7 +78,7 @@ public class WorldRenderer implements IUniverseRenderer {
 					upperValue = e.value;
 				}
 
-				// normalize
+				// normalize the gradient
 				float red, green, blue;
 
 				if (upperValue == null) {

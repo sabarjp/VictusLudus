@@ -44,30 +44,6 @@ public class UIGalaxyHUD extends UI {
 		tableFooter.bottom();
 		this.stage.addActor(tableFooter);
 
-		/************ SELECTED STAR NAME */
-
-		this.selectedStarName = new Label("", this.skin, "default");
-		tableContent.add(this.selectedStarName).left();
-		tableContent.row();
-
-		/************ SELECTED STAR TYPE */
-
-		this.selectedStarType = new Label("", this.skin, "default");
-		tableContent.add(this.selectedStarType).left();
-		tableContent.row();
-
-		/************ SELECTED STAR AGE */
-
-		this.selectedStarAge = new Label("", this.skin, "default");
-		tableContent.add(this.selectedStarAge).left();
-		tableContent.row();
-
-		/************ SELECTED STAR PLANET COUNT */
-
-		this.selectedStarPlanetCount = new Label("", this.skin, "default");
-		tableContent.add(this.selectedStarPlanetCount).left();
-		tableContent.row();
-
 		/************ TOOLTIP */
 
 		final Label tooltipText = new Label("", this.skin);
@@ -100,6 +76,30 @@ public class UIGalaxyHUD extends UI {
 				tooltipText.setText("");
 			}
 		});
+
+		/************ SELECTED STAR NAME */
+
+		this.selectedStarName = new Label("", this.skin, "default");
+		tableContent.add(this.selectedStarName).left();
+		tableContent.row();
+
+		/************ SELECTED STAR TYPE */
+
+		this.selectedStarType = new Label("", this.skin, "default");
+		tableContent.add(this.selectedStarType).left();
+		tableContent.row();
+
+		/************ SELECTED STAR AGE */
+
+		this.selectedStarAge = new Label("", this.skin, "default");
+		tableContent.add(this.selectedStarAge).left();
+		tableContent.row();
+
+		/************ SELECTED STAR PLANET COUNT */
+
+		this.selectedStarPlanetCount = new Label("", this.skin, "default");
+		tableContent.add(this.selectedStarPlanetCount).left();
+		tableContent.row();
 	}
 
 	public void setCosmosRenderer (final CosmosRenderer cosmosRenderer) {
