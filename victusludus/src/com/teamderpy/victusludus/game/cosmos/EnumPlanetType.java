@@ -15,7 +15,7 @@ public enum EnumPlanetType {
 	MOLTEN(false, "planet/molten", "Molten"),
 	METAL(false, "planet/metal", "Metallic"),
 	BARREN(false, "planet/barren", "Barren"),
-	ASTEROID_FIELD(false, "planet/asteroid_field", "Asteroid Field"),
+	ASTEROID_FIELD(false, "planet/asteroids", "Asteroid Field"),
 	TOXIC(false, "planet/toxic", "Toxic Oceans"),
 	ARTIFICIAL(false, "planet/artificial", "Artificial World");
 

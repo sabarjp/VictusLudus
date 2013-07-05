@@ -22,8 +22,12 @@ public class GalaxyRenderer implements IUniverseRenderer {
 	@Override
 	public void render (final SpriteBatch batch, final float deltaT) {
 		if (VictusLudusGame.engine.IS_SHADERS_ENABLED) {
-			batch.setShader(GalaxyImage.getShader());
+			batch.flush();
+
 			GalaxyImage.getShader().begin();
+			GalaxyImage.getShader().end();
+
+			batch.setShader(GalaxyImage.getShader());
 		}
 
 		for (GalaxyImage galaxyImage : this.galaxyList) {
@@ -32,7 +36,7 @@ public class GalaxyRenderer implements IUniverseRenderer {
 
 		if (VictusLudusGame.engine.IS_SHADERS_ENABLED) {
 			batch.setShader(null);
-			GalaxyImage.getShader().end();
+			// GalaxyImage.getShader().end();
 		}
 	}
 

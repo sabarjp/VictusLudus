@@ -30,7 +30,7 @@ public class NebulaGenerator {
 			Format.RGBA8888);
 		ByteBuffer imageBufferByteArray = imageBuffer.getPixels();
 
-		float[][][] rgbArray = NebulaGenerator.getIteratedNebula(seed, width, height, 2);
+		float[][][] rgbArray = NebulaGenerator.getIteratedNebula(seed, width, height, 1);
 
 		// clear buffer
 		for (int i = 0; i < imageBufferByteArray.capacity(); i += 4) {
@@ -55,7 +55,8 @@ public class NebulaGenerator {
 	}
 
 	/**
-	 * Gets a nebula that has been iterated several times with multiple difference functions applied
+	 * Gets a nebula that has been iterated several times with multiple
+	 * difference functions applied
 	 * 
 	 * @param seed the seed to use when generating
 	 * @param width the requested width of the nebula

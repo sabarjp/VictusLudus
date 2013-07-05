@@ -1,13 +1,18 @@
 
 package com.teamderpy.victusludus.renderer.cosmos;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
+import com.teamderpy.victusludus.data.VFile;
 import com.teamderpy.victusludus.engine.Actionable;
 import com.teamderpy.victusludus.engine.graphics.ActionArea2D;
 import com.teamderpy.victusludus.game.cosmos.Cosmology;
@@ -39,11 +44,16 @@ public class PlanetImage {
 	private Sprite sprite;
 	private Sprite orbit;
 
+	private TextureRegion surfaceOverlay;
+
 	private double rotation = 0;
 	private double angularVelocity = 0;
 
+	private static ShaderProgram shader = null;
+
 	/**
-	 * Instantiates a new galaxy image, which is basically the galaxy object combined with its rendered aspect
+	 * Instantiates a new galaxy image, which is basically the galaxy object
+	 * combined with its rendered aspect
 	 * 
 	 * @param galaxy the galaxy
 	 * @param cosmosRenderer the renderer
@@ -59,10 +69,13 @@ public class PlanetImage {
 			throw new VictusRuntimeException("Failed to load sprite: " + this.getPlanetImagePath());
 		}
 
-		Texture overlay = VictusLudusGame.resources.getTextureAtlasCosmos().findRegion(this.planet.getPlanetType().getPath())
-			.getTexture();
-
-		// overlay.dispose();
+		String surfaceOverlayPath = this.planet.getPlanetType().getPath();
+		this.surfaceOverlay = VictusLudusGame.resources.getTextureAtlasCosmos().findRegion(surfaceOverlayPath);
+		if (this.surfaceOverlay == null) {
+			throw new VictusRuntimeException("Failed to load sprite: " + surfaceOverlayPath);
+		}
+		this.surfaceOverlay.setRegionWidth((int)this.sprite.getWidth());
+		this.surfaceOverlay.setRegionHeight((int)this.sprite.getHeight());
 
 		this.orbit = VictusLudusGame.resources.getTextureAtlasCosmos().createSprite(PlanetImage.ORBIT_LINE_PATH);
 		if (this.orbit == null) {
@@ -93,9 +106,11 @@ public class PlanetImage {
 		while (!isPositionDetermined && maxPlaceAttempts-- > 0) {
 			boolean didCollisionOccur = false;
 			int collisionAt = 0; // index where collision occured
-			boolean moveSelf = false; // whether to shift this planet right or all prior planets to the left
+			boolean moveSelf = false; // whether to shift this planet right or all
+// prior planets to the left
 
-			// if we collide with something on the list, shift until we fit somewhere
+			// if we collide with something on the list, shift until we fit
+// somewhere
 			for (PlanetImage potentialCollision : collisionList) {
 				desiredPosition.set(x, y, spriteWidth, spriteHeight);
 
@@ -125,7 +140,8 @@ public class PlanetImage {
 			if (didCollisionOccur) {
 				if (moveSelf) {
 					x += overlapAmount;
-					// System.err.println("moving " + planet.getName() + " to " + x + " with olap " + overlapAmount);
+					// System.err.println("moving " + planet.getName() + " to " + x +
+// " with olap " + overlapAmount);
 				} else {
 					int i = 0;
 					for (PlanetImage potentialCollision : collisionList) {
@@ -138,12 +154,14 @@ public class PlanetImage {
 						}
 					}
 
-					// System.err.println("moving others for " + planet.getName() + " with olap " + overlapAmount);
+					// System.err.println("moving others for " + planet.getName() +
+// " with olap " + overlapAmount);
 
 					// if we are out of bounds, try to move back a bit
 					if (x + overlapAmount >= cosmosRenderer.cosmos.getGameDimensions().getRenderWidth() - spriteWidth) {
 						x -= overlapAmount;
-						// System.err.println("moving " + planet.getName() + " back in-bounds");
+						// System.err.println("moving " + planet.getName() +
+// " back in-bounds");
 					}
 				}
 
@@ -202,7 +220,30 @@ public class PlanetImage {
 		this.setRotation(this.rotation + deltaT * this.angularVelocity);
 		this.sprite.setRotation((float)this.rotation);
 
+		if (VictusLudusGame.engine.IS_SHADERS_ENABLED) {
+			batch.flush();
+
+			PlanetImage.getShader().begin();
+			PlanetImage.getShader().setUniformi("u_texture1", 1);
+			PlanetImage.getShader().setAttributef("a_overlayuv", this.surfaceOverlay.getU(), this.surfaceOverlay.getV(),
+				this.surfaceOverlay.getU2(), this.surfaceOverlay.getV2());
+			PlanetImage.getShader().setAttributef("a_regionsize", this.surfaceOverlay.getRegionWidth(),
+				this.surfaceOverlay.getRegionHeight(), this.sprite.getWidth(), this.sprite.getHeight());
+			PlanetImage.getShader().end();
+
+			batch.setShader(PlanetImage.getShader());
+		}
+
+		this.surfaceOverlay.getTexture().bind(1);
+
+		Gdx.graphics.getGLCommon().glActiveTexture(GL10.GL_TEXTURE0);
+
 		this.sprite.draw(batch);
+
+		if (VictusLudusGame.engine.IS_SHADERS_ENABLED) {
+			batch.setShader(null);
+			// PlanetImage.getShader().end();
+		}
 	}
 
 	/*
@@ -269,5 +310,34 @@ public class PlanetImage {
 
 	public void dispose () {
 		this.actionArea.unregisterListeners();
+	}
+
+	/**
+	 * Prepares the shader for use
+	 */
+	public static void prepareShader () {
+		FileHandle vertexShader = VFile.getFileHandle("com/teamderpy/victusludus/engine/graphics/planetShader.vert");
+		FileHandle fragmentShader = VFile.getFileHandle("com/teamderpy/victusludus/engine/graphics/planetShader.frag");
+		ShaderProgram.pedantic = false;
+		PlanetImage.shader = new ShaderProgram(vertexShader, fragmentShader);
+
+		if (!PlanetImage.shader.isCompiled()) {
+			throw new VictusRuntimeException("Failed to compile shader: \n" + PlanetImage.shader.getLog());
+		} else {
+			System.out.println("compiled shader\n" + PlanetImage.shader.getLog());
+		}
+	}
+
+	/**
+	 * Releases resources associated with the shader
+	 */
+	public static void disposeShader () {
+		if (PlanetImage.shader != null) {
+			PlanetImage.shader.dispose();
+		}
+	}
+
+	public static ShaderProgram getShader () {
+		return PlanetImage.shader;
 	}
 }

@@ -21,6 +21,8 @@ public class SolarSystemRenderer implements IUniverseRenderer {
 		this.gameDimensions = gameDimensions;
 		this.planetList = planetList;
 
+		PlanetImage.prepareShader();
+
 		this.starSprite = VictusLudusGame.resources.getTextureAtlasCosmos().createSprite(SolarSystemRenderer.BIG_STAR_IMAGE_PATH);
 		if (this.starSprite == null) {
 			throw new VictusRuntimeException("Failed to load sprite: " + SolarSystemRenderer.BIG_STAR_IMAGE_PATH);
@@ -45,5 +47,17 @@ public class SolarSystemRenderer implements IUniverseRenderer {
 		}
 
 		this.starSprite.draw(batch);
+	}
+
+	@Override
+	public void finalize () {
+		this.dispose();
+	}
+
+	/**
+	 * Dispose of any resources associated with this object
+	 */
+	public void dispose () {
+		PlanetImage.disposeShader();
 	}
 }

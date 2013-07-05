@@ -109,13 +109,6 @@ planet/artificial
   orig: 32, 32
   offset: 0, 0
   index: -1
-planet/metal
-  rotate: false
-  xy: 164, 96
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
 planet/asteroid_field
   rotate: false
   xy: 400, 206
@@ -123,23 +116,30 @@ planet/asteroid_field
   orig: 50, 50
   offset: 0, 0
   index: -1
-planet/barren
+planet/asteroids
   rotate: false
   xy: 450, 224
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-planet/carbon
+planet/barren
   rotate: false
   xy: 240, 144
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-planet/gaia
+planet/carbon
   rotate: false
   xy: 272, 160
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+planet/gaia
+  rotate: false
+  xy: 164, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -174,7 +174,7 @@ planet/gas_giant_small
   index: -1
 planet/ice
   rotate: false
-  xy: 164, 64
+  xy: 196, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -186,9 +186,16 @@ planet/ice_giant
   orig: 64, 64
   offset: 0, 0
   index: -1
+planet/metal
+  rotate: false
+  xy: 304, 160
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 planet/molten
   rotate: false
-  xy: 196, 96
+  xy: 164, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -216,28 +223,28 @@ planet/rocky
   index: -1
 planet/rocky_large
   rotate: false
-  xy: 304, 160
+  xy: 164, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 planet/rocky_normal
   rotate: false
-  xy: 64, 4
+  xy: 482, 232
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 planet/rocky_small
   rotate: false
-  xy: 482, 240
+  xy: 240, 128
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 planet/toxic
   rotate: false
-  xy: 164, 32
+  xy: 196, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
