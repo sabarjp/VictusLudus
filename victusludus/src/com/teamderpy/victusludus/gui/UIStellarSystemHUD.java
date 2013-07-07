@@ -18,6 +18,10 @@ public class UIStellarSystemHUD extends UI {
 	private Label selectedPlanetName;
 	private Label selectedPlanetType;
 	private Label selectedPlanetAge;
+	private Label selectedPlanetAxialTilt;
+	private Label selectedPlanetDayLength;
+	private Label selectedPlanetYearLength;
+	private Label selectedPlanetOrbitDistance;
 
 	/** The cosmos this hud belongs to */
 	private CosmosRenderer cosmosRenderer;
@@ -93,6 +97,30 @@ public class UIStellarSystemHUD extends UI {
 		this.selectedPlanetAge = new Label("", this.skin, "default");
 		tableContent.add(this.selectedPlanetAge).left();
 		tableContent.row();
+
+		/************ SELECTED PLANET TILT */
+
+		this.selectedPlanetAxialTilt = new Label("", this.skin, "default");
+		tableContent.add(this.selectedPlanetAxialTilt).left();
+		tableContent.row();
+
+		/************ SELECTED PLANET DAY */
+
+		this.selectedPlanetDayLength = new Label("", this.skin, "default");
+		tableContent.add(this.selectedPlanetDayLength).left();
+		tableContent.row();
+
+		/************ SELECTED PLANET YEAR */
+
+		this.selectedPlanetYearLength = new Label("", this.skin, "default");
+		tableContent.add(this.selectedPlanetYearLength).left();
+		tableContent.row();
+
+		/************ SELECTED PLANET ORBIT DIST */
+
+		this.selectedPlanetOrbitDistance = new Label("", this.skin, "default");
+		tableContent.add(this.selectedPlanetOrbitDistance).left();
+		tableContent.row();
 	}
 
 	public void setCosmosRenderer (final CosmosRenderer cosmosRenderer) {
@@ -128,5 +156,41 @@ public class UIStellarSystemHUD extends UI {
 	 */
 	public void setSelectedPlanetAge (final String text) {
 		this.selectedPlanetAge.setText(text + " old");
+	}
+
+	/**
+	 * Sets the selected planet axial tilt
+	 * 
+	 * @param text the new selected planet axial tilt
+	 */
+	public void setSelectedPlanetAxialTilt (final String text) {
+		this.selectedPlanetAxialTilt.setText(text + " degree tilt");
+	}
+
+	/**
+	 * Sets the selected planet day length
+	 * 
+	 * @param text the new selected planet day length
+	 */
+	public void setSelectedPlanetDayLength (final String text) {
+		this.selectedPlanetDayLength.setText("1 Day = " + text + " earth hours");
+	}
+
+	/**
+	 * Sets the selected planet year length
+	 * 
+	 * @param text the new selected planet year length
+	 */
+	public void setSelectedPlanetYearLength (final String text) {
+		this.selectedPlanetYearLength.setText("1 Year = " + text + " earth days");
+	}
+
+	/**
+	 * Sets the selected planet orbit distance
+	 * 
+	 * @param text the new selected planet orbit distance
+	 */
+	public void setSelectedPlanetOrbitDistance (final String text) {
+		this.selectedPlanetOrbitDistance.setText(text + " AU to star");
 	}
 }

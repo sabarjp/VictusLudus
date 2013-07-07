@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Array;
@@ -23,18 +24,29 @@ public class Main {
 		 */
 		if (Main.IS_DEVELOPMENT_MODE) {
 			final Settings settings = new Settings();
-			settings.maxWidth = 512;
-			settings.maxHeight = 512;
-			settings.edgePadding = false;
+			settings.minWidth = 16;
+			settings.minHeight = 16;
+			settings.maxWidth = 1024;
+			settings.maxHeight = 1024;
+			settings.edgePadding = true;
 			settings.combineSubdirectories = false;
-			settings.paddingX = 0;
-			settings.paddingY = 0;
+			settings.paddingX = 2;
+			settings.paddingY = 2;
+			settings.filterMin = TextureFilter.MipMapNearestNearest;
+			settings.filterMag = TextureFilter.MipMapNearestNearest;
+			settings.forceSquareOutput = false;
+
 			TexturePacker2.process(settings, "../victusludus-sprites/cosmos", "../victusludus-android/assets/sprites/spritesheets",
 				"cosmos_spritesheet");
+
 			TexturePacker2.process(settings, "../victusludus-sprites/entities",
 				"../victusludus-android/assets/sprites/spritesheets", "entities_spritesheet");
+
+			settings.combineSubdirectories = true;
+
 			TexturePacker2.process(settings, "../victusludus-sprites/gui", "../victusludus-android/assets/sprites/spritesheets",
 				"gui_spritesheet");
+
 			TexturePacker2.process(settings, "../victusludus-sprites/tiles", "../victusludus-android/assets/sprites/spritesheets",
 				"tiles_spritesheet");
 		}

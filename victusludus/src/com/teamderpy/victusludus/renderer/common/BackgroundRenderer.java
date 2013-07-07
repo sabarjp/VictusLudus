@@ -4,6 +4,7 @@ package com.teamderpy.victusludus.renderer.common;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.engine.graphics.EasyGL;
 import com.teamderpy.victusludus.engine.graphics.GameDimensions;
@@ -13,7 +14,7 @@ public class BackgroundRenderer {
 	private GameDimensions dimensions;
 
 	/** The background image */
-	private Texture bgImage = null;
+	private TextureRegion bgImage = null;
 	private Texture bgColor = null;
 
 	/** whether or not the background tiles flip as they are laid out */
@@ -43,7 +44,7 @@ public class BackgroundRenderer {
 	public BackgroundRenderer (final GameDimensions dimensions, final String path, final boolean isDisposeBGImgWhenDone) {
 		this.dimensions = dimensions;
 		this.isDisposeBGImgWhenDone = isDisposeBGImgWhenDone;
-		this.bgImage = VictusLudusGame.resources.getTextureAtlasGUI().findRegion(path).getTexture();
+		this.bgImage = VictusLudusGame.resources.getTextureAtlasGUI().findRegion(path);
 		this.bgColor = EasyGL.getPixelTexture(Color.BLACK, 1, 1);
 	}
 
@@ -57,24 +58,27 @@ public class BackgroundRenderer {
 			if (this.isStretchingImage) {
 				batch.draw(this.bgImage, 0, 0, this.dimensions.getRenderWidth(), this.dimensions.getRenderHeight());
 			} else {
-				for (int i = 0; i < this.dimensions.getRenderWidth(); i += this.bgImage.getWidth()) {
-					for (int j = 0; j < this.dimensions.getRenderHeight(); j += this.bgImage.getHeight()) {
+				for (int i = 0; i < this.dimensions.getRenderWidth(); i += this.bgImage.getRegionWidth()) {
+					for (int j = 0; j < this.dimensions.getRenderHeight(); j += this.bgImage.getRegionHeight()) {
 						if (this.isFlipTiling) {
-							int imod = i / this.bgImage.getWidth() % 2;
-							int jmod = j / this.bgImage.getHeight() % 2;
+							int imod = i / this.bgImage.getRegionWidth() % 2;
+							int jmod = j / this.bgImage.getRegionWidth() % 2;
 
 							if (imod == 1 && jmod == 1) {
 								// both
-								batch.draw(this.bgImage, i, j, this.bgImage.getWidth(), this.bgImage.getHeight(), 0, 0,
-									this.bgImage.getWidth(), this.bgImage.getHeight(), true, true);
+								batch.draw(this.bgImage.getTexture(), i, j, this.bgImage.getRegionWidth(),
+									this.bgImage.getRegionHeight(), this.bgImage.getRegionX(), this.bgImage.getRegionY(),
+									this.bgImage.getRegionWidth(), this.bgImage.getRegionHeight(), true, true);
 							} else if (imod == 1 && jmod == 0) {
 								// horizontal
-								batch.draw(this.bgImage, i, j, this.bgImage.getWidth(), this.bgImage.getHeight(), 0, 0,
-									this.bgImage.getWidth(), this.bgImage.getHeight(), true, false);
+								batch.draw(this.bgImage.getTexture(), i, j, this.bgImage.getRegionWidth(),
+									this.bgImage.getRegionHeight(), this.bgImage.getRegionX(), this.bgImage.getRegionY(),
+									this.bgImage.getRegionWidth(), this.bgImage.getRegionHeight(), true, false);
 							} else if (imod == 0 && jmod == 1) {
 								// vertical
-								batch.draw(this.bgImage, i, j, this.bgImage.getWidth(), this.bgImage.getHeight(), 0, 0,
-									this.bgImage.getWidth(), this.bgImage.getHeight(), false, true);
+								batch.draw(this.bgImage.getTexture(), i, j, this.bgImage.getRegionWidth(),
+									this.bgImage.getRegionHeight(), this.bgImage.getRegionX(), this.bgImage.getRegionY(),
+									this.bgImage.getRegionWidth(), this.bgImage.getRegionHeight(), false, true);
 							} else if (imod == 0 && jmod == 0) {
 								// normal
 								batch.draw(this.bgImage, i, j);
@@ -104,7 +108,7 @@ public class BackgroundRenderer {
 	 */
 	public void setBgColor (final Color bgColor) {
 		if (this.isDisposeBGImgWhenDone && this.bgImage != null) {
-			this.bgImage.dispose();
+			this.bgImage.getTexture().dispose();
 		}
 
 		if (this.bgColor != null) {
@@ -116,32 +120,34 @@ public class BackgroundRenderer {
 	}
 
 	/**
-	 * Sets the background image to a texture at a path and sets the background color to black
+	 * Sets the background image to a texture at a path and sets the background
+	 * color to black
 	 * 
 	 * @param path the path of the texture to load
 	 */
 	public void setBgImage (final String path, final boolean isDisposeBGImgWhenDone) {
 		if (this.isDisposeBGImgWhenDone && this.bgImage != null) {
-			this.bgImage.dispose();
+			this.bgImage.getTexture().dispose();
 		}
 
 		if (this.bgColor != null) {
 			this.bgColor.dispose();
 		}
 
-		this.bgImage = VictusLudusGame.resources.getTextureAtlasCosmos().findRegion(path).getTexture();
+		this.bgImage = VictusLudusGame.resources.getTextureAtlasCosmos().findRegion(path);
 		this.bgColor = EasyGL.getPixelTexture(Color.BLACK, 1, 1);
 		this.isDisposeBGImgWhenDone = isDisposeBGImgWhenDone;
 	}
 
 	/**
-	 * Sets the background image to a texture at a path and sets the background color to black
+	 * Sets the background image to a texture at a path and sets the background
+	 * color to black
 	 * 
 	 * @param bgImage the background image to load
 	 */
-	public void setBgImage (final Texture bgImage, final boolean isDisposeBGImgWhenDone) {
+	public void setBgImage (final TextureRegion bgImage, final boolean isDisposeBGImgWhenDone) {
 		if (this.isDisposeBGImgWhenDone && this.bgImage != null) {
-			this.bgImage.dispose();
+			this.bgImage.getTexture().dispose();
 		}
 
 		if (this.bgColor != null) {
@@ -159,7 +165,7 @@ public class BackgroundRenderer {
 	 */
 	public void dispose () {
 		if (this.isDisposeBGImgWhenDone && this.bgImage != null) {
-			this.bgImage.dispose();
+			this.bgImage.getTexture().dispose();
 		}
 
 		if (this.bgColor != null) {

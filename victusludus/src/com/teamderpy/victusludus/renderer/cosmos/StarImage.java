@@ -15,6 +15,7 @@ import com.teamderpy.victusludus.game.cosmos.EnumStarType;
 import com.teamderpy.victusludus.game.cosmos.Galaxy;
 import com.teamderpy.victusludus.game.cosmos.Star;
 import com.teamderpy.victusludus.gui.UIGalaxyHUD;
+import com.teamderpy.victusludus.precision.Precision;
 
 /**
  * A star and its corresponding image to render
@@ -27,7 +28,8 @@ public class StarImage {
 	private Sprite sprite;
 
 	/**
-	 * Instantiates a new galaxy image, which is basically the galaxy object combined with its rendered aspect
+	 * Instantiates a new galaxy image, which is basically the galaxy object
+	 * combined with its rendered aspect
 	 * 
 	 * @param galaxy the galaxy
 	 * @param cosmosRenderer the renderer
@@ -64,7 +66,8 @@ public class StarImage {
 		while (!isPositionDetermined && maxPlaceAttempts-- > 0) {
 			boolean didCollisionOccur = false;
 
-			// if we collide with something on the list, shift until we fit somewhere
+			// if we collide with something on the list, shift until we fit
+// somewhere
 			for (StarImage potentialCollision : collisionList) {
 				desiredPosition.set(x, y, spriteWidth, spriteHeight);
 
@@ -133,6 +136,8 @@ public class StarImage {
 			gui.setSelectedStarName(star.getName());
 			gui.setSelectedStarType(star.getStarType().getProperName() + " - " + star.getSpectralClass());
 			gui.setSelectedStarAge(Cosmology.getFormattedStellarAge(star.getAge()));
+			gui.setSelectedStarLuminosity(Precision.roundTwo(star.getLuminositySols()).toString());
+			gui.setSelectedStarTemperature(Precision.round(star.getSurfaceTemperature()).toString());
 			gui.setSelectedStarPlanetCount(Integer.toString(star.getMaxPlanets()));
 
 			// System.err.println(star.getHistory());

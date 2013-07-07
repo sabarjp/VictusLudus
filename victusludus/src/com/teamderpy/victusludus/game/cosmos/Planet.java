@@ -20,8 +20,10 @@ public class Planet implements Comparable<Planet> {
 	public static BigDecimal MIN_ORBITAL_DISTANCE = Cosmology.AU.multiply(BigDecimal.valueOf(0.10), Planet.PLANET_RND);
 	public static BigDecimal MAX_ORBITAL_DISTANCE = Cosmology.AU.multiply(BigDecimal.valueOf(80), Planet.PLANET_RND);
 
-	// public static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV", "V", "VI", "VII",
-	// "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
+	// public static String[] PLANET_SUFFIX_ARRAY = {"Prime", "II", "III", "IV",
+// "V", "VI", "VII",
+	// "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII",
+// "XVIII", "XIX", "XX",
 	// "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI"};
 
 	public static String[] PLANET_SUFFIX_ARRAY = {"b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q",
@@ -66,9 +68,10 @@ public class Planet implements Comparable<Planet> {
 	private double orbitEccentricity;
 
 	/**
-	 * the degrees that the planet is rotated against the eccliptical normal with respect to where the north pole is oriented. In
-	 * other words, the rotational aspect of the axial tilt vector, which by default is 0 degrees, causing an equinox at periapsis
-	 * and apoapsis.
+	 * the degrees that the planet is rotated against the eccliptical normal with
+	 * respect to where the north pole is oriented. In other words, the
+	 * rotational aspect of the axial tilt vector, which by default is 0 degrees,
+	 * causing an equinox at periapsis and apoapsis.
 	 */
 	private BigDecimal periapsisAxialRotationOffset;
 
@@ -124,8 +127,8 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
-	 * Generates a random rotational period which is usually close to the rotation of the earth, but is rarely much longer or
-	 * shorter.
+	 * Generates a random rotational period which is usually close to the
+	 * rotation of the earth, but is rarely much longer or shorter.
 	 * 
 	 * @return rotational period in seconds
 	 */
@@ -140,9 +143,11 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
-	 * Generates a random axial tilt for the planet in degrees, with less tilt being more likely than extreme tilt.
+	 * Generates a random axial tilt for the planet in degrees, with less tilt
+	 * being more likely than extreme tilt.
 	 * 
-	 * @return axial tilt in degrees, greater than or equal to 0 but less than 360.0
+	 * @return axial tilt in degrees, greater than or equal to 0 but less than
+	 *         360.0
 	 */
 	private BigDecimal getRandomAxialTilt () {
 		double rand = Cosmology.gaussianNoise((int)this.seed, 27162233);
@@ -152,9 +157,11 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
-	 * Generates a random angle greater than or equal to 0 and less than 360 degrees.
+	 * Generates a random angle greater than or equal to 0 and less than 360
+	 * degrees.
 	 * 
-	 * @return rotation in degrees, greater than or equal to 0 but less than 360.0
+	 * @return rotation in degrees, greater than or equal to 0 but less than
+	 *         360.0
 	 */
 	private BigDecimal getRandomAngle () {
 		double rand = Cosmology.randomNoise((int)this.seed, 32123);
@@ -178,7 +185,8 @@ public class Planet implements Comparable<Planet> {
 		this.orbitEccentricity = (1.0F + Cosmology.randomNoise((int)this.seed, 34998)) / 6.6F;
 
 		/* set the orbit's angle */
-		// this.orbitAnomaly = new BigDecimal((1.0F + Cosmology.randomNoise((int)this.seed, 48735)) * 180.0F);
+		// this.orbitAnomaly = new BigDecimal((1.0F +
+// Cosmology.randomNoise((int)this.seed, 48735)) * 180.0F);
 		this.orbitAnomaly = BigDecimal.ZERO;
 	}
 
@@ -226,18 +234,22 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
-	 * Gets the true anomaly angle where the planet will be at the first equinox after periapsis.
+	 * Gets the true anomaly angle where the planet will be at the first equinox
+	 * after periapsis.
 	 * 
-	 * @return the true anomaly angle where the planet will be at the first equinox after periapsis
+	 * @return the true anomaly angle where the planet will be at the first
+	 *         equinox after periapsis
 	 */
 	private BigDecimal getEquinox1Angle () {
 		return this.periapsisAxialRotationOffset;
 	}
 
 	/**
-	 * Gets the true anomaly angle where the planet will be at the second equinox after periapsis.
+	 * Gets the true anomaly angle where the planet will be at the second equinox
+	 * after periapsis.
 	 * 
-	 * @return the true anomaly angle where the planet will be at the second equinox after periapsis
+	 * @return the true anomaly angle where the planet will be at the second
+	 *         equinox after periapsis
 	 */
 	private BigDecimal getEquinox2Angle () {
 		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("180"));
@@ -250,9 +262,11 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
-	 * Gets the true anomaly angle where the planet will be at the first solstice after periapsis.
+	 * Gets the true anomaly angle where the planet will be at the first solstice
+	 * after periapsis.
 	 * 
-	 * @return the true anomaly angle where the planet will be at the first solstice after periapsis
+	 * @return the true anomaly angle where the planet will be at the first
+	 *         solstice after periapsis
 	 */
 	private BigDecimal getSolstice1Angle () {
 		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("90"));
@@ -265,9 +279,11 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
-	 * Gets the true anomaly angle where the planet will be at the second solstice after periapsis.
+	 * Gets the true anomaly angle where the planet will be at the second
+	 * solstice after periapsis.
 	 * 
-	 * @return the true anomaly angle where the planet will be at the second solstice after periapsis
+	 * @return the true anomaly angle where the planet will be at the second
+	 *         solstice after periapsis
 	 */
 	private BigDecimal getSolstice2Angle () {
 		BigDecimal angle = this.periapsisAxialRotationOffset.add(new BigDecimal("270"));
@@ -346,93 +362,77 @@ public class Planet implements Comparable<Planet> {
 
 	@Override
 	public String toString () {
-		return this.name.toUpperCase()
-			+ "\n"
-			+ "Planet type: "
-			+ this.planetType
-			+ "\n"
-			+ "        age: "
-			+ Cosmology.getFormattedStellarAge(this.age)
-			+ "\n"
-			+ "     radius: "
-			+ Precision.roundTwo(this.radius)
-			+ " m  =  "
-			+ Precision.roundFive(this.radius.divide(Cosmology.EARTH_RADIUS, Star.STELLAR_RND))
-			+ " Earth radius\n"
-			+ "       mass: "
-			+ Precision.roundTwo(this.mass)
-			+ " kg  =  "
-			+ Precision.roundFive(this.mass.divide(Cosmology.EARTH_MASS, Star.STELLAR_RND))
-			+ " Earth mass\n"
-			+ "    gravity: "
-			+ Precision.roundTwo(Cosmology.calculateGravity(this.mass, this.radius))
-			+ " m/s^2  =  "
-			+ Precision.roundFive(Cosmology.calculateGravity(this.mass, this.radius).divide(Cosmology.EARTH_GRAVITY,
-				Star.STELLAR_RND))
-			+ " Earth gravity\n\n"
-			+ "   true day: "
-			+ Precision.roundTwo(this.rotationalPeriod)
-			+ " s  =  "
-			+ Precision.roundFive(this.rotationalPeriod.divide(Cosmology.EARTH_ROTATIONAL_PERIOD, Star.STELLAR_RND))
-			+ " Earth days \n"
-			+ " approx day: "
-			+ this.getHourLength().multiply(new BigInteger("24"))
-			+ "\n"
-			+ "  leap time: "
-			+ "off by "
-			+ Precision.roundTwo(this.getExtraSecondsPerDay())
-			+ " s per day\n"
-			+ "             "
+		return this.name.toUpperCase() + "\n" + "Planet type: " + this.planetType + "\n" + "        age: "
+			+ Cosmology.getFormattedStellarAge(this.age) + "\n" + "     radius: " + Precision.roundTwo(this.radius) + " m  =  "
+			+ Precision.roundFive(this.radius.divide(Cosmology.EARTH_RADIUS, Star.STELLAR_RND)) + " Earth radius\n"
+			+ "       mass: " + Precision.roundTwo(this.mass) + " kg  =  "
+			+ Precision.roundFive(this.mass.divide(Cosmology.EARTH_MASS, Star.STELLAR_RND)) + " Earth mass\n" + "    gravity: "
+			+ this.getGravityMetersPerSecond() + " m/s^2  =  " + this.getGravityEarths() + " Earth gravity\n\n" + "   true day: "
+			+ this.getDayLengthSeconds() + " s  =  " + this.getDayLengthEarthDays() + " Earth days \n" + " approx day: "
+			+ this.getHourLength().multiply(new BigInteger("24")) + "\n" + "  leap time: " + "off by "
+			+ Precision.roundTwo(this.getExtraSecondsPerDay()) + " s per day\n" + "             "
 			+ Precision.roundFive(this.rotationalPeriod.divide(this.getExtraSecondsPerDay(), Planet.PLANET_RND))
-			+ " days until leap day is needed\n"
-			+ "hour length: "
-			+ this.getHourLength()
-			+ " s\n"
-			+ " min length: "
-			+ this.getMinuteLength()
-			+ " s\n\n"
-			+ " axial tilt: "
-			+ Precision.roundTwo(this.axialTilt)
-			+ " degrees from ecliptic plane\n"
-			+ " season rot: "
-			+ Precision.roundTwo(this.periapsisAxialRotationOffset)
-			+ " degrees from ecliptic normal\n"
-			+ " equinox 1 : "
-			+ Precision.roundTwo(this.getEquinox1Angle())
-			+ " degrees\n"
-			+ " equinox 2 : "
-			+ Precision.roundTwo(this.getEquinox2Angle())
-			+ " degrees\n"
-			+ "solstice 1 : "
-			+ Precision.roundTwo(this.getSolstice1Angle())
-			+ " degrees\n"
-			+ "solstice 2 : "
-			+ Precision.roundTwo(this.getSolstice2Angle())
-			+ " degrees\n\n"
-			+ "  orbit SMA: "
-			+ Precision.roundTwo(this.orbitSemiMajorAxis)
-			+ " m    "
-			+ Precision.roundFive(this.orbitSemiMajorAxis.divide(Cosmology.AU, Star.STELLAR_RND))
-			+ " AU\n"
-			+ "  orbit ecc: "
-			+ this.orbitEccentricity
-			+ "\n"
-			+ "orbit angle: "
-			+ this.orbitAnomaly
-			+ " degrees\n"
-			+ "       dist: "
-			+ Precision.roundTwo(this.getDistanceFromStar())
-			+ " m    "
-			+ Precision.roundFive(this.getDistanceFromStar().divide(Cosmology.AU, Star.STELLAR_RND))
-			+ " AU\n"
-			+ " orbit time: "
-			+ Precision.roundTwo(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis))
-			+ " s    "
-			+ Precision.roundFive(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis)
-				.divide(Cosmology.EARTH_DAY_LENGTH, Star.STELLAR_RND))
-			+ " earth days    "
-			+ Precision.roundFive(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis)
-				.divide(this.rotationalPeriod, Star.STELLAR_RND)) + " planet days\n";
+			+ " days until leap day is needed\n" + "hour length: " + this.getHourLength() + " s\n" + " min length: "
+			+ this.getMinuteLength() + " s\n\n" + " axial tilt: " + Precision.roundTwo(this.axialTilt)
+			+ " degrees from ecliptic plane\n" + " season rot: " + Precision.roundTwo(this.periapsisAxialRotationOffset)
+			+ " degrees from ecliptic normal\n" + " equinox 1 : " + Precision.roundTwo(this.getEquinox1Angle()) + " degrees\n"
+			+ " equinox 2 : " + Precision.roundTwo(this.getEquinox2Angle()) + " degrees\n" + "solstice 1 : "
+			+ Precision.roundTwo(this.getSolstice1Angle()) + " degrees\n" + "solstice 2 : "
+			+ Precision.roundTwo(this.getSolstice2Angle()) + " degrees\n\n" + "  orbit SMA: " + this.getOrbitDistanceMeters()
+			+ " m    " + this.getOrbitDistanceAUs() + " AU\n" + "  orbit ecc: " + this.orbitEccentricity + "\n" + "orbit angle: "
+			+ this.orbitAnomaly + " degrees\n" + "       dist: " + Precision.roundTwo(this.getDistanceFromStar()) + " m    "
+			+ Precision.roundFive(this.getDistanceFromStar().divide(Cosmology.AU, Star.STELLAR_RND)) + " AU\n" + " orbit time: "
+			+ this.getOrbitTimeSeconds() + " s    " + this.getOrbitTimeEarthDays() + " earth days    "
+			+ this.getOrbitTimePlanetDays() + " planet days\n";
+	}
+
+	public BigDecimal getIrradianceWatts () {
+		return Precision.roundTwo(this.parentStar.getLuminosity().divide(
+			new BigDecimal("4").multiply(new BigDecimal(Math.PI).multiply(this.orbitSemiMajorAxis.pow(2), Star.STELLAR_RND),
+				Star.STELLAR_RND), Star.STELLAR_RND));
+	}
+
+	public BigDecimal getOrbitDistanceMeters () {
+		return Precision.roundTwo(this.orbitSemiMajorAxis);
+	}
+
+	public BigDecimal getOrbitDistanceAUs () {
+		return Precision.roundTwo(this.orbitSemiMajorAxis.divide(Cosmology.AU, Star.STELLAR_RND));
+	}
+
+	public BigDecimal getDayLengthSeconds () {
+		return Precision.roundTwo(this.rotationalPeriod);
+	}
+
+	public BigDecimal getDayLengthEarthDays () {
+		return Precision.roundTwo(this.rotationalPeriod.divide(Cosmology.EARTH_ROTATIONAL_PERIOD, Star.STELLAR_RND));
+	}
+
+	public BigDecimal getDayLengthEarthHours () {
+		return Precision.roundTwo(this.rotationalPeriod.divide(Cosmology.EARTH_HOUR_LENGTH, Star.STELLAR_RND));
+	}
+
+	public BigDecimal getGravityMetersPerSecond () {
+		return Precision.roundTwo(Cosmology.calculateGravity(this.mass, this.radius));
+	}
+
+	public BigDecimal getGravityEarths () {
+		return Precision.roundTwo(Cosmology.calculateGravity(this.mass, this.radius).divide(Cosmology.EARTH_GRAVITY,
+			Star.STELLAR_RND));
+	}
+
+	public BigDecimal getOrbitTimeSeconds () {
+		return Precision.roundTwo(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis));
+	}
+
+	public BigDecimal getOrbitTimeEarthDays () {
+		return Precision.roundTwo(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis)
+			.divide(Cosmology.EARTH_DAY_LENGTH, Star.STELLAR_RND));
+	}
+
+	public BigDecimal getOrbitTimePlanetDays () {
+		return Precision.roundTwo(Cosmology.calculateOrbitalPeriod(this.mass, this.parentStar.getMass(), this.orbitSemiMajorAxis)
+			.divide(this.rotationalPeriod, Star.STELLAR_RND));
 	}
 
 	public Star getParentStar () {
@@ -501,7 +501,8 @@ public class Planet implements Comparable<Planet> {
 	}
 
 	/**
-	 * Returns a number representing the scale of a planet relative to an ordinary one of its class.
+	 * Returns a number representing the scale of a planet relative to an
+	 * ordinary one of its class.
 	 * 
 	 * @return
 	 */

@@ -66,4 +66,20 @@ public final class EasyGL {
 
 		return new Texture(pixmap);
 	}
+
+	/**
+	 * Gets texel coords from texture coords
+	 * 
+	 * @param x the x position on the texture
+	 * @param y the y position on the texture
+	 * @param texWidth the width of the texture
+	 * @param texHeight the height of the texture
+	 * @return an array with two elements, the u and v texture coordinates
+	 */
+	public static float[] getTexelCoords (final float x, final float y, final float texWidth, final float texHeight) {
+		float u = (x + 0.5F) / texWidth;
+		float v = (y + 0.5F) / texHeight;
+
+		return new float[] {u, v};
+	}
 }

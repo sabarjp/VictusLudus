@@ -18,6 +18,8 @@ public class UIGalaxyHUD extends UI {
 	private Label selectedStarName;
 	private Label selectedStarType;
 	private Label selectedStarAge;
+	private Label selectedStarLuminosity;
+	private Label selectedStarTemperature;
 	private Label selectedStarPlanetCount;
 
 	/** The cosmos this hud belongs to */
@@ -95,6 +97,18 @@ public class UIGalaxyHUD extends UI {
 		tableContent.add(this.selectedStarAge).left();
 		tableContent.row();
 
+		/************ SELECTED STAR LUMINOSITY */
+
+		this.selectedStarLuminosity = new Label("", this.skin, "default");
+		tableContent.add(this.selectedStarLuminosity).left();
+		tableContent.row();
+
+		/************ SELECTED STAR TEMPERATURE */
+
+		this.selectedStarTemperature = new Label("", this.skin, "default");
+		tableContent.add(this.selectedStarTemperature).left();
+		tableContent.row();
+
 		/************ SELECTED STAR PLANET COUNT */
 
 		this.selectedStarPlanetCount = new Label("", this.skin, "default");
@@ -135,6 +149,24 @@ public class UIGalaxyHUD extends UI {
 	 */
 	public void setSelectedStarAge (final String text) {
 		this.selectedStarAge.setText(text + " old");
+	}
+
+	/**
+	 * Sets the selected star Luminosity
+	 * 
+	 * @param text the new selected star Luminosity
+	 */
+	public void setSelectedStarLuminosity (final String text) {
+		this.selectedStarLuminosity.setText(text + " solar lum");
+	}
+
+	/**
+	 * Sets the selected star Temperature
+	 * 
+	 * @param text the new selected star Temperature
+	 */
+	public void setSelectedStarTemperature (final String text) {
+		this.selectedStarTemperature.setText(text + " K");
 	}
 
 	/**
