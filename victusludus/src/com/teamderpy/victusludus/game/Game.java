@@ -19,8 +19,7 @@ import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.map.Map;
 import com.teamderpy.victusludus.game.tile.GameTile;
-import com.teamderpy.victusludus.gui.GUI;
-import com.teamderpy.victusludus.gui.GUIGameHUD;
+import com.teamderpy.victusludus.gui.UI;
 import com.teamderpy.victusludus.gui.eventhandler.KeyboardListener;
 import com.teamderpy.victusludus.gui.eventhandler.MouseListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.EnumRenderEventType;
@@ -79,9 +78,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	/** The right click y. */
 	private int rightClickY = 0;
 
-	// gui overlay
-	/** The current gui. */
-	private GUI currentGUI = null;
+	/** The current ui. */
+	private UI currentUI = null;
 
 	/** Whether or not the game is actually running yet. */
 	private boolean isRunning = false;
@@ -108,6 +106,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		// setup game map
 		this.gameDimensions.setWidth(VictusLudusGame.engine.X_RESOLUTION());
 		this.gameDimensions.setHeight(VictusLudusGame.engine.Y_RESOLUTION());
+		this.gameDimensions.setRenderWidth(VictusLudusGame.engine.X_RESOLUTION());
+		this.gameDimensions.setRenderHeight(VictusLudusGame.engine.Y_RESOLUTION());
 
 		this.registerListeners();
 
@@ -115,8 +115,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		this.currentDepth = this.map.getHighestPoint() - 1;
 
 		// setup GUI
-		this.changeGUI(new com.teamderpy.victusludus.gui.GUIGameHUD(this));
-		((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
+		// this.changeGUI(new com.teamderpy.victusludus.gui.GUIGameHUD(this));
+		// ((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 
 		this.gameCamera = new GameCamera();
 
@@ -132,11 +132,11 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	@Override
 	public void render (final SpriteBatch batch, final float deltaT) {
 		if (this.isRunning) {
-			this.gameRenderer.renderGameLayer(this.map, this.currentDepth);
+			this.gameRenderer.renderGameLayer(batch, deltaT, this.map, this.currentDepth);
 
-			// GUI
-			if (this.currentGUI != null) {
-				this.currentGUI.render(batch, deltaT);
+			// UI
+			if (this.currentUI != null) {
+				this.currentUI.render(batch, deltaT);
 			}
 		}
 	}
@@ -167,47 +167,29 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	}
 
 	/**
-	 * Gets the tile height s.
+	 * Gets the tile height scaled.
 	 * 
-	 * @return the tile height s
+	 * @return the tile height scaled
 	 */
-	public int getTileHeightS () {
+	public int getTileHeightScaled () {
 		return (int)(this.getGameDimensions().getTileHeight() * this.gameCamera.getZoom());
 	}
 
 	/**
-	 * Gets the tile width s.
+	 * Gets the tile width scaled.
 	 * 
-	 * @return the tile width s
+	 * @return the tile width scaled
 	 */
-	public int getTileWidthS () {
+	public int getTileWidthScaled () {
 		return (int)(this.getGameDimensions().getTileWidth() * this.gameCamera.getZoom());
 	}
 
 	/**
-	 * Gets the wall height s.
+	 * Gets the layer height scaled.
 	 * 
-	 * @return the wall height s
+	 * @return the layer height scaled
 	 */
-	public int getWallHeightS () {
-		return (int)(this.getGameDimensions().getWallHeight() * this.gameCamera.getZoom());
-	}
-
-	/**
-	 * Gets the wall width s.
-	 * 
-	 * @return the wall width s
-	 */
-	public int getWallWidthS () {
-		return (int)(this.getGameDimensions().getWallWidth() * this.gameCamera.getZoom());
-	}
-
-	/**
-	 * Gets the layer height s.
-	 * 
-	 * @return the layer height s
-	 */
-	public int getLayerHeightS () {
+	public int getLayerHeightScaled () {
 		return (int)(this.getGameDimensions().getLayerHeight() * this.gameCamera.getZoom());
 	}
 
@@ -244,7 +226,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			this.currentDepth++;
 		}
 
-		((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
+		// ((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 		VictusLudusGame.engine.inputPoller.forceMouseMove();
 
 		VictusLudusGame.engine.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.CHANGE_DEPTH, this));
@@ -256,7 +238,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			this.currentDepth--;
 		}
 
-		((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
+		// ((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 		VictusLudusGame.engine.inputPoller.forceMouseMove();
 
 		VictusLudusGame.engine.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.CHANGE_DEPTH, this));
@@ -268,27 +250,19 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		if (this.quitSignal) {
 			VictusLudusGame.engine.terminateView();
 		} else if (this.isRunning) {
-			if (this.currentGUI != null) {
-				this.currentGUI.tick();
-			}
-
 			// beware of concurrent modification!
 			for (int i = 0; i < this.map.getEntities().size(); i++) {
 				this.map.getEntities().get(i).tick();
 			}
 
 			// display some debug stuff
-			((GUIGameHUD)this.currentGUI).setDebugText("Entities: " + this.map.getEntities().size() + "    GameH: "
-				+ this.getGameDimensions().getHeight() + " GameW: " + this.getGameDimensions().getWidth());
+			// ((GUIGameHUD)this.currentGUI).setDebugText("Entities: " +
+// this.map.getEntities().size() + "    GameH: "
+			// + this.getGameDimensions().getHeight() + " GameW: " +
+// this.getGameDimensions().getWidth());
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.teamderpy.victusludus.gui.eventhandler.MouseListener#onMouseClick(com.teamderpy.victusludus.gui.eventhandler.event.
-	 * MouseEvent)
-	 */
 	@Override
 	public boolean onMouseClick (final MouseEvent mouseEvent) {
 		// left click
@@ -361,6 +335,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 					}
 				}
 			}
+			// right click
 		} else if (mouseEvent.getButton() == Buttons.RIGHT) {
 			if (mouseEvent.isButtonPressed()) {
 				this.holdingDownRightClick = true;
@@ -376,13 +351,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.teamderpy.victusludus.gui.eventhandler.MouseListener#onMouseMove(com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent
-	 * )
-	 */
 	@Override
 	public void onMouseMove (final MouseEvent mouseEvent) {
 		// not moving the map
@@ -412,9 +380,11 @@ public class Game implements IView, KeyboardListener, MouseListener {
 						}
 					}
 
-					// this.map.getTileOverlayList().add(new GameTile(GameTile.ID_PATH_GOOD, this.buildBeginCoord.x,
+					// this.map.getTileOverlayList().add(new
+// GameTile(GameTile.ID_PATH_GOOD, this.buildBeginCoord.x,
 // this.buildBeginCoord.y, this.currentDepth));
-					// this.map.getTileOverlayList().add(new GameTile(GameTile.ID_PATH_GOOD, c.x, c.y, this.currentDepth));
+					// this.map.getTileOverlayList().add(new
+// GameTile(GameTile.ID_PATH_GOOD, c.x, c.y, this.currentDepth));
 				}
 			} else {
 				return;
@@ -424,7 +394,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 				if (c.x < this.map.getLayer(this.currentDepth).length && c.y < this.map.getLayer(this.currentDepth)[0].length) {
 					// this.gameRenderer.setHighlightedTile(c);
 					this.map.getTileOverlayList().add(new GameTile(GameTile.ID_GRID, c.x, c.y, this.currentDepth, this.map));
-					((GUIGameHUD)this.currentGUI).setCurrentTileText(c.x + "," + c.y);
+					// ((GUIGameHUD)this.currentGUI).setCurrentTileText(c.x + "," +
+// c.y);
 				} else {
 					this.map.getTileOverlayList().clear();
 					// this.gameRenderer.setHighlightedTile(null);
@@ -442,13 +413,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.teamderpy.victusludus.gui.eventhandler.KeyboardListener#onKeyPress(com.teamderpy.victusludus.gui.eventhandler.event.
-	 * KeyboardEvent)
-	 */
 	@Override
 	public boolean onKeyDown (final KeyDownEvent keyboardEvent) {
 		if (keyboardEvent.getKey() == Keys.I) {
@@ -497,19 +461,16 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		this.gameDimensions.unregisterListeners();
 		this.gameRenderer.unregisterListeners();
 
-		this.changeGUI(null);
+		this.changeUI(null);
 	}
 
 	/**
-	 * Change gui.
+	 * Change ui.
 	 * 
-	 * @param newGUI the new gui
+	 * @param newUI the new ui
 	 */
-	private void changeGUI (final GUI newGUI) {
-		if (this.currentGUI != null) {
-			this.currentGUI.unregisterListeners();
-		}
-		this.currentGUI = newGUI;
+	private void changeUI (final UI newUI) {
+		this.currentUI = newUI;
 		VictusLudusGame.engine.inputPoller.forceMouseMove();
 	}
 
@@ -688,7 +649,13 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 	@Override
 	public boolean onScroll (final ScrollEvent scrollEvent) {
-		return false;
+		if (scrollEvent.getScrollAmount() > 0) {
+			this.zoomOut();
+		} else {
+			this.zoomIn();
+		}
+
+		return true;
 	}
 
 	@Override

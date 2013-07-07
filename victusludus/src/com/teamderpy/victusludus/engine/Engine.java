@@ -155,12 +155,14 @@ public class Engine implements ResizeListener {
 		// sets the current resolution
 		this.setDisplay();
 
-		this.loadResources();
+		this.loadPreResources();
 
 	}
 
 	/** Finished initializing the engine. DO NOT CALL UNTIL RESOURCES ARE LOADED */
 	public void initializeEnd () {
+		this.loadPostResources();
+
 		GUI.loadGUISpriteSheets();
 
 		this.initInputPoller();
@@ -169,11 +171,7 @@ public class Engine implements ResizeListener {
 
 		this.initSoundSystem();
 
-		// this.changeGUI(new com.teamderpy.victusludus.gui.GUIMainMenu());
-
 		this.changeUI(new com.teamderpy.victusludus.gui.UIMainMenu());
-
-		// LoadLevel();
 
 		this.globalListener = new GlobalListener();
 		this.globalListener.registerListeners();
@@ -317,7 +315,8 @@ public class Engine implements ResizeListener {
 				}
 			}
 
-			// couldn't find settings, so just make a new window with specified resolution
+			// couldn't find settings, so just make a new window with specified
+// resolution
 			if (this.currentDisplayMode == null) {
 				this.currentDisplayMode = new FlexibleDisplayMode(xres, yres, false);
 			}
@@ -326,13 +325,16 @@ public class Engine implements ResizeListener {
 		}
 	}
 
-	/** Load resources. */
-	private void loadResources () {
+	private void loadPreResources () {
 		this.assetManager = new AssetManager();
 
 		// external data
-		DataReader.ReadData();
+		DataReader.PreLoad();
 		GUI.loadFonts();
+	}
+
+	private void loadPostResources () {
+		DataReader.PostLoad();
 	}
 
 	/** Initiates the resolution for pixel density purposes */
@@ -408,8 +410,10 @@ public class Engine implements ResizeListener {
 			this.fps = (int)Math.round((this.framesSinceReset * (1000.0 / interval)));
 			this.tps = (int)Math.round((this.ticksSinceReset * (1000.0 / interval)));
 
-			// System.err.println(this.framesSinceReset + " frames in " + interval + " time");
-			// System.err.println(this.ticksSinceReset + "  ticks in " + interval + " time");
+			// System.err.println(this.framesSinceReset + " frames in " + interval
+// + " time");
+			// System.err.println(this.ticksSinceReset + "  ticks in " + interval +
+// " time");
 
 			this.framesSinceReset = 0;
 			this.ticksSinceReset = 0;
@@ -531,7 +535,8 @@ public class Engine implements ResizeListener {
 	 * Change the view, or remove the running one if passed a null value.
 	 * 
 	 * @param view the view, or null to not run the current view
-	 * @param requestedSettings the requested settings to start the view with (not used if view passed is null)
+	 * @param requestedSettings the requested settings to start the view with
+	 *           (not used if view passed is null)
 	 */
 	public void changeView (final IView view, final ISettings requestedSettings) {
 		if (this.currentView != null) {

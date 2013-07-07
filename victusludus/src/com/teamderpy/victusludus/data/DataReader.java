@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.data.resources.StarColorTuple;
+import com.teamderpy.victusludus.readerwriter.EntityReader;
 import com.teamderpy.victusludus.readerwriter.FontReader;
 import com.teamderpy.victusludus.readerwriter.IObjectReader;
 import com.teamderpy.victusludus.readerwriter.ISimpleReader;
@@ -30,7 +31,7 @@ public class DataReader {
 
 	public static final String PATH_BACKGROUNDS = "backgrounds/";
 
-	public static final String PATH_ENTITIES = "entities/";
+	public static final String PATH_ENTITIES = "data/entities/";
 
 	public static final String PATH_SOUNDS = "sounds/";
 	public static final String PATH_MUSIC = "music/";
@@ -45,21 +46,9 @@ public class DataReader {
 	public static final String PATH_SPRITE_SHEETS_GUI = "sprites/spritesheets/gui_spritesheet.atlas";
 	public static final String PATH_SPRITE_SHEETS_TILES = "sprites/spritesheets/tiles_spritesheet.atlas";
 
-	/** Read data. */
-	public static void ReadData () {
+	/** Pre-loads a bunch of data */
+	public static void PreLoad () {
 		DataReader.ReadAndLoadAll(DataReader.PATH_FONTS, VictusLudusGame.resources.getFontHash(), new FontReader());
-
-		// DataReader.ReadAndLoadAll(DataReader.PATH_CREATURES, VictusLudus.resources.getCreatureHash(), new CreatureReader());
-		// DataReader.ReadAndLoadAll(DataReader.PATH_MATERIALS, VictusLudus.resources.getMaterialHash(), new MaterialReader());
-		// DataReader.ReadAndLoadAll(DataReader.PATH_BACKGROUNDS, VictusLudus.resources.getBackgroundsHash(), new
-// BackgroundReader());
-		// DataReader.ReadAndLoadAll(DataReader.PATH_ENTITIES, VictusLudus.resources.getEntityHash(), new EntityReader());
-
-		DataReader
-			.SimpleReadAndLoad(DataReader.STAR_NAMES, VictusLudusGame.resources.getCelestialStarNameArray(), new LineReader());
-		DataReader.SimpleReadAndLoad(DataReader.GALAXY_NAMES, VictusLudusGame.resources.getCelestialGalaxyNameArray(),
-			new LineReader());
-		DataReader.ReadStarColorChart(DataReader.STAR_COLOR_CHART, VictusLudusGame.resources.getStarColorMap());
 
 		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_COSMOS);
 		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_ENTITIES);
@@ -68,6 +57,17 @@ public class DataReader {
 
 		DataReader.LoadSounds(DataReader.PATH_SOUNDS);
 		DataReader.LoadMusic(DataReader.PATH_MUSIC);
+	}
+
+	/** Loads data that may be dependent on the pre-load */
+	public static void PostLoad () {
+		DataReader.ReadAndLoadAll(DataReader.PATH_ENTITIES, VictusLudusGame.resources.getEntityHash(), new EntityReader());
+
+		DataReader
+			.SimpleReadAndLoad(DataReader.STAR_NAMES, VictusLudusGame.resources.getCelestialStarNameArray(), new LineReader());
+		DataReader.SimpleReadAndLoad(DataReader.GALAXY_NAMES, VictusLudusGame.resources.getCelestialGalaxyNameArray(),
+			new LineReader());
+		DataReader.ReadStarColorChart(DataReader.STAR_COLOR_CHART, VictusLudusGame.resources.getStarColorMap());
 	}
 
 	/**
@@ -141,7 +141,8 @@ public class DataReader {
 
 			StarColorTuple tuple = new StarColorTuple(
 				(int)((float)(starColorImage.getWidth() - i) / starColorImage.getWidth() * (maxColor - minColor)), color);
-			// System.err.println("added tuple: " + tuple.getTemperature() + " " + tuple.getColor());
+			// System.err.println("added tuple: " + tuple.getTemperature() + " " +
+// tuple.getColor());
 			starColorMap.add(tuple);
 		}
 

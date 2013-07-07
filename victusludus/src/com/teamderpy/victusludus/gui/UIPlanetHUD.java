@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.game.Game;
+import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.renderer.cosmos.CosmosRenderer;
 
@@ -67,6 +69,41 @@ public class UIPlanetHUD extends UI {
 			@Override
 			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
 				tooltipText.setText("Returns to the planet select");
+			}
+
+			@Override
+			public void exit (final InputEvent event, final float x, final float y, final int pointer, final Actor toActor) {
+				tooltipText.setText("");
+			}
+		});
+
+		/*********** PLAY */
+
+		final TextButton playButton = new TextButton("Play", this.skin);
+		tableContent.add(playButton).pad(UI.CELL_PADDING).left();
+		tableContent.row();
+
+		playButton.addListener(new ChangeListener() {
+			@Override
+			public void changed (final ChangeEvent event, final Actor actor) {
+				GameSettings requestedSettings = new GameSettings();
+
+				requestedSettings.setRequestedMapHeight(128);
+				requestedSettings.setRequestedMapWidth(128);
+				requestedSettings.setRequestedMapSmoothness(2.0F); // 0-10
+				requestedSettings.setRequestedMapRandomness(0.25F); // 0-1.5
+				requestedSettings.setRequestedMapScale(8F); // 1-12
+				requestedSettings.setRequestedMapPlateauFactor(0.2F); // 0-0.3
+
+				VictusLudusGame.engine.changeUI(null);
+				VictusLudusGame.engine.changeView(new Game(), requestedSettings);
+			}
+		});
+
+		playButton.addListener(new ClickListener() {
+			@Override
+			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
+				tooltipText.setText("Plays this planet");
 			}
 
 			@Override

@@ -41,7 +41,7 @@ public class CosmosRenderer {
 	/** A list of planets */
 	protected Array<PlanetImage> planetList;
 
-	/** The game. */
+	/** The cosmos. */
 	public Cosmos cosmos;
 
 	/**
