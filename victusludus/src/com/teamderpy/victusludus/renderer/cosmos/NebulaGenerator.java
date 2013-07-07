@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.teamderpy.victusludus.math.MatrixMath;
 import com.teamderpy.victusludus.math.heightmap.MidpointGenerator;
 
@@ -23,9 +24,9 @@ public class NebulaGenerator {
 	 * @param seed the seed to use when generating
 	 * @param width the requested width of the nebula
 	 * @param height the requested height of the nebula
-	 * @return
+	 * @return a texture region
 	 */
-	public static Texture createBackgroundNebula (final long seed, final int width, final int height) {
+	public static TextureRegion createBackgroundNebula (final long seed, final int width, final int height) {
 		Pixmap imageBuffer = new Pixmap(width / NebulaGenerator.SIZE_MODIFIER, height / NebulaGenerator.SIZE_MODIFIER,
 			Format.RGBA8888);
 		ByteBuffer imageBufferByteArray = imageBuffer.getPixels();
@@ -51,7 +52,10 @@ public class NebulaGenerator {
 			}
 		}
 
-		return new Texture(imageBuffer);
+		;
+
+		return new TextureRegion(new Texture(imageBuffer));
+
 	}
 
 	/**

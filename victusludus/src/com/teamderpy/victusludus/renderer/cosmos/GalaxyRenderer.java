@@ -7,7 +7,7 @@ import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 
 public class GalaxyRenderer implements IUniverseRenderer {
-	public static String BACKGROUND_PATH = "background/background_universe";
+	public static String BACKGROUND_PATH = "galaxy/background_universe";
 
 	private GameDimensions gameDimensions;
 	private Array<GalaxyImage> galaxyList;

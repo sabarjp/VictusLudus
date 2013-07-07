@@ -307,7 +307,8 @@ public class Star {
 
 	/**
 	 * A tick of time
-	 * @param deltaYearsPassed the amount of stellar time that has passed since the last tick, in years
+	 * @param deltaYearsPassed the amount of stellar time that has passed since
+	 *           the last tick, in years
 	 */
 	public void tick (final BigDecimal deltaYearsPassed) {
 		switch (this.starType) {
@@ -394,7 +395,8 @@ public class Star {
 	/**
 	 * Every star must start somewhere
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickDust (final BigDecimal delta) {
 		this.starType = EnumStarType.PROTOSTAR;
@@ -405,10 +407,12 @@ public class Star {
 	}
 
 	/**
-	 * The idea is that the star slowly progresses towards the main sequence. Note that very massive and very tiny stars should
-	 * fail. Planets will come into their own here.
+	 * The idea is that the star slowly progresses towards the main sequence.
+	 * Note that very massive and very tiny stars should fail. Planets will come
+	 * into their own here.
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickProtostar (final BigDecimal delta) {
 		BigDecimal endOfLife = this.calcTimeAsProtostar();
@@ -474,9 +478,11 @@ public class Star {
 	}
 
 	/**
-	 * The star basically just lives. The luminosity and temperature will increase slightly as hydrogen turns into helium.
+	 * The star basically just lives. The luminosity and temperature will
+	 * increase slightly as hydrogen turns into helium.
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickMainSequence (final BigDecimal delta) {
 		BigDecimal endOfLife = this.calcTimeAsMainSequence();
@@ -541,11 +547,13 @@ public class Star {
 	}
 
 	/**
-	 * A sub giant is a hydrogen-shell burning star on its way to being a normal giant. This is a rather short phase and basically
-	 * goes into the giant phase. The primary event here is a lowering of surface temperature but a massive increase in radius and
-	 * luminosity.
+	 * A sub giant is a hydrogen-shell burning star on its way to being a normal
+	 * giant. This is a rather short phase and basically goes into the giant
+	 * phase. The primary event here is a lowering of surface temperature but a
+	 * massive increase in radius and luminosity.
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickSubGiant (final BigDecimal delta) {
 		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsSubGiant());
@@ -607,10 +615,11 @@ public class Star {
 	}
 
 	/**
-	 * A giant is a low or intermediate mass star that is burning helium at a very fast rate. The star will become a white dwarf
-	 * pretty fast.
+	 * A giant is a low or intermediate mass star that is burning helium at a
+	 * very fast rate. The star will become a white dwarf pretty fast.
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickGiant (final BigDecimal delta) {
 		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsGiant());
@@ -658,7 +667,8 @@ public class Star {
 	/**
 	 * A super giant is a massive star that should burn out pretty fast
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickSuperGiant (final BigDecimal delta) {
 		BigDecimal endOfLife;
@@ -734,9 +744,11 @@ public class Star {
 	}
 
 	/**
-	 * A planetary nebula is pretty much an an explosion where a giant rapidly transitions to a white dwarf.
+	 * A planetary nebula is pretty much an an explosion where a giant rapidly
+	 * transitions to a white dwarf.
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickPlanetaryNebula (final BigDecimal delta) {
 		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsPlanetaryNebula());
@@ -790,9 +802,11 @@ public class Star {
 	}
 
 	/**
-	 * A super nova is a massive stellar explosion that will leave a neutron star or a black hole
+	 * A super nova is a massive stellar explosion that will leave a neutron star
+	 * or a black hole
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickSuperNova (final BigDecimal delta) {
 		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsSuperNova());
@@ -848,7 +862,8 @@ public class Star {
 	/**
 	 * A star made entirely of degenerate matter. Can collapse into a black hole.
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickNeutronStar (final BigDecimal delta) {
 		BigDecimal endOfLife;
@@ -921,7 +936,8 @@ public class Star {
 	/**
 	 * A black hole.
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickBlackHole (final BigDecimal delta) {
 		BigDecimal nextDate = this.age.add(delta);
@@ -931,9 +947,11 @@ public class Star {
 	}
 
 	/**
-	 * A blue dwarf is a red dwarf that will increase its surface temperature a bunch on the way to being a white dwarf.
+	 * A blue dwarf is a red dwarf that will increase its surface temperature a
+	 * bunch on the way to being a white dwarf.
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickBlueDwarf (final BigDecimal delta) {
 		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsBlueDwarf());
@@ -979,7 +997,8 @@ public class Star {
 	/**
 	 * A white dwarf undergoes no fusion and slowly decays
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickWhiteDwarf (final BigDecimal delta) {
 		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsWhiteDwarf());
@@ -1030,7 +1049,8 @@ public class Star {
 	/**
 	 * A black dwarf is pretty much a dead star
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	private void tickBlackDwarf (final BigDecimal delta) {
 		BigDecimal endOfLife = this.startedPhaseAge.add(this.calcTimeAsBlackDwarf());
@@ -1091,7 +1111,8 @@ public class Star {
 	}
 
 	/**
-	 * Calculates the radius of the star in meters using electron degenerate matter as a model
+	 * Calculates the radius of the star in meters using electron degenerate
+	 * matter as a model
 	 * 
 	 * @return the radius of the star in meters
 	 */
@@ -1102,7 +1123,8 @@ public class Star {
 	}
 
 	/**
-	 * Calculates the radius of the star in meters using electron degenerate matter as a model
+	 * Calculates the radius of the star in meters using electron degenerate
+	 * matter as a model
 	 * 
 	 * @return the radius of the star in meters
 	 */
@@ -1202,7 +1224,8 @@ public class Star {
 		float lowMassProbability = (1F - (this.parentGalaxy.getParentUniverse().getStarMassDistrubution() / 100F)) * 0.66F;
 		float mediumMassProbability = lowMassProbability * 0.55F;
 		float highMassProbability = (1F - lowMassProbability - mediumMassProbability) * 0.7F;
-		// float superMassProbability = (1F - lowMassProbability - mediumMassProbability) * 0.3F;
+		// float superMassProbability = (1F - lowMassProbability -
+// mediumMassProbability) * 0.3F;
 
 		float dice = VictusLudusGame.sharedRand.nextFloat();
 
@@ -1234,7 +1257,8 @@ public class Star {
 	}
 
 	/**
-	 * Calculates the luminosity of a white dwarf in watts from its current phase luminosity
+	 * Calculates the luminosity of a white dwarf in watts from its current phase
+	 * luminosity
 	 * 
 	 * @return the mass in kilograms
 	 */
@@ -1243,7 +1267,8 @@ public class Star {
 	}
 
 	/**
-	 * Calculates the luminosity of a neutron star in watts from its current phase luminosity
+	 * Calculates the luminosity of a neutron star in watts from its current
+	 * phase luminosity
 	 * 
 	 * @return the mass in kilograms
 	 */
@@ -1465,7 +1490,8 @@ public class Star {
 	}
 
 	/**
-	 * Returns the mass of the star after losing some to solar wind in the giant stage
+	 * Returns the mass of the star after losing some to solar wind in the giant
+	 * stage
 	 * 
 	 * @return the mass in kilograms
 	 */
@@ -1474,7 +1500,8 @@ public class Star {
 	}
 
 	/**
-	 * Returns the mass of the star after losing some to solar wind in the super giant stage
+	 * Returns the mass of the star after losing some to solar wind in the super
+	 * giant stage
 	 * 
 	 * @return the mass in kilograms
 	 */
@@ -1665,11 +1692,14 @@ public class Star {
 	public String toString () {
 		return "  Star type: " + this.starType + "\n" + "        age: " + Cosmology.getFormattedStellarAge(this.age) + "\n"
 			+ "       mass: " + this.mass + "  Solar " + this.mass.divide(Cosmology.SOLAR_MASS, Star.STELLAR_RND) + "\n"
-			+ " luminosity: " + this.luminosity + "  Solar " + this.luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND)
-			+ "\n" + "     radius: " + this.radius + "  Solar " + this.radius.divide(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND)
-			+ "\n" + "       temp: " + Math.round(this.surfaceTemperature.doubleValue()) + " K   " + this.getStarColorName() + "\n"
-			+ "      class: " + this.getSpectralClass() + "\n" + "    gravity: "
-			+ Cosmology.calculateGravity(this.mass, this.radius) + "\n";
+			+ " luminosity: " + this.luminosity + "  Solar " + this.getLuminositySols() + "\n" + "     radius: " + this.radius
+			+ "  Solar " + this.radius.divide(Cosmology.SOLAR_RADIUS, Star.STELLAR_RND) + "\n" + "       temp: "
+			+ Math.round(this.surfaceTemperature.doubleValue()) + " K   " + this.getStarColorName() + "\n" + "      class: "
+			+ this.getSpectralClass() + "\n" + "    gravity: " + Cosmology.calculateGravity(this.mass, this.radius) + "\n";
+	}
+
+	public BigDecimal getLuminositySols () {
+		return this.luminosity.divide(Cosmology.SOLAR_LUMINOSITY, Star.STELLAR_RND);
 	}
 
 	/**
@@ -1790,7 +1820,8 @@ public class Star {
 	 * Destroys all planets orbiting too close to the star
 	 * 
 	 * @param radius the radius around the star where to destroy planets
-	 * @param isCalcingHeatFactor whether or not to take into account heat affecting planets
+	 * @param isCalcingHeatFactor whether or not to take into account heat
+	 *           affecting planets
 	 */
 	private void destroyPlanetsTooClose (final BigDecimal radius, final boolean isCalcingHeatFactor) {
 		BigDecimal annihilateRadius = radius;
@@ -1839,7 +1870,8 @@ public class Star {
 	}
 
 	/**
-	 * Returns a number representing the scale of a star relative to an ordinary one
+	 * Returns a number representing the scale of a star relative to an ordinary
+	 * one. The value is constrained between 0.05 and 4.00
 	 * @return
 	 */
 	public double getRelativeScale () {
