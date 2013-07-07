@@ -63,6 +63,7 @@ public class VictusLudusGame implements ApplicationListener {
 	@Override
 	public void render () {
 		if (VictusLudusGame.engine.running) {
+			this.batch.setProjectionMatrix(this.camera.combined);
 			VictusLudusGame.engine.run(this.batch);
 		}
 

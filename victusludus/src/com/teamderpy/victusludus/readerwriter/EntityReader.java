@@ -7,6 +7,7 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
@@ -22,7 +23,9 @@ public class EntityReader implements IObjectReader {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.teamderpy.victusludus.readerwriter.IObjectReader#ReadAndLoad(java.lang.String, java.util.Map)
+	 * @see
+	 * com.teamderpy.victusludus.readerwriter.IObjectReader#ReadAndLoad(java.
+	 * lang.String, java.util.Map)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -200,8 +203,10 @@ public class EntityReader implements IObjectReader {
 										}
 									}
 
-									e.getAnimationHash().put(animationID,
-										BitmapHandler.LoadAnimationSheet("res/" + animationPath, 16, 1, firstFrame, lastFrame, speed));
+									e.getAnimationHash().put(
+										animationID,
+										BitmapHandler.LoadAnimationSheet(VictusLudusGame.resources.getTextureAtlasEntities(),
+											animationPath, 16, 1, firstFrame, lastFrame, speed));
 								} else {
 									System.out.println("graphicsLevel");
 									this.logError(f.path(), r, graphicsLevel);
@@ -306,11 +311,13 @@ public class EntityReader implements IObjectReader {
 		r.close();
 	}
 
-	/** Log error.
+	/**
+	 * Log error.
 	 * 
 	 * @param path the path
 	 * @param r the r
-	 * @param node the node */
+	 * @param node the node
+	 */
 	private void logError (final String path, final JLDLSerialReader r, final ReadData node) {
 		Gdx.app.log("severe", "entity in " + path + " on line " + r.getLineNumber() + ":\n\t"
 			+ " bad indentation or unknown keyword '" + node.getNode() + "' -> '" + node.getId() + ":" + node.getValue() + "'");

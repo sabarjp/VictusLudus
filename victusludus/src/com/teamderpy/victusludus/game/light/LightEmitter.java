@@ -135,10 +135,10 @@ public class LightEmitter extends EuclideanObject{
 		ScreenCoord sc = RenderUtil.worldCoordToScreenCoord(map.getGame(), this.getPos().getX(), this.getPos().getY(), this.getPos().getZ());
 
 		//center the light on the tile
-		sc.x = sc.x + map.getGame().getTileWidthS()/2;
+		sc.x = sc.x + map.getGame().getTileWidthScaled()/2;
 
 		//put the light at the correct height
-		sc.y = sc.y + map.getGame().getTileHeightS()/2;
+		sc.y = sc.y + map.getGame().getTileHeightScaled()/2;
 
 		double d1 = x-sc.x;
 		double d2 = 2*(y-sc.y);
