@@ -1,7 +1,7 @@
 
 cosmos_spritesheet.png
 format: RGBA8888
-filter: MipMapNearestNearest,MipMapNearestNearest
+filter: Nearest,Nearest
 repeat: none
 galaxy/background_universe
   rotate: false
@@ -83,7 +83,7 @@ galaxy/galaxy_spiral_sc
 
 cosmos_spritesheet2.png
 format: RGBA8888
-filter: MipMapNearestNearest,MipMapNearestNearest
+filter: Nearest,Nearest
 repeat: none
 planet/artificial
   rotate: false
@@ -284,7 +284,7 @@ planet/toxic
 
 cosmos_spritesheet3.png
 format: RGBA8888
-filter: MipMapNearestNearest,MipMapNearestNearest
+filter: Nearest,Nearest
 repeat: none
 star/star_black_dwarf
   rotate: false
@@ -457,7 +457,7 @@ star/star_wolf_rayet
 
 cosmos_spritesheet4.png
 format: RGBA8888
-filter: MipMapNearestNearest,MipMapNearestNearest
+filter: Nearest,Nearest
 repeat: none
 utility/spectrum_starcolor
   rotate: false

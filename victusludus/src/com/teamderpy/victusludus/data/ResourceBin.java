@@ -142,7 +142,7 @@ public class ResourceBin {
 	 */
 	public TextureAtlas getTextureAtlasCosmos () {
 		if (this.textureAtlasCosmos == null) {
-			this.textureAtlasCosmos = VictusLudusGame.engine.assetManager.get(DataReader.PATH_SPRITE_SHEETS_COSMOS,
+			this.textureAtlasCosmos = VictusLudusGame.engine.assetManager.get(DataLoader.PATH_SPRITE_SHEETS_COSMOS,
 				TextureAtlas.class);
 		}
 
@@ -156,7 +156,7 @@ public class ResourceBin {
 	 */
 	public TextureAtlas getTextureAtlasGUI () {
 		if (this.textureAtlasGUI == null) {
-			this.textureAtlasGUI = VictusLudusGame.engine.assetManager.get(DataReader.PATH_SPRITE_SHEETS_GUI, TextureAtlas.class);
+			this.textureAtlasGUI = VictusLudusGame.engine.assetManager.get(DataLoader.PATH_SPRITE_SHEETS_GUI, TextureAtlas.class);
 		}
 
 		return this.textureAtlasGUI;
@@ -170,7 +170,7 @@ public class ResourceBin {
 	public TextureAtlas getTextureAtlasTiles () {
 		if (this.textureAtlasTiles == null) {
 			this.textureAtlasTiles = VictusLudusGame.engine.assetManager
-				.get(DataReader.PATH_SPRITE_SHEETS_TILES, TextureAtlas.class);
+				.get(DataLoader.PATH_SPRITE_SHEETS_TILES, TextureAtlas.class);
 		}
 
 		return this.textureAtlasTiles;
@@ -183,7 +183,7 @@ public class ResourceBin {
 	 */
 	public TextureAtlas getTextureAtlasEntities () {
 		if (this.textureAtlasEntities == null) {
-			this.textureAtlasEntities = VictusLudusGame.engine.assetManager.get(DataReader.PATH_SPRITE_SHEETS_ENTITIES,
+			this.textureAtlasEntities = VictusLudusGame.engine.assetManager.get(DataLoader.PATH_SPRITE_SHEETS_ENTITIES,
 				TextureAtlas.class);
 		}
 

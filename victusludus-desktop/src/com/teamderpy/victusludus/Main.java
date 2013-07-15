@@ -32,8 +32,8 @@ public class Main {
 			settings.combineSubdirectories = false;
 			settings.paddingX = 2;
 			settings.paddingY = 2;
-			settings.filterMin = TextureFilter.MipMapNearestNearest;
-			settings.filterMag = TextureFilter.MipMapNearestNearest;
+			settings.filterMin = TextureFilter.Nearest;
+			settings.filterMag = TextureFilter.Nearest;
 			settings.forceSquareOutput = false;
 
 			TexturePacker2.process(settings, "../victusludus-sprites/cosmos", "../victusludus-android/assets/sprites/spritesheets",
@@ -42,19 +42,20 @@ public class Main {
 			TexturePacker2.process(settings, "../victusludus-sprites/entities",
 				"../victusludus-android/assets/sprites/spritesheets", "entities_spritesheet");
 
+			TexturePacker2.process(settings, "../victusludus-sprites/tiles", "../victusludus-android/assets/sprites/spritesheets",
+				"tiles_spritesheet");
+
 			settings.combineSubdirectories = true;
 
 			TexturePacker2.process(settings, "../victusludus-sprites/gui", "../victusludus-android/assets/sprites/spritesheets",
 				"gui_spritesheet");
-
-			TexturePacker2.process(settings, "../victusludus-sprites/tiles", "../victusludus-android/assets/sprites/spritesheets",
-				"tiles_spritesheet");
 		}
 
 		/*
 		 * create directory listings
 		 */
 		if (Main.IS_DEVELOPMENT_MODE) {
+
 			File dir = new File("../victusludus-android/assets/");
 
 			Main.createFileList(dir);
@@ -69,6 +70,7 @@ public class Main {
 		cfg.width = 800;
 		cfg.height = 600;
 		cfg.resizable = false;
+		cfg.vSyncEnabled = true;
 
 		new LwjglApplication(new VictusLudusGame(), cfg);
 	}

@@ -88,8 +88,8 @@ public class UIPlanetHUD extends UI {
 			public void changed (final ChangeEvent event, final Actor actor) {
 				GameSettings requestedSettings = new GameSettings();
 
-				requestedSettings.setRequestedMapHeight(128);
-				requestedSettings.setRequestedMapWidth(128);
+				requestedSettings.setRequestedMapHeight(5);
+				requestedSettings.setRequestedMapWidth(5);
 				requestedSettings.setRequestedMapSmoothness(2.0F); // 0-10
 				requestedSettings.setRequestedMapRandomness(0.25F); // 0-1.5
 				requestedSettings.setRequestedMapScale(8F); // 1-12

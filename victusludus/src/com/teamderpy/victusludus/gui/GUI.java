@@ -1,19 +1,15 @@
 
 package com.teamderpy.victusludus.gui;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.data.VFile;
 import com.teamderpy.victusludus.data.resources.FontFile;
-import com.teamderpy.victusludus.gui.element.GUIElement;
 
 /**
  * The Class GUI.
@@ -79,185 +75,6 @@ public abstract class GUI {
 
 	/** default font */
 	public static BitmapFont defaultFont = new BitmapFont(true);
-
-	/** The background color. */
-	protected Color backgroundColor = new Color(0, 0, 0, 1);
-
-	/** The element list. */
-	protected ArrayList<GUIElement> elementList = null;
-
-	/** The menu list. */
-	protected ArrayList<GUIElement> menuList = null;
-
-	/** The current element. */
-	protected int currentElement = -1;
-
-	/** The next element y pos. */
-	protected int nextElementYPos = 0;
-
-	/** The element spacing. */
-	protected int elementSpacing = 0;
-
-	/** The is listening. */
-	protected boolean isListening = false;
-
-	/** The is disabled. */
-	protected boolean isDisabled = false;
-
-	/** The x. */
-	protected int x = -1;
-
-	/** The y. */
-	protected int y = -1;
-
-	/** The width. */
-	protected int width = -1;
-
-	/** The height. */
-	protected int height = -1;
-
-	/**
-	 * Instantiates a new gui.
-	 */
-	protected GUI () {
-		this.x = 0;
-		this.y = 0;
-
-		this.width = VictusLudusGame.engine.X_RESOLUTION();
-		this.height = VictusLudusGame.engine.Y_RESOLUTION();
-
-		this.elementList = new ArrayList<GUIElement>();
-
-		this.create();
-		this.registerListeners();
-		this.positionElements();
-	}
-
-	/**
-	 * Recreate.
-	 */
-	protected void recreate () {
-		this.unregisterListeners();
-
-		this.x = 0;
-		this.y = 0;
-
-		this.width = VictusLudusGame.engine.X_RESOLUTION();
-		this.height = VictusLudusGame.engine.Y_RESOLUTION();
-
-		this.elementList = new ArrayList<GUIElement>();
-
-		this.create();
-		this.registerListeners();
-		this.positionElements();
-	}
-
-	/**
-	 * Render.
-	 * @param deltaT
-	 * @param batch
-	 */
-	public void render (final SpriteBatch batch, final float deltaT) {
-		if (this.backgroundColor != null) {
-			// EasyGL.drawRect(batch, this.backgroundColor, 0, 0, this.width, this.height);
-		}
-
-		for (GUIElement i : this.elementList) {
-			i.render(batch, deltaT);
-		}
-	}
-
-	/**
-	 * Tick.
-	 */
-	public void tick () {
-		for (GUIElement i : this.elementList) {
-			i.tick();
-		}
-	}
-
-	/**
-	 * Unregister listeners.
-	 */
-	public abstract void unregisterListeners ();
-
-	/**
-	 * Register listeners.
-	 */
-	public abstract void registerListeners ();
-
-	/**
-	 * Adds the element item.
-	 * 
-	 * @param elem the elem
-	 */
-	public void addElementItem (final GUIElement elem) {
-		this.elementList.add(elem);
-	}
-
-	/**
-	 * Adds the menu item.
-	 * 
-	 * @param elem the elem
-	 */
-	public void addMenuItem (final GUIElement elem) {
-		this.menuList.add(elem);
-	}
-
-	/**
-	 * Next element pos increment.
-	 * 
-	 * @param elem the elem
-	 */
-	protected void nextElementPosIncrement (final GUIElement elem) {
-		this.nextElementYPos = this.nextElementYPos + elem.getHeight() + this.elementSpacing;
-	}
-
-	/**
-	 * Next element pos increment.
-	 * 
-	 * @param height the height
-	 */
-	protected void nextElementPosIncrement (final int height) {
-		this.nextElementYPos = this.nextElementYPos + height + this.elementSpacing;
-	}
-
-	/**
-	 * Gets the next element pos.
-	 * 
-	 * @return the next element pos
-	 */
-	protected int getNextElementPos () {
-		return this.nextElementYPos;
-	}
-
-	/**
-	 * Sets the next element pos.
-	 * 
-	 * @param pos the new next element pos
-	 */
-	protected void setNextElementPos (final int pos) {
-		this.nextElementYPos = pos;
-	}
-
-	/**
-	 * Sets the element spacing.
-	 * 
-	 * @param spacing the new element spacing
-	 */
-	protected void setElementSpacing (final int spacing) {
-		this.elementSpacing = spacing;
-	}
-
-	/**
-	 * Creates the.
-	 */
-	protected abstract void create ();
-
-	/**
-	 * Position elements.
-	 */
-	protected abstract void positionElements ();
 
 	/**
 	 * Reload fonts.
@@ -328,54 +145,6 @@ public abstract class GUI {
 	 */
 	public static BitmapFont fetchFontL (final String fontId) {
 		return VictusLudusGame.resources.getFontHash().get(fontId).getFontLarge();
-	}
-
-	/**
-	 * Unregister listening children.
-	 */
-	protected void unregisterListeningChildren () {
-		for (GUIElement e : this.elementList) {
-			e.unregisterListeners();
-		}
-	}
-
-	/**
-	 * Checks if is disabled.
-	 * 
-	 * @return true, if is disabled
-	 */
-	public boolean isDisabled () {
-		return this.isDisabled;
-	}
-
-	/**
-	 * Sets the disabled.
-	 * 
-	 * @param isDisabled the new disabled
-	 */
-	public void setDisabled (final boolean isDisabled) {
-		this.isDisabled = isDisabled;
-		for (GUIElement e : this.elementList) {
-			e.setDisabled(isDisabled);
-		}
-	}
-
-	/**
-	 * Gets the background color.
-	 * 
-	 * @return the background color
-	 */
-	public Color getBackgroundColor () {
-		return this.backgroundColor;
-	}
-
-	/**
-	 * Sets the background color.
-	 * 
-	 * @param backgroundColor the new background color
-	 */
-	public void setBackgroundColor (final Color backgroundColor) {
-		this.backgroundColor = backgroundColor;
 	}
 
 	/**

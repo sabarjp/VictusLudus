@@ -7,8 +7,10 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.teamderpy.victusludus.data.ResourceBin;
 import com.teamderpy.victusludus.engine.Engine;
 import com.teamderpy.victusludus.engine.graphics.EasyGL;
@@ -28,8 +30,11 @@ public class VictusLudusGame implements ApplicationListener {
 	/** Global resource bin which holds hashes against dynamically loaded content */
 	public static ResourceBin resources = new ResourceBin();
 
-	private OrthographicCamera camera;
-	private SpriteBatch batch;
+	private OrthographicCamera ocamera;
+	private PerspectiveCamera pcamera;
+
+	private SpriteBatch spriteBatch;
+	private ModelBatch modelBatch;
 
 	/** Whether or not the resources have been loaded */
 	private boolean isLoaded;
@@ -44,27 +49,33 @@ public class VictusLudusGame implements ApplicationListener {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
-		this.camera = new OrthographicCamera();
-		this.camera.setToOrtho(true, w, h);
-		this.camera.update();
+		this.ocamera = new OrthographicCamera(w, h);
+		this.ocamera.setToOrtho(true, w, h);
+		this.ocamera.update();
 
-		this.batch = new SpriteBatch();
-		this.batch.disableBlending();
+		this.pcamera = new PerspectiveCamera(67, w, h);
+		this.pcamera.near = 0.1f;
+		this.pcamera.far = 1000f;
+		this.pcamera.update();
 
-		VictusLudusGame.engine = new Engine(this.camera);
+		this.spriteBatch = new SpriteBatch();
+		this.spriteBatch.disableBlending();
+		this.modelBatch = new ModelBatch();
+
+		VictusLudusGame.engine = new Engine(this.ocamera, this.pcamera);
 		VictusLudusGame.engine.initializeBegin();
 	}
 
 	@Override
 	public void dispose () {
-		this.batch.dispose();
+		this.spriteBatch.dispose();
 	}
 
 	@Override
 	public void render () {
 		if (VictusLudusGame.engine.running) {
-			this.batch.setProjectionMatrix(this.camera.combined);
-			VictusLudusGame.engine.run(this.batch);
+			this.spriteBatch.setProjectionMatrix(this.ocamera.combined);
+			VictusLudusGame.engine.run(this.spriteBatch, this.modelBatch);
 		}
 
 		// check if our assets are loaded
@@ -83,29 +94,31 @@ public class VictusLudusGame implements ApplicationListener {
 				int loaded = VictusLudusGame.engine.assetManager.getLoadedAssets();
 
 				// display progress here
-				System.out.println("loaded " + progress * 100.0 + "%" + "  queued: " + queued + "  loaded: " + loaded);
+				System.out.println("loaded " + (int)(progress * 100.0) + "%" + "  queued: " + queued + "  loaded: " + loaded);
 
 				final int loadingBarLength = VictusLudusGame.engine.X_RESOLUTION() / 3;
 				final int loadingBarHeight = 20;
 				final int loadingBarX = VictusLudusGame.engine.X_RESOLUTION() / 3;
 				final int loadingBarY = VictusLudusGame.engine.Y_RESOLUTION() / 2 - loadingBarHeight / 2;
 
-				this.batch.setProjectionMatrix(this.camera.combined);
-				this.batch.begin();
-				this.batch.enableBlending();
+				this.spriteBatch.setProjectionMatrix(this.ocamera.combined);
+				this.spriteBatch.begin();
+				this.spriteBatch.enableBlending();
 
 				GUI.defaultFont.setColor(Color.BLACK);
-				GUI.defaultFont.draw(this.batch, "Loading...", loadingBarX, loadingBarY - GUI.defaultFont.getLineHeight());
+				GUI.defaultFont.draw(this.spriteBatch, "Loading...", loadingBarX, loadingBarY - GUI.defaultFont.getLineHeight());
 
-				this.batch.disableBlending();
+				this.spriteBatch.disableBlending();
 
 				Texture loadingBarBackground = EasyGL.getPixelTexture(Color.BLACK, 1, 1);
 				Texture loadingBarForeground = EasyGL.getPixelTexture(Color.CYAN, 1, 1);
 
-				this.batch.draw(loadingBarBackground, loadingBarX - 2, loadingBarY - 2, loadingBarLength + 4, loadingBarHeight + 4);
-				this.batch.draw(loadingBarForeground, loadingBarX, loadingBarY, (int)(loadingBarLength * progress), loadingBarHeight);
+				this.spriteBatch.draw(loadingBarBackground, loadingBarX - 2, loadingBarY - 2, loadingBarLength + 4,
+					loadingBarHeight + 4);
+				this.spriteBatch.draw(loadingBarForeground, loadingBarX, loadingBarY, (int)(loadingBarLength * progress),
+					loadingBarHeight);
 
-				this.batch.end();
+				this.spriteBatch.end();
 
 				loadingBarBackground.dispose();
 				loadingBarForeground.dispose();

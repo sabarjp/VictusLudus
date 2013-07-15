@@ -46,7 +46,7 @@ public final class EasyGL {
 	}
 
 	/**
-	 * Sets the open gl viewport, which will cover the entire disply area
+	 * Sets the open gl viewport, which will cover the entire display area
 	 */
 	public static void setViewport () {
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

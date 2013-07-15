@@ -1,7 +1,7 @@
 
 entities_spritesheet.png
 format: RGBA8888
-filter: MipMapNearestNearest,MipMapNearestNearest
+filter: Nearest,Nearest
 repeat: none
 alveolus
   rotate: false

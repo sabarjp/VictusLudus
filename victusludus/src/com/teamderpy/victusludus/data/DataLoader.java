@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
 import com.teamderpy.victusludus.data.resources.StarColorTuple;
@@ -22,8 +23,10 @@ import com.teamderpy.victusludus.readerwriter.IObjectReader;
 import com.teamderpy.victusludus.readerwriter.ISimpleReader;
 import com.teamderpy.victusludus.readerwriter.LineReader;
 
-public class DataReader {
+public class DataLoader {
 	public static final String PATH_MATERIALS = "material/";
+
+	public static final String PATH_3D = "meshes/";
 
 	public static final String PATH_CREATURES = "creatures/";
 
@@ -48,26 +51,49 @@ public class DataReader {
 
 	/** Pre-loads a bunch of data */
 	public static void PreLoad () {
-		DataReader.ReadAndLoadAll(DataReader.PATH_FONTS, VictusLudusGame.resources.getFontHash(), new FontReader());
+		DataLoader.ReadAndLoadAll(DataLoader.PATH_FONTS, VictusLudusGame.resources.getFontHash(), new FontReader());
 
-		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_COSMOS);
-		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_ENTITIES);
-		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_GUI);
-		DataReader.LoadSpriteSheets(DataReader.PATH_SPRITE_SHEETS_TILES);
+		DataLoader.LoadSpriteSheets(DataLoader.PATH_SPRITE_SHEETS_COSMOS);
+		DataLoader.LoadSpriteSheets(DataLoader.PATH_SPRITE_SHEETS_ENTITIES);
+		DataLoader.LoadSpriteSheets(DataLoader.PATH_SPRITE_SHEETS_GUI);
+		DataLoader.LoadSpriteSheets(DataLoader.PATH_SPRITE_SHEETS_TILES);
 
-		DataReader.LoadSounds(DataReader.PATH_SOUNDS);
-		DataReader.LoadMusic(DataReader.PATH_MUSIC);
+		DataLoader.LoadSounds(DataLoader.PATH_SOUNDS);
+		DataLoader.LoadMusic(DataLoader.PATH_MUSIC);
+
+		DataLoader.Load3DMeshes(DataLoader.PATH_3D);
 	}
 
 	/** Loads data that may be dependent on the pre-load */
 	public static void PostLoad () {
-		DataReader.ReadAndLoadAll(DataReader.PATH_ENTITIES, VictusLudusGame.resources.getEntityHash(), new EntityReader());
+		DataLoader.ReadAndLoadAll(DataLoader.PATH_ENTITIES, VictusLudusGame.resources.getEntityHash(), new EntityReader());
 
-		DataReader
-			.SimpleReadAndLoad(DataReader.STAR_NAMES, VictusLudusGame.resources.getCelestialStarNameArray(), new LineReader());
-		DataReader.SimpleReadAndLoad(DataReader.GALAXY_NAMES, VictusLudusGame.resources.getCelestialGalaxyNameArray(),
+		DataLoader
+			.SimpleReadAndLoad(DataLoader.STAR_NAMES, VictusLudusGame.resources.getCelestialStarNameArray(), new LineReader());
+		DataLoader.SimpleReadAndLoad(DataLoader.GALAXY_NAMES, VictusLudusGame.resources.getCelestialGalaxyNameArray(),
 			new LineReader());
-		DataReader.ReadStarColorChart(DataReader.STAR_COLOR_CHART, VictusLudusGame.resources.getStarColorMap());
+		DataLoader.ReadStarColorChart(DataLoader.STAR_COLOR_CHART, VictusLudusGame.resources.getStarColorMap());
+	}
+
+	/**
+	 * Loads the 3d meshes located at path
+	 * 
+	 * @param path
+	 */
+	private static void Load3DMeshes (final String path) {
+		AssetManager assetManager = VictusLudusGame.engine.assetManager;
+
+		FileHandle meshFolder = VFile.getFileHandle(path);
+		FileHandle[] files = VFile.getFiles(meshFolder);
+
+		for (FileHandle file : files) {
+			if (file.exists()
+				&& (file.extension().toLowerCase().equals("obj") || file.extension().toLowerCase().equals("g3db") || file.extension()
+					.toLowerCase().equals("g3dj"))) {
+				assetManager.load(file.path(), Model.class);
+				System.out.println("queueing " + file.path());
+			}
+		}
 	}
 
 	/**
@@ -79,6 +105,7 @@ public class DataReader {
 		AssetManager assetManager = VictusLudusGame.engine.assetManager;
 
 		assetManager.load(path, TextureAtlas.class);
+		System.out.println("queueing " + path);
 	}
 
 	/**
@@ -95,7 +122,7 @@ public class DataReader {
 		for (FileHandle file : files) {
 			if (file.exists() && file.extension().toLowerCase().equals("wav")) {
 				assetManager.load(file.path(), Sound.class);
-				System.err.println("loaded sound");
+				System.out.println("queueing " + file.path());
 			}
 		}
 	}
@@ -114,7 +141,7 @@ public class DataReader {
 		for (FileHandle file : files) {
 			if (file.exists() && file.extension().toLowerCase().equals("wav")) {
 				assetManager.load(file.path(), Music.class);
-				System.err.println("loaded music");
+				System.out.println("queueing " + file.path());
 			}
 		}
 	}

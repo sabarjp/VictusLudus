@@ -4,6 +4,7 @@ package com.teamderpy.victusludus.game.cosmos;
 import java.math.BigDecimal;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.ISettings;
@@ -87,17 +88,19 @@ public class Cosmos implements IView, MouseListener {
 	}
 
 	@Override
-	public void render (final SpriteBatch batch, final float deltaT) {
+	public void render (final SpriteBatch spriteBatch, final ModelBatch modelBatch, final float deltaT) {
 		if (this.isRunning) {
-			this.cosmosRenderer.render(batch, deltaT);
+			spriteBatch.begin();
+			this.cosmosRenderer.render(spriteBatch, deltaT);
 			if (this.currentUI != null) {
-				this.currentUI.render(batch, deltaT);
+				this.currentUI.render(spriteBatch, deltaT);
 			}
+			spriteBatch.end();
 		}
 	}
 
 	@Override
-	public void tick () {
+	public void tick (final float deltaTime) {
 		if (this.quitSignal) {
 			VictusLudusGame.engine.terminateView();
 		}

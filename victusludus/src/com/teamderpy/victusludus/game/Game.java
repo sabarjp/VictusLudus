@@ -7,8 +7,17 @@ import java.util.Vector;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.OrderedMap;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.data.VFile;
 import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.ISettings;
@@ -18,8 +27,8 @@ import com.teamderpy.victusludus.engine.graphics.GameCamera;
 import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.map.Map;
-import com.teamderpy.victusludus.game.tile.GameTile;
 import com.teamderpy.victusludus.gui.UI;
+import com.teamderpy.victusludus.gui.UIGameHUD;
 import com.teamderpy.victusludus.gui.eventhandler.KeyboardListener;
 import com.teamderpy.victusludus.gui.eventhandler.MouseListener;
 import com.teamderpy.victusludus.gui.eventhandler.event.EnumRenderEventType;
@@ -29,16 +38,15 @@ import com.teamderpy.victusludus.gui.eventhandler.event.KeyUpEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.RenderEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
+import com.teamderpy.victusludus.math.VMath;
 import com.teamderpy.victusludus.renderer.game.GameRenderer;
 import com.teamderpy.victusludus.renderer.game.RenderUtil;
 
 /** The Class Game. */
 public class Game implements IView, KeyboardListener, MouseListener {
-	// size of the viewable field
 	/** The current depth. */
 	private int currentDepth = 0;
 
-	// build mode variables
 	/** The build mode object id. */
 	private String buildModeObjectID;
 
@@ -48,15 +56,19 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	/** The build begin coord. */
 	private WorldCoordSelection buildBeginCoord;
 
-	// camera offsets
-	/** The game camera. */
+	/** The game camera which holds camera offsets */
 	private GameCamera gameCamera;
+
+	/** Inherited from the game engine */
+	private PerspectiveCamera pcamera;
+
+	/** The input controller to move around the camera */
+	private FirstPersonCameraController camController;
 
 	/** The game dimensions. */
 	private GameDimensions gameDimensions;
 
-	// edit tiles or walls
-	/** The interaction mode. */
+	/** The interaction mode for editing stuff */
 	private byte interactionMode = EnumInteractionMode.MODE_QUERY_TILE;
 
 	/** The map. */
@@ -68,9 +80,20 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	/** The game renderer. */
 	private GameRenderer gameRenderer;
 
-	// right-click tracking for scrolling map
-	/** The holding down right click. */
+	/** used with map scrolling */
 	private boolean holdingDownRightClick = false;
+
+	/** the time of the day, from 0 to 24 */
+	private float hour;
+
+	/** the tint of the light from the sun */
+	private OrderedMap<Float, Color> solarTintMap = new OrderedMap<Float, Color>();
+
+	/** the lights */
+	private Lights lights;
+
+	/** the sun light */
+	private DirectionalLight sunLight;
 
 	/** The right click x. */
 	private int rightClickX = 0;
@@ -97,13 +120,37 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			throw new GameException();
 		}
 
+		/* camera */
+		this.setPcamera(VictusLudusGame.engine.pcamera);
+		// this.camController = new CameraInputController(this.pcamera);
+		this.camController = new FirstPersonCameraController(this.pcamera);
+		VictusLudusGame.engine.inputMultiplexer.addProcessor(this.camController);
+
 		GameSettings requestedSettings = (GameSettings)settings;
 
-		this.ambientLightColor = Color.WHITE;
+		/* light */
+		this.solarTintMap.put(24.00F, new Color(0.13F, 0.04F, 0.27F, 1));
+		this.solarTintMap.put(22.00F, new Color(0.18F, 0.11F, 0.47F, 1));
+		this.solarTintMap.put(19.00F, new Color(0.83F, 0.41F, 0.14F, 1));
+		this.solarTintMap.put(17.00F, new Color(0.91F, 0.89F, 0.67F, 1));
+		this.solarTintMap.put(12.00F, new Color(1.00F, 0.99F, 0.99F, 1));
+		this.solarTintMap.put(08.00F, new Color(0.91F, 0.89F, 0.67F, 1));
+		this.solarTintMap.put(07.00F, new Color(0.95F, 0.74F, 0.24F, 1));
+		this.solarTintMap.put(05.00F, new Color(0.18F, 0.11F, 0.47F, 1));
+		this.solarTintMap.put(00.00F, new Color(0.13F, 0.04F, 0.27F, 1));
+
+		this.hour = 0f;
+		this.ambientLightColor = this.getSunlightColor();
+
+		this.lights = new Lights();
+		this.sunLight = new DirectionalLight().set(this.ambientLightColor, 0, -1, 0);
+		this.lights.add(this.sunLight);
+
+		this.setLights(this.ambientLightColor);
 
 		this.gameDimensions = new GameDimensions();
 
-		// setup game map
+		/* setup game dimensions */
 		this.gameDimensions.setWidth(VictusLudusGame.engine.X_RESOLUTION());
 		this.gameDimensions.setHeight(VictusLudusGame.engine.Y_RESOLUTION());
 		this.gameDimensions.setRenderWidth(VictusLudusGame.engine.X_RESOLUTION());
@@ -111,32 +158,74 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 		this.registerListeners();
 
-		this.map = new Map(requestedSettings, this);
+		/* create map */
+
+		/*
+		 * TextureRegion texture =
+		 * VictusLudusGame.resources.getTextureAtlasTiles().findRegion("tiles");
+		 */
+		TextureRegion texture = new TextureRegion(new Texture(VFile.getFileHandle("meshes/tiles.png")));
+
+		this.map = new Map(requestedSettings, texture);
 		this.currentDepth = this.map.getHighestPoint() - 1;
 
-		// setup GUI
-		// this.changeGUI(new com.teamderpy.victusludus.gui.GUIGameHUD(this));
-		// ((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
+		/* setup GUI */
+		this.changeUI(new UIGameHUD());
+		((UIGameHUD)this.currentUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 
+		/* setup the camera */
 		this.gameCamera = new GameCamera();
 
-		// center camera
+		/* center camera */
 		this.gameCamera.setOffsetX(this.gameDimensions.getWidth() / 2);
 
+		float camX = this.map.voxelsX / 2f;
+		float camZ = this.map.voxelsZ / 2f;
+		float camY = this.map.getHighest(camX, camZ) + 1.5f;
+		this.pcamera.position.set(camX, camY, camZ);
+
+		/* the game renderer */
 		this.gameRenderer = new GameRenderer(this);
 
 		this.isRunning = true;
 	}
 
-	/** Render. */
 	@Override
-	public void render (final SpriteBatch batch, final float deltaT) {
+	public void render (final SpriteBatch spriteBatch, final ModelBatch modelBatch, final float deltaT) {
 		if (this.isRunning) {
-			this.gameRenderer.renderGameLayer(batch, deltaT, this.map, this.currentDepth);
+			this.gameRenderer.render(spriteBatch, modelBatch, deltaT);
+
+			this.camController.update();
+			System.out.println(this.pcamera.position);
+			System.out.println(this.pcamera.direction);
 
 			// UI
 			if (this.currentUI != null) {
-				this.currentUI.render(batch, deltaT);
+				this.currentUI.render(spriteBatch, deltaT);
+			}
+		}
+	}
+
+	@Override
+	public void tick (final float deltaTime) {
+		if (this.quitSignal) {
+			VictusLudusGame.engine.terminateView();
+		} else if (this.isRunning) {
+			/* change the clock */
+			this.hour += deltaTime;
+
+			if (this.hour > 24f) {
+				this.hour -= 24f;
+			}
+
+			((UIGameHUD)this.currentUI).setCurrentTimeText(Float.toString(this.hour));
+
+			this.ambientLightColor = this.getSunlightColor();
+			this.setLights(this.ambientLightColor);
+
+			/* beware of concurrent modification! */
+			for (int i = 0; i < this.map.getEntities().size(); i++) {
+				this.map.getEntities().get(i).tick();
 			}
 		}
 	}
@@ -220,13 +309,17 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		return this.gameDimensions;
 	}
 
+	public UI getCurrentUI () {
+		return this.currentUI;
+	}
+
 	/** Increase depth. */
 	private void increaseDepth () {
 		if (this.currentDepth < this.map.getDepth()) {
 			this.currentDepth++;
 		}
 
-		// ((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
+		((UIGameHUD)this.currentUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 		VictusLudusGame.engine.inputPoller.forceMouseMove();
 
 		VictusLudusGame.engine.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.CHANGE_DEPTH, this));
@@ -238,29 +331,10 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			this.currentDepth--;
 		}
 
-		// ((GUIGameHUD)this.currentGUI).setCurrentDepthText(Integer.toString(this.currentDepth));
+		((UIGameHUD)this.currentUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 		VictusLudusGame.engine.inputPoller.forceMouseMove();
 
 		VictusLudusGame.engine.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.CHANGE_DEPTH, this));
-	}
-
-	/** Tick. */
-	@Override
-	public void tick () {
-		if (this.quitSignal) {
-			VictusLudusGame.engine.terminateView();
-		} else if (this.isRunning) {
-			// beware of concurrent modification!
-			for (int i = 0; i < this.map.getEntities().size(); i++) {
-				this.map.getEntities().get(i).tick();
-			}
-
-			// display some debug stuff
-			// ((GUIGameHUD)this.currentGUI).setDebugText("Entities: " +
-// this.map.getEntities().size() + "    GameH: "
-			// + this.getGameDimensions().getHeight() + " GameW: " +
-// this.getGameDimensions().getWidth());
-		}
 	}
 
 	@Override
@@ -285,14 +359,16 @@ public class Game implements IView, KeyboardListener, MouseListener {
 						WorldCoordSelection temp = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(),
 							this.currentDepth, false);
 
-						if (temp.x >= 0 && temp.y >= 0) {
-							if (temp.x < this.map.getLayer(this.currentDepth).length
-								&& temp.y < this.map.getLayer(this.currentDepth)[0].length) {
-								if (this.map.getLayer(this.currentDepth)[temp.x][temp.y] != null) {
-									this.buildBeginCoord = temp;
-								}
-							}
-						}
+						// if (temp.x >= 0 && temp.y >= 0) {
+						// if (temp.x < this.map.getLayer(this.currentDepth).length
+						// && temp.y < this.map.getLayer(this.currentDepth)[0].length)
+// {
+						// if (this.map.getLayer(this.currentDepth)[temp.x][temp.y] !=
+// null) {
+						// this.buildBeginCoord = temp;
+						// }
+						// }
+						// }
 
 						return true;
 					}
@@ -314,7 +390,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 							}
 
 							this.buildBeginCoord = null;
-							this.map.getTileOverlayList().clear();
 							return true;
 						}
 
@@ -322,14 +397,16 @@ public class Game implements IView, KeyboardListener, MouseListener {
 						WorldCoordSelection c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(),
 							this.currentDepth, false);
 
-						if (c.x >= 0 && c.y >= 0) {
-							if (c.x < this.map.getLayer(this.currentDepth).length
-								&& c.y < this.map.getLayer(this.currentDepth)[0].length) {
-								if (this.map.getLayer(this.currentDepth)[c.x][c.y] != null) {
-									this.build(this.getBuildModeObjectID(), c.x, c.y, this.currentDepth);
-								}
-							}
-						}
+						// if (c.x >= 0 && c.y >= 0) {
+						// if (c.x < this.map.getLayer(this.currentDepth).length
+						// && c.y < this.map.getLayer(this.currentDepth)[0].length) {
+						// if (this.map.getLayer(this.currentDepth)[c.x][c.y] != null)
+// {
+						// this.build(this.getBuildModeObjectID(), c.x, c.y,
+// this.currentDepth);
+						// }
+						// }
+						// }
 
 						return true;
 					}
@@ -355,7 +432,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	public void onMouseMove (final MouseEvent mouseEvent) {
 		// not moving the map
 		if (!this.holdingDownRightClick) {
-			this.map.getTileOverlayList().clear();
 			WorldCoordSelection c = null;
 
 			if (this.interactionMode == EnumInteractionMode.MODE_QUERY_TILE) {
@@ -375,8 +451,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 					if (temp != null) {
 						for (WorldCoord wc : temp) {
-							this.map.getTileOverlayList().add(
-								new GameTile(GameTile.ID_PATH_GOOD, wc.getX(), wc.getY(), wc.getZ(), this.map));
+
 						}
 					}
 
@@ -391,15 +466,16 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			}
 
 			if (c.x >= 0 && c.y >= 0) {
-				if (c.x < this.map.getLayer(this.currentDepth).length && c.y < this.map.getLayer(this.currentDepth)[0].length) {
-					// this.gameRenderer.setHighlightedTile(c);
-					this.map.getTileOverlayList().add(new GameTile(GameTile.ID_GRID, c.x, c.y, this.currentDepth, this.map));
-					// ((GUIGameHUD)this.currentGUI).setCurrentTileText(c.x + "," +
-// c.y);
-				} else {
-					this.map.getTileOverlayList().clear();
-					// this.gameRenderer.setHighlightedTile(null);
-				}
+				// if (c.x < this.map.getLayer(this.currentDepth).length && c.y <
+// this.map.getLayer(this.currentDepth)[0].length) {
+				// // this.gameRenderer.setHighlightedTile(c);
+				// this.map.getTileOverlayList().add(new GameTile(GameTile.ID_GRID,
+// c.x, c.y, this.currentDepth, this.map));
+				// ((UIGameHUD)this.currentUI).setCurrentTileText(c.x + "," + c.y);
+				// } else {
+				// this.map.getTileOverlayList().clear();
+				// // this.gameRenderer.setHighlightedTile(null);
+				// }
 			}
 			// map is being scrolled
 		} else {
@@ -478,7 +554,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	public void toggleMode () {
 		if (this.interactionMode == EnumInteractionMode.MODE_QUERY_TILE) {
 			this.interactionMode = EnumInteractionMode.MODE_QUERY_WALL;
-			this.map.getTileOverlayList().clear();
 			// this.gameRenderer.setHighlightedTile(null);
 		} else if (this.interactionMode == EnumInteractionMode.MODE_QUERY_WALL) {
 			this.interactionMode = EnumInteractionMode.MODE_QUERY_TILE;
@@ -500,7 +575,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	/** Enter build mode. */
 	public void enterBuildMode () {
 		this.interactionMode = EnumInteractionMode.MODE_BUILD;
-		this.map.getTileOverlayList().clear();
 		// this.gameRenderer.setHighlightedTile(null);
 		VictusLudusGame.engine.mousePointer.loadPointer(MousePointer.BUILD_CURSOR);
 	}
@@ -508,7 +582,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	/** Enter people mode. */
 	public void enterPeopleMode () {
 		this.interactionMode = EnumInteractionMode.MODE_PEOPLE;
-		this.map.getTileOverlayList().clear();
 		// this.gameRenderer.setHighlightedTile(null);
 		VictusLudusGame.engine.mousePointer.loadPointer(MousePointer.DEFAULT_CURSOR);
 	}
@@ -563,9 +636,10 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 		// Check if there is any room
 		for (int h = 1; h <= e.getHeight(); h++) {
-			if (this.map.getMap()[wc.getZ() + h][wc.getX()][wc.getY()] != null) {
-				return;
-			}
+			// if (this.map.getMap()[wc.getZ() + h][wc.getX()][wc.getY()] != null)
+// {
+			// return;
+			// }
 		}
 
 		// Check if we can build this on other buildables
@@ -666,5 +740,67 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	@Override
 	public boolean onKeyTyped (final KeyTypedEvent keyboardEvent) {
 		return false;
+	}
+
+	public PerspectiveCamera getPcamera () {
+		return this.pcamera;
+	}
+
+	public void setPcamera (final PerspectiveCamera pcamera) {
+		this.pcamera = pcamera;
+	}
+
+	/**
+	 * Sets the ambient light and the sun light to the specified color
+	 * 
+	 * @param color
+	 */
+	public void setLights (final Color color) {
+		this.lights.ambientLight.set(color);
+		this.sunLight.set(color, 0, -1, 0);
+	}
+
+	/**
+	 * Gets the color of the light of the sun which is based off the current time
+	 * of day
+	 * @return the color of the sun light
+	 */
+	public Color getSunlightColor () {
+		float data = this.hour;
+		float upperRange = -1;
+		Color upperValue = null;
+
+		float lowerRange = -1;
+		Color lowerValue = null;
+
+		for (Entry<Float, Color> e : this.solarTintMap.entries()) {
+			if (data <= upperRange && data >= e.key) {
+				lowerRange = e.key;
+				lowerValue = e.value;
+				break;
+			}
+
+			upperRange = e.key;
+			upperValue = e.value;
+		}
+
+		// normalize the gradient
+		float red, green, blue;
+
+		if (upperValue == null) {
+			red = lowerValue.r;
+			green = lowerValue.g;
+			blue = lowerValue.b;
+		} else {
+			red = VMath.linearInterpolation(lowerRange, upperRange, lowerValue.r, upperValue.r, data);
+			green = VMath.linearInterpolation(lowerRange, upperRange, lowerValue.g, upperValue.g, data);
+			blue = VMath.linearInterpolation(lowerRange, upperRange, lowerValue.b, upperValue.b, data);
+		}
+
+		return new Color(red, green, blue, 1.0f);
+	}
+
+	public Lights getLights () {
+		return this.lights;
 	}
 }

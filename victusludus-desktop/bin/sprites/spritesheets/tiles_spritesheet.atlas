@@ -1,61 +1,54 @@
 
 tiles_spritesheet.png
 format: RGBA8888
-filter: MipMapNearestNearest,MipMapNearestNearest
+filter: Nearest,Nearest
 repeat: none
-dirt
-  rotate: false
-  xy: 1, 69
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-grass
-  rotate: false
-  xy: 515, 583
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-hidden
-  rotate: false
-  xy: 1, 35
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-outline_full
-  rotate: false
-  xy: 35, 69
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-outline_top
-  rotate: false
-  xy: 515, 549
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-selection_invalid
-  rotate: false
-  xy: 549, 583
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-selection_valid
+ind/dirt
   rotate: false
   xy: 1, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-tiles
+ind/grass
   rotate: false
-  xy: 1, 103
-  size: 512, 512
-  orig: 512, 512
+  xy: 35, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ind/hidden
+  rotate: false
+  xy: 69, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ind/outline_full
+  rotate: false
+  xy: 103, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ind/outline_top
+  rotate: false
+  xy: 137, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ind/selection_invalid
+  rotate: false
+  xy: 171, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ind/selection_valid
+  rotate: false
+  xy: 205, 1
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1

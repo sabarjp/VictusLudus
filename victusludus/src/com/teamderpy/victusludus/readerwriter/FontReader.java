@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.teamderpy.victusludus.data.DataReader;
+import com.teamderpy.victusludus.data.DataLoader;
 import com.teamderpy.victusludus.data.resources.FontFile;
 
 /** The Class FontReader. */
@@ -42,7 +42,7 @@ public class FontReader implements IObjectReader {
 				}
 
 				else if (rd.getId().equalsIgnoreCase("file")) {
-					fnt.setPath(DataReader.PATH_FONTS + rd.getValue());
+					fnt.setPath(DataLoader.PATH_FONTS + rd.getValue());
 					enteredData = true;
 				}
 

@@ -6,10 +6,12 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
-import com.teamderpy.victusludus.data.DataReader;
+import com.teamderpy.victusludus.data.DataLoader;
 import com.teamderpy.victusludus.engine.graphics.EasyGL;
 import com.teamderpy.victusludus.game.cosmos.Universe;
 import com.teamderpy.victusludus.gui.GUI;
@@ -113,8 +115,11 @@ public class Engine implements ResizeListener {
 	/** shape renderer */
 	public ShapeRenderer shapeRenderer;
 
-	/** the camera */
-	public OrthographicCamera camera;
+	/** the orthographic camera */
+	public OrthographicCamera ocamera;
+
+	/** the perspective camera */
+	public PerspectiveCamera pcamera;
 
 	/** frames per second */
 	private int fps = 0;
@@ -127,8 +132,9 @@ public class Engine implements ResizeListener {
 	 * 
 	 * @param camera the orthographic camera
 	 */
-	public Engine (final OrthographicCamera camera) {
-		this.camera = camera;
+	public Engine (final OrthographicCamera camera, final PerspectiveCamera pcamera) {
+		this.ocamera = camera;
+		this.pcamera = pcamera;
 
 		this.shapeRenderer = new ShapeRenderer();
 		this.shapeRenderer.setProjectionMatrix(camera.combined);
@@ -190,10 +196,10 @@ public class Engine implements ResizeListener {
 					this.currentDisplayMode.isFullscreen);
 			}
 
-			this.camera.setToOrtho(true, this.X_RESOLUTION(), this.Y_RESOLUTION());
-			this.camera.update();
+			this.ocamera.setToOrtho(true, this.X_RESOLUTION(), this.Y_RESOLUTION());
+			this.ocamera.update();
 
-			this.shapeRenderer.setProjectionMatrix(this.camera.combined);
+			this.shapeRenderer.setProjectionMatrix(this.ocamera.combined);
 		}
 	}
 
@@ -306,7 +312,7 @@ public class Engine implements ResizeListener {
 
 		if (hfreq != -1) {
 
-			// set the display mode to the stored one only if it is available
+			/* set the display mode to the stored one only if it is available */
 			for (final DisplayMode d : Gdx.graphics.getDisplayModes()) {
 				if (d.width == xres && d.height == yres && d.bitsPerPixel == bdepth && d.refreshRate == hfreq) {
 					this.currentDisplayMode = new FlexibleDisplayMode(d.width, d.height, fscreen);
@@ -315,8 +321,10 @@ public class Engine implements ResizeListener {
 				}
 			}
 
-			// couldn't find settings, so just make a new window with specified
-// resolution
+			/*
+			 * couldn't find settings, so just make a new window with specified
+			 * resolution
+			 */
 			if (this.currentDisplayMode == null) {
 				this.currentDisplayMode = new FlexibleDisplayMode(xres, yres, false);
 			}
@@ -328,13 +336,13 @@ public class Engine implements ResizeListener {
 	private void loadPreResources () {
 		this.assetManager = new AssetManager();
 
-		// external data
-		DataReader.PreLoad();
+		/* external data */
+		DataLoader.PreLoad();
 		GUI.loadFonts();
 	}
 
 	private void loadPostResources () {
-		DataReader.PostLoad();
+		DataLoader.PostLoad();
 	}
 
 	/** Initiates the resolution for pixel density purposes */
@@ -363,13 +371,18 @@ public class Engine implements ResizeListener {
 	public void tickIfPermitted () {
 		final long interval = Time.getTimeNano() - this.lastTickTime;
 		final long timePerTick = (long)(1.0 / this.TARGET_TICKRATE * 1000000000.0);
+		float deltaTime = interval / 1000000000.0F;
 
-		// passed time must be at least the tick rate
+		/* passed time must be at least the tick rate */
 		if (interval >= timePerTick) {
 			int ticksBehind = (int)(interval / timePerTick);
 
 			while (ticksBehind-- > 0) {
-				this.tick();
+				if (ticksBehind > 1) {
+					deltaTime /= ticksBehind;
+				}
+
+				this.tick(deltaTime);
 				this.ticksSinceReset++;
 				this.lastTickTime += timePerTick;
 			}
@@ -377,7 +390,7 @@ public class Engine implements ResizeListener {
 	}
 
 	/** Render if permitted. */
-	public void renderIfPermitted (final SpriteBatch batch) {
+	public void renderIfPermitted (final SpriteBatch spriteBatch, final ModelBatch modelBatch) {
 		final long interval = Time.getTimeNano() - this.lastFrameDrawTime;
 		final long timePerDraw = (long)(1.0 / this.targetFramerate * 1000000000.0);
 		float deltaTime = interval / 1000000000.0F;
@@ -393,7 +406,7 @@ public class Engine implements ResizeListener {
 				deltaTime /= framesBehind;
 			}
 
-			this.render(batch, deltaTime);
+			this.render(spriteBatch, modelBatch, deltaTime);
 			this.framesSinceReset++;
 
 			framesBehind--;
@@ -434,43 +447,43 @@ public class Engine implements ResizeListener {
 		}
 	}
 
-	/** Tick */
-	public void tick () {
+	/**
+	 * Tick
+	 * @param deltaTime
+	 */
+	public void tick (final float deltaTime) {
 		if (this.currentView != null) {
-			this.currentView.tick();
+			this.currentView.tick(deltaTime);
 		}
 
 		this.tickCount++;
 	}
 
 	/** Render */
-	public void render (final SpriteBatch batch, final float deltaTime) {
+	public void render (final SpriteBatch spriteBatch, final ModelBatch modelBatch, final float deltaTime) {
 		EasyGL.setViewport();
-		EasyGL.clearScreen(1, 1, 1, 1);
+		EasyGL.clearScreen(0, 0, 0, 1);
 
-		batch.setProjectionMatrix(this.camera.combined);
-		batch.begin();
+		spriteBatch.setProjectionMatrix(this.ocamera.combined);
 
 		if (this.currentView != null) {
-			this.currentView.render(batch, deltaTime);
+			this.currentView.render(spriteBatch, modelBatch, deltaTime);
 		}
 
-		batch.end();
-
 		if (this.currentUI != null) {
-			this.currentUI.render(batch, deltaTime);
+			this.currentUI.render(spriteBatch, deltaTime);
 		}
 
 		this.lastFrameDrawTime = Time.getTime();
 	}
 
 	/** Run. */
-	public void run (final SpriteBatch batch) {
+	public void run (final SpriteBatch spriteBatch, final ModelBatch modelBatch) {
 		// rate of logic needs to be carefully controlled
 		this.tickIfPermitted();
 
 		// but draw as fast as possible
-		this.renderIfPermitted(batch);
+		this.renderIfPermitted(spriteBatch, modelBatch);
 
 		// send events as fast as possible
 		this.eventHandler.tick();
@@ -608,22 +621,26 @@ public class Engine implements ResizeListener {
 	 * @param height
 	 */
 	public void changeCamera (final int width, final int height) {
-		this.camera.setToOrtho(true, width, height);
-		this.camera.update();
+		this.ocamera.setToOrtho(true, width, height);
+		this.ocamera.update();
+		this.pcamera.viewportWidth = width;
+		this.pcamera.viewportHeight = height;
+		this.pcamera.update();
+		EasyGL.setViewport();
 	}
 
 	/*
 	 * Get the ratio of the display width to the camera width
 	 */
 	public float getCameraXScale () {
-		return this.X_RESOLUTION() / this.camera.viewportWidth;
+		return this.X_RESOLUTION() / this.ocamera.viewportWidth;
 	}
 
 	/*
 	 * Get the ratio of the display height to the camera height
 	 */
 	public float getCameraYScale () {
-		return this.Y_RESOLUTION() / this.camera.viewportHeight;
+		return this.Y_RESOLUTION() / this.ocamera.viewportHeight;
 	}
 
 	@Override

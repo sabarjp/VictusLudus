@@ -46,17 +46,9 @@ public class GameEntity extends EuclideanObject {
 
 		this.e = entity;
 
-		if (this.e.getLight() != null) {
-			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord()
-				.getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
-			this.entityLight.setBrightness(this.e.getLight().getBrightness());
-			this.map.getLightMap().add(this.entityLight);
-		}
-
 		this.creationTime = VictusLudusGame.engine.getTickCount();
 		this.movementVector = new Vec2i(0, 0);
 		this.playAnimation("idle");
-		this.map.getGame().getGameRenderer().getEntityRenderer().calculateCulledEntity(this, this.map.getGame().getCurrentDepth());
 	}
 
 	/**
@@ -72,17 +64,9 @@ public class GameEntity extends EuclideanObject {
 
 		this.e = VictusLudusGame.resources.getEntityHash().get(entityID);
 
-		if (this.e.getLight() != null) {
-			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord()
-				.getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
-			this.entityLight.setBrightness(this.e.getLight().getBrightness());
-			this.map.getLightMap().add(this.entityLight);
-		}
-
 		this.creationTime = VictusLudusGame.engine.getTickCount();
 		this.movementVector = new Vec2i(0, 0);
 		this.playAnimation("idle");
-		this.map.getGame().getGameRenderer().getEntityRenderer().calculateCulledEntity(this, this.map.getGame().getCurrentDepth());
 	}
 
 	/**
@@ -101,17 +85,9 @@ public class GameEntity extends EuclideanObject {
 
 		this.e = VictusLudusGame.resources.getEntityHash().get(entityID);
 
-		if (this.e.getLight() != null) {
-			this.entityLight = new LightEmitter(super.getWorldCoord().getX(), super.getWorldCoord().getY(), super.getWorldCoord()
-				.getZ(), this.e.getLight().getStrength(), this.e.getLight().getColor());
-			this.entityLight.setBrightness(this.e.getLight().getBrightness());
-			this.map.getLightMap().add(this.entityLight);
-		}
-
 		this.movementVector = new Vec2i(0, 0);
 		this.creationTime = VictusLudusGame.engine.getTickCount();
 		this.playAnimation("idle");
-		this.map.getGame().getGameRenderer().getEntityRenderer().calculateCulledEntity(this, this.map.getGame().getCurrentDepth());
 	}
 
 	/**
