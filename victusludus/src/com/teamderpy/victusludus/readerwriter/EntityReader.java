@@ -6,27 +6,18 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.VictusRuntimeException;
-import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.graphics.BitmapHandler;
 import com.teamderpy.victusludus.game.EnumFlags;
+import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.game.entity.behavior.CreateAdjacentBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
 import com.teamderpy.victusludus.game.entity.behavior.MoveBehavior;
-import com.teamderpy.victusludus.game.light.LightEmitter;
 
 /** The Class EntityReader. */
 public class EntityReader implements IObjectReader {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.teamderpy.victusludus.readerwriter.IObjectReader#ReadAndLoad(java.
-	 * lang.String, java.util.Map)
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> void ReadAndLoad (final FileHandle f, final Map<String, T> hash) {
@@ -45,7 +36,7 @@ public class EntityReader implements IObjectReader {
 
 					ReadData entityLevel;
 
-					EntityDefinition e = new EntityDefinition();
+					GameEntity e = new GameEntity();
 					e.setId(baseLevel.getValue());
 
 					// entity children
@@ -128,47 +119,6 @@ public class EntityReader implements IObjectReader {
 											this.logError(f.path(), r, iconLevel);
 										}
 									}
-								} else if (graphicsLevel.getId().equalsIgnoreCase("light")) {
-									System.out.println("found entity graphics light node");
-
-									ReadData lightLevel;
-									LightEmitter light = new LightEmitter(0, 0, 0, 0);
-									int red = 255;
-									int green = 255;
-									int blue = 255;
-
-									while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("light")) {
-										lightLevel = r.getNext();
-										System.out.println("checking entity graphics light children");
-
-										if (lightLevel.getId().equalsIgnoreCase("red")) {
-											System.out.println("found entity graphics light red node");
-
-											red = Integer.valueOf(lightLevel.getValue());
-										} else if (lightLevel.getId().equalsIgnoreCase("green")) {
-											System.out.println("found entity graphics light green node");
-
-											green = Integer.valueOf(lightLevel.getValue());
-										} else if (lightLevel.getId().equalsIgnoreCase("blue")) {
-											System.out.println("found entity graphics light blue node");
-
-											blue = Integer.valueOf(lightLevel.getValue());
-										} else if (lightLevel.getId().equalsIgnoreCase("strength")) {
-											System.out.println("found entity graphics light strength node");
-
-											light.setStrength(Integer.valueOf(lightLevel.getValue()));
-										} else if (lightLevel.getId().equalsIgnoreCase("brightness")) {
-											System.out.println("found entity graphics light brightness node");
-
-											light.setBrightness(Float.valueOf(lightLevel.getValue()));
-										} else {
-											System.out.println("lightLevel");
-											this.logError(f.path(), r, lightLevel);
-										}
-									}
-
-									light.setColor(new Color((float)red / 255, (float)green / 255, (float)blue / 255, 1));
-									e.setLight(light);
 								} else if (graphicsLevel.getId().equalsIgnoreCase("animation")) {
 									System.out.println("found entity graphics animation node");
 

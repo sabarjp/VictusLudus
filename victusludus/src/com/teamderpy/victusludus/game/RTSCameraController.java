@@ -9,12 +9,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
 
 /**
- * Takes a {@link Camera} instance and controlls it via w,a,s,d and mouse
- * panning.
- * @author badlogic
- * 
+ * Takes a {@link Camera} instance and controls it like an RTS. Modified from
+ * LibGDX demo code for the FPS camera.
  */
-public class FirstPersonCameraController extends InputAdapter {
+public class RTSCameraController extends InputAdapter {
 	private final Camera camera;
 	private final IntIntMap keys = new IntIntMap();
 	private int STRAFE_LEFT = Keys.A;
@@ -24,11 +22,9 @@ public class FirstPersonCameraController extends InputAdapter {
 	private int UP = Keys.Q;
 	private int DOWN = Keys.E;
 	private float velocity = 5;
-	private float degreesPerPixel = 0.5f;
 	private final Vector3 tmp = new Vector3();
-	private final Vector3 tmp2 = new Vector3();
 
-	public FirstPersonCameraController (final Camera camera) {
+	public RTSCameraController (final Camera camera) {
 		this.camera = camera;
 	}
 
@@ -53,22 +49,16 @@ public class FirstPersonCameraController extends InputAdapter {
 		this.velocity = velocity;
 	}
 
-	/**
-	 * Sets how many degrees to rotate per pixel the mouse moved.
-	 * @param degreesPerPixel
-	 */
-	public void setDegreesPerPixel (final float degreesPerPixel) {
-		this.degreesPerPixel = degreesPerPixel;
-	}
-
 	@Override
 	public boolean touchDragged (final int screenX, final int screenY, final int pointer) {
-		float deltaX = -Gdx.input.getDeltaX() * this.degreesPerPixel;
-		float deltaY = -Gdx.input.getDeltaY() * this.degreesPerPixel;
-		this.camera.direction.rotate(this.camera.up, deltaX);
-		this.tmp.set(this.camera.direction).crs(this.camera.up).nor();
-		this.camera.direction.rotate(this.tmp, deltaY);
-// camera.up.rotate(tmp, deltaY);
+		/*
+		 * float deltaX = -Gdx.input.getDeltaX() * this.degreesPerPixel; float
+		 * deltaY = -Gdx.input.getDeltaY() * this.degreesPerPixel;
+		 * this.camera.direction.rotate(this.camera.up, deltaX);
+		 * this.tmp.set(this.camera.direction).crs(this.camera.up).nor();
+		 * this.camera.direction.rotate(this.tmp, deltaY); //
+		 * camera.up.rotate(tmp, deltaY);
+		 */
 		return true;
 	}
 
@@ -78,29 +68,35 @@ public class FirstPersonCameraController extends InputAdapter {
 
 	public void update (final float deltaTime) {
 		if (this.keys.containsKey(this.FORWARD)) {
-			this.tmp.set(this.camera.direction).nor().scl(deltaTime * this.velocity);
+			this.tmp.set(this.camera.direction).nor().scl(deltaTime * this.velocity, 0, deltaTime * this.velocity);
 			this.camera.position.add(this.tmp);
 		}
+
 		if (this.keys.containsKey(this.BACKWARD)) {
-			this.tmp.set(this.camera.direction).nor().scl(-deltaTime * this.velocity);
+			this.tmp.set(this.camera.direction).nor().scl(-deltaTime * this.velocity, 0, -deltaTime * this.velocity);
 			this.camera.position.add(this.tmp);
 		}
+
 		if (this.keys.containsKey(this.STRAFE_LEFT)) {
 			this.tmp.set(this.camera.direction).crs(this.camera.up).nor().scl(-deltaTime * this.velocity);
 			this.camera.position.add(this.tmp);
 		}
+
 		if (this.keys.containsKey(this.STRAFE_RIGHT)) {
 			this.tmp.set(this.camera.direction).crs(this.camera.up).nor().scl(deltaTime * this.velocity);
 			this.camera.position.add(this.tmp);
 		}
+
 		if (this.keys.containsKey(this.UP)) {
-			this.tmp.set(this.camera.up).nor().scl(deltaTime * this.velocity);
+			this.tmp.set(this.camera.direction).nor().scl(0, deltaTime * this.velocity, 0);
 			this.camera.position.add(this.tmp);
 		}
+
 		if (this.keys.containsKey(this.DOWN)) {
-			this.tmp.set(this.camera.up).nor().scl(-deltaTime * this.velocity);
+			this.tmp.set(this.camera.direction).nor().scl(0, -deltaTime * this.velocity, 0);
 			this.camera.position.add(this.tmp);
 		}
+
 		this.camera.update(true);
 	}
 }

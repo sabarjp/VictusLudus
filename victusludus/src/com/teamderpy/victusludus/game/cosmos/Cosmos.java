@@ -229,4 +229,9 @@ public class Cosmos implements IView, MouseListener {
 	public boolean onScroll (final ScrollEvent scrollEvent) {
 		return false;
 	}
+
+	@Override
+	public void dispose () {
+		return;
+	}
 }

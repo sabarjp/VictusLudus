@@ -1,10 +1,9 @@
 
 package com.teamderpy.victusludus.renderer.game;
 
-import com.teamderpy.victusludus.game.EnumWallFacing;
+import com.badlogic.gdx.math.Vector3;
 import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.ScreenCoord;
-import com.teamderpy.victusludus.game.WorldCoordSelection;
 
 /**
  * The Class RenderUtil.
@@ -130,9 +129,9 @@ public final class RenderUtil {
 	 * @param calculateWallFacing the calculate wall facing
 	 * @return the world coord selection
 	 */
-	public static WorldCoordSelection screenCoordToWorldCoord (final Game game, final float x, final float y, final int layer,
+	public static Vector3 screenCoordToWorldCoord (final Game game, final float x, final float y, final int layer,
 		final boolean calculateWallFacing) {
-		WorldCoordSelection w = new WorldCoordSelection(0, 0);
+		Vector3 w = new Vector3(0, 0, 0);
 
 		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthScaled();
 		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer * game.getLayerHeightScaled()))
@@ -163,19 +162,6 @@ public final class RenderUtil {
 				segmentY += 1.0;
 			}
 
-			if (segmentX >= 0.5) {
-				if (segmentY >= 0.5) {
-					w.wallSubSectionFacing = EnumWallFacing.SOUTH_EAST;
-				} else {
-					w.wallSubSectionFacing = EnumWallFacing.NORTH_EAST;
-				}
-			} else {
-				if (segmentY >= 0.5) {
-					w.wallSubSectionFacing = EnumWallFacing.SOUTH_WEST;
-				} else {
-					w.wallSubSectionFacing = EnumWallFacing.NORTH_WEST;
-				}
-			}
 		}
 
 		w.x = isoTileX;

@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector3;
 import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.game.EnumFlags;
-import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.entity.GameEntity;
+import com.teamderpy.victusludus.game.entity.GameEntityInstance;
 import com.teamderpy.victusludus.game.map.Map;
 
 /* This behavior creates an entity on an adjacent tile */
@@ -40,34 +40,37 @@ public class CreateAdjacentBehavior extends EntityBehavior {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.teamderpy.victusludus.game.entity.behavior.EntityBehavior#tick(com.teamderpy.victusludus.game.entity.GameEntity)
+	 * @see
+	 * com.teamderpy.victusludus.game.entity.behavior.EntityBehavior#tick(com
+	 * .teamderpy.victusludus.game.entity.GameEntity)
 	 */
 	@Override
-	public void tick (final GameEntity ge, final Map map) {
+	public void tick (final GameEntityInstance ge, final Map map) {
 		if (VictusLudusGame.rand.nextInt(this.rarity) != 0) {
 			return;
 		}
 
-		List<WorldCoord> adjacentCoords = new LinkedList<WorldCoord>();
+		List<Vector3> adjacentCoords = new LinkedList<Vector3>();
 
-		adjacentCoords.add(new WorldCoord(ge.getPos().getX() + 1, ge.getPos().getY(), ge.getPos().getZ()));
-		adjacentCoords.add(new WorldCoord(ge.getPos().getX() - 1, ge.getPos().getY(), ge.getPos().getZ()));
-		adjacentCoords.add(new WorldCoord(ge.getPos().getX(), ge.getPos().getY() - 1, ge.getPos().getZ()));
-		adjacentCoords.add(new WorldCoord(ge.getPos().getX(), ge.getPos().getY() + 1, ge.getPos().getZ()));
+		adjacentCoords.add(new Vector3(ge.pos.x + 1, ge.pos.y, ge.pos.z));
+		adjacentCoords.add(new Vector3(ge.pos.x - 1, ge.pos.y, ge.pos.z));
+		adjacentCoords.add(new Vector3(ge.pos.x, ge.pos.y - 1, ge.pos.z));
+		adjacentCoords.add(new Vector3(ge.pos.x, ge.pos.y + 1, ge.pos.z));
 
 		for (int i = 0; i < this.count; i++) {
 			Collections.shuffle(adjacentCoords);
 
-			for (WorldCoord actionCoord : adjacentCoords) {
-				List<GameEntity> entityList = map.getEntityManager().getEntityListAtPos(actionCoord);
+			for (Vector3 actionCoord : adjacentCoords) {
+				List<GameEntityInstance> entityList = map.getEntityManager().getEntityListAtPos(actionCoord);
 
 				if (entityList != null) {
-					// skip this tile if we are not stackable and there is a non-walkable entity on the tile
-					EntityDefinition ce = VictusLudusGame.resources.getEntityHash().get(this.objectID);
+					// skip this tile if we are not stackable and there is a
+// non-walkable entity on the tile
+					GameEntity ce = VictusLudusGame.resources.getEntityHash().get(this.objectID);
 					if (!ce.getFlagSet().contains(EnumFlags.STACKABLE)) {
 						boolean isSpawnBlocked = false;
 
-						for (GameEntity entity : entityList) {
+						for (GameEntityInstance entity : entityList) {
 							if (!entity.getEntity().getFlagSet().contains(EnumFlags.WALKABLE)) {
 								isSpawnBlocked = true;
 								break;
@@ -81,9 +84,10 @@ public class CreateAdjacentBehavior extends EntityBehavior {
 
 					boolean didSpawnEntity = false;
 
-					for (GameEntity entity : entityList) {
+					for (GameEntityInstance entity : entityList) {
 						if (this.restrictionList.contains(entity.getId()) || this.restrictionList.contains("any")) {
-							map.addEntity(new GameEntity(this.objectID, actionCoord.getX(), actionCoord.getY(), actionCoord.getZ(), map));
+							map.addEntity(new GameEntityInstance(this.objectID, (int)actionCoord.x, (int)actionCoord.y,
+								(int)actionCoord.z, map));
 							didSpawnEntity = true;
 							break;
 						}
@@ -97,58 +101,74 @@ public class CreateAdjacentBehavior extends EntityBehavior {
 		}
 	}
 
-	/** Gets the object id.
+	/**
+	 * Gets the object id.
 	 * 
-	 * @return the object id */
+	 * @return the object id
+	 */
 	public String getObjectID () {
 		return this.objectID;
 	}
 
-	/** Sets the object id.
+	/**
+	 * Sets the object id.
 	 * 
-	 * @param objectID the new object id */
+	 * @param objectID the new object id
+	 */
 	public void setObjectID (final String objectID) {
 		this.objectID = objectID;
 	}
 
-	/** Gets the count.
+	/**
+	 * Gets the count.
 	 * 
-	 * @return the count */
+	 * @return the count
+	 */
 	public int getCount () {
 		return this.count;
 	}
 
-	/** Sets the count.
+	/**
+	 * Sets the count.
 	 * 
-	 * @param count the new count */
+	 * @param count the new count
+	 */
 	public void setCount (final int count) {
 		this.count = count;
 	}
 
-	/** Gets the restriction list.
+	/**
+	 * Gets the restriction list.
 	 * 
-	 * @return the restriction list */
+	 * @return the restriction list
+	 */
 	public ArrayList<String> getRestrictionList () {
 		return this.restrictionList;
 	}
 
-	/** Sets the restriction list.
+	/**
+	 * Sets the restriction list.
 	 * 
-	 * @param restrictionList the new restriction list */
+	 * @param restrictionList the new restriction list
+	 */
 	public void setRestrictionList (final ArrayList<String> restrictionList) {
 		this.restrictionList = restrictionList;
 	}
 
-	/** Gets the rarity.
+	/**
+	 * Gets the rarity.
 	 * 
-	 * @return the rarity */
+	 * @return the rarity
+	 */
 	public int getRarity () {
 		return this.rarity;
 	}
 
-	/** Sets the rarity.
+	/**
+	 * Sets the rarity.
 	 * 
-	 * @param rarity the new rarity */
+	 * @param rarity the new rarity
+	 */
 	public void setRarity (final int rarity) {
 		this.rarity = rarity;
 	}

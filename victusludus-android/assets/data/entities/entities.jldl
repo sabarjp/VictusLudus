@@ -1,3 +1,21 @@
+entity:rat
+    main:
+        name:Rat
+        build_mode:single
+        height:1
+    flags:
+        flag:BUILDABLE
+        flag:CANNOT_BUILD_STACKS
+        flag:CANNOT_BUILD_ON_OTHERS
+    graphics:
+        animation:idle
+            sprite:rat
+            begin_frame:1
+            end_frame:1
+            speed:1000
+        icon:
+            parent_build_node:build
+            sprite:rat_btn
 entity:nodule
     main:
         name:Fat Nodule
@@ -50,11 +68,6 @@ entity:bone_marrow
             begin_frame:1
             end_frame:3
             speed:1000
-        light:
-            red:248
-            blue:243
-            green:192
-            strength:30
         icon:
             parent_build_node:build
             sprite:bone_marrow_btn
@@ -82,11 +95,6 @@ entity:alveolus
         icon:
             parent_build_node:build
             sprite:alveolus_btn
-        light:
-            red:248
-            blue:243
-            green:192
-            strength:300
 entity:red_blood_cell
     main:
         name:Red Blood Cell
@@ -101,12 +109,6 @@ entity:red_blood_cell
             begin_frame:1
             end_frame:8
             speed:500
-        light:
-            red:255
-            blue:0
-            green:0
-            strength:45
-            brightness:0.50
     behavior:
         move:
             restrict_id:artery_small

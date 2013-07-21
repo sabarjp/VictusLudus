@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import com.badlogic.gdx.math.Vector3;
 import com.teamderpy.victusludus.game.map.Map;
 
 /**
@@ -23,8 +24,8 @@ public class AStarSearch {
 	 * @param goal the goal
 	 * @return the array list
 	 */
-	public static ArrayList<WorldCoord> search (final Map map, final WorldCoord start, final WorldCoord goal) {
-		HashMap<WorldCoord, AStarNode> AStarMap = new HashMap<WorldCoord, AStarNode>();
+	public static ArrayList<Vector3> search (final Map map, final Vector3 start, final Vector3 goal) {
+		HashMap<Vector3, AStarNode> AStarMap = new HashMap<Vector3, AStarNode>();
 
 		/*
 		 * for(GameTile[][] layer:map.getMap()){ for(GameTile[] row:layer){
@@ -32,15 +33,15 @@ public class AStarSearch {
 		 * AStarNode()); } } } }
 		 */
 
-		class AStarComparator implements Comparator<WorldCoord> {
-			HashMap<WorldCoord, AStarNode> AStarMap;
+		class AStarComparator implements Comparator<Vector3> {
+			HashMap<Vector3, AStarNode> AStarMap;
 
-			public AStarComparator (final HashMap<WorldCoord, AStarNode> AStarMap) {
+			public AStarComparator (final HashMap<Vector3, AStarNode> AStarMap) {
 				this.AStarMap = AStarMap;
 			}
 
 			@Override
-			public int compare (final WorldCoord o1, final WorldCoord o2) {
+			public int compare (final Vector3 o1, final Vector3 o2) {
 				if (this.AStarMap.get(o1).getF() < this.AStarMap.get(o2).getF()) {
 					return -1;
 				}
@@ -54,16 +55,16 @@ public class AStarSearch {
 
 		}
 
-		Set<WorldCoord> closedSet = new HashSet<WorldCoord>();
-		PriorityQueue<WorldCoord> openSet = new PriorityQueue<WorldCoord>(10, new AStarComparator(AStarMap));
-		HashMap<WorldCoord, WorldCoord> cameFrom = new HashMap<WorldCoord, WorldCoord>();
+		Set<Vector3> closedSet = new HashSet<Vector3>();
+		PriorityQueue<Vector3> openSet = new PriorityQueue<Vector3>(10, new AStarComparator(AStarMap));
+		HashMap<Vector3, Vector3> cameFrom = new HashMap<Vector3, Vector3>();
 
 		AStarMap.get(start).setG(0);
 		AStarMap.get(start).setF(AStarMap.get(start).getG() + AStarSearch.costEstimate(start, goal));
 		openSet.add(start);
 
 		while (!openSet.isEmpty()) {
-			WorldCoord current = openSet.remove();
+			Vector3 current = openSet.remove();
 
 			if (current.equals(goal)) {
 				return AStarSearch.reconstructPath(cameFrom, goal);
@@ -71,7 +72,7 @@ public class AStarSearch {
 
 			closedSet.add(current);
 
-			for (WorldCoord neighbor : map.getNeighbors(current)) {
+			for (Vector3 neighbor : map.getNeighbors(current)) {
 				if (AStarMap.containsKey(neighbor)) {
 					int tentativeG = AStarMap.get(current).getG() + AStarSearch.distance(current, neighbor);
 					if (closedSet.contains(neighbor)) {
@@ -102,8 +103,8 @@ public class AStarSearch {
 	 * @param current the current
 	 * @return the array list
 	 */
-	private static ArrayList<WorldCoord> reconstructPath (final HashMap<WorldCoord, WorldCoord> cameFrom, final WorldCoord current) {
-		ArrayList<WorldCoord> p;
+	private static ArrayList<Vector3> reconstructPath (final HashMap<Vector3, Vector3> cameFrom, final Vector3 current) {
+		ArrayList<Vector3> p;
 
 		if (cameFrom.containsKey(current)) {
 			p = AStarSearch.reconstructPath(cameFrom, cameFrom.get(current));
@@ -111,7 +112,7 @@ public class AStarSearch {
 
 			return p;
 		} else {
-			ArrayList<WorldCoord> c = new ArrayList<WorldCoord>();
+			ArrayList<Vector3> c = new ArrayList<Vector3>();
 			c.add(current);
 			return c;
 		}
@@ -124,8 +125,8 @@ public class AStarSearch {
 	 * @param s2 the s2
 	 * @return the int
 	 */
-	private static int costEstimate (final WorldCoord s1, final WorldCoord s2) {
-		return Math.abs(s2.getX() - s1.getX()) + Math.abs(s2.getY() - s1.getY()) + Math.abs(s2.getZ() - s1.getZ());
+	private static int costEstimate (final Vector3 s1, final Vector3 s2) {
+		return (int)(Math.abs(s2.x - s1.x) + Math.abs(s2.y - s1.y) + Math.abs(s2.z - s1.z));
 	}
 
 	/**
@@ -135,7 +136,7 @@ public class AStarSearch {
 	 * @param s2 the s2
 	 * @return the int
 	 */
-	private static int distance (final WorldCoord s1, final WorldCoord s2) {
-		return Math.abs(s2.getX() - s1.getX()) + Math.abs(s2.getY() - s1.getY()) + Math.abs(s2.getZ() - s1.getZ());
+	private static int distance (final Vector3 s1, final Vector3 s2) {
+		return (int)(Math.abs(s2.x - s1.x) + Math.abs(s2.y - s1.y) + Math.abs(s2.z - s1.z));
 	}
 }

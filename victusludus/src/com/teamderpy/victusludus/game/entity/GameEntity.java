@@ -1,93 +1,62 @@
 
 package com.teamderpy.victusludus.game.entity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.victusludus.data.resources.EntityDefinition;
-import com.teamderpy.victusludus.game.EuclideanObject;
-import com.teamderpy.victusludus.game.Vec2i;
-import com.teamderpy.victusludus.game.WorldCoord;
-import com.teamderpy.victusludus.game.light.LightEmitter;
+import com.teamderpy.victusludus.game.EnumBuildMode;
+import com.teamderpy.victusludus.game.EnumFlags;
+import com.teamderpy.victusludus.game.entity.behavior.EntityBehavior;
 import com.teamderpy.victusludus.game.map.Map;
 
-/** The Class GameEntity. */
-public class GameEntity extends EuclideanObject {
-	/** The entity definition that this bases its properties on. */
-	private EntityDefinition e;
+/**
+ * The Class Entity which is loaded and populated based on mod files
+ */
+public class GameEntity {
 
-	/** The entity light. */
-	private LightEmitter entityLight;
+	/** The id. */
+	private String id;
 
-	/** The movement vector. */
-	private Vec2i movementVector;
+	/** The name. */
+	private String name;
 
-	/** The creation time. */
-	private long creationTime;
+	/** The parent button node. */
+	private String parentButtonNode;
 
-	/** The animation that is playing */
-	private Animation currentAnimation;
-	private float animationTimer = 0F;
+	/** The button sprite sheet. */
+	// private SpriteSheet buttonSpriteSheet;
 
-	/** The map this entity belongs to */
-	private Map map;
+	/** The build mode. */
+	private EnumBuildMode buildMode;
 
-	/**
-	 * Instantiates a new game entity.
-	 * 
-	 * @param entity the entity
-	 * @param pos the pos
-	 * @param map the map the entity is a part of
-	 */
-	public GameEntity (final EntityDefinition entity, final WorldCoord pos, final Map map) {
-		super(pos);
+	/** The animation hash. */
+	private HashMap<String, Animation> animationHash;
 
-		this.map = map;
+	/** The flag set. */
+	private HashSet<EnumFlags> flagSet;
 
-		this.e = entity;
+	/** The behavior list. */
+	private ArrayList<EntityBehavior> behaviorList;
 
-		this.creationTime = VictusLudusGame.engine.getTickCount();
-		this.movementVector = new Vec2i(0, 0);
-		this.playAnimation("idle");
-	}
+	/** Height in block units */
+	private int height;
 
 	/**
-	 * Instantiates a new game entity.
-	 * 
-	 * @param entityID the entity id
-	 * @param map the map the entity is a part of
+	 * Instantiates a new entity.
 	 */
-	public GameEntity (final String entityID, final Map map) {
-		super();
+	public GameEntity () {
+		// this.buttonSpriteSheet = null;
 
-		this.map = map;
+		this.behaviorList = null;
 
-		this.e = VictusLudusGame.resources.getEntityHash().get(entityID);
+		this.name = "";
+		this.setBuildMode(EnumBuildMode.SINGLE);
+		this.parentButtonNode = "root";
 
-		this.creationTime = VictusLudusGame.engine.getTickCount();
-		this.movementVector = new Vec2i(0, 0);
-		this.playAnimation("idle");
-	}
-
-	/**
-	 * Instantiates a new game entity.
-	 * 
-	 * @param entityID the entity id
-	 * @param x the x
-	 * @param y the y
-	 * @param z the z
-	 * @param map the map the entity is a part of
-	 */
-	public GameEntity (final String entityID, final int x, final int y, final int z, final Map map) {
-		super(x, y, z);
-
-		this.map = map;
-
-		this.e = VictusLudusGame.resources.getEntityHash().get(entityID);
-
-		this.movementVector = new Vec2i(0, 0);
-		this.creationTime = VictusLudusGame.engine.getTickCount();
-		this.playAnimation("idle");
+		this.setAnimationHash(new HashMap<String, Animation>());
+		this.setFlagSet(new HashSet<EnumFlags>());
 	}
 
 	/**
@@ -96,93 +65,194 @@ public class GameEntity extends EuclideanObject {
 	 * @return the id
 	 */
 	public String getId () {
-		return this.e.getId();
+		return this.id;
 	}
 
 	/**
-	 * Gets the pos.
+	 * Sets the id.
 	 * 
-	 * @return the pos
+	 * @param id the new id
 	 */
-	public WorldCoord getPos () {
-		return super.getWorldCoord();
+	public void setId (final String id) {
+		this.id = id;
 	}
 
 	/**
-	 * Sets the pos.
+	 * Gets the name.
 	 * 
-	 * @param pos the new pos
+	 * @return the name
 	 */
-	protected void setPos (final WorldCoord pos) {
-		super.setWorldCoord(pos);
+	public String getName () {
+		return this.name;
 	}
 
 	/**
-	 * Gets the entity.
+	 * Sets the name.
 	 * 
-	 * @return the entity
+	 * @param name the new name
 	 */
-	public EntityDefinition getEntity () {
-		return this.e;
+	public void setName (final String name) {
+		this.name = name;
 	}
 
-	/** Tick. */
-	public void tick () {
-		this.getEntity().tick(this, this.map);
+	// public void loadEntitySpriteSheet(final String path){
+	// this.entitySpriteSheet = BitmapHandler.LoadSpriteSheet("res/" + path, 16,
+// 1);
+	// }
+
+	/**
+	 * Load button sprite sheet.
+	 * 
+	 * @param path the path
+	 */
+	public void loadButtonSpriteSheet (final String path) {
+		// this.buttonSpriteSheet = BitmapHandler.LoadSpriteSheet("res/" + path,
+// 4, 1);
 	}
 
 	/**
-	 * Gets the entity light.
+	 * Gets the parent button node.
 	 * 
-	 * @return the entity light
+	 * @return the parent button node
 	 */
-	public LightEmitter getEntityLight () {
-		return this.entityLight;
+	public String getParentButtonNode () {
+		return this.parentButtonNode;
 	}
 
 	/**
-	 * Gets the movement vector.
+	 * Sets the parent button node.
 	 * 
-	 * @return the movement vector
+	 * @param parentButtonNode the new parent button node
 	 */
-	public Vec2i getMovementVector () {
-		return this.movementVector;
+	public void setParentButtonNode (final String parentButtonNode) {
+		this.parentButtonNode = parentButtonNode;
 	}
 
 	/**
-	 * Sets the movement vector.
+	 * Gets the button sprite sheet.
 	 * 
-	 * @param movementVector the new movement vector
+	 * @return the button sprite sheet
 	 */
-	public void setMovementVector (final Vec2i movementVector) {
-		this.movementVector = movementVector;
+	// public SpriteSheet getButtonSpriteSheet () {
+	// return this.buttonSpriteSheet;
+	// }
+
+	/**
+	 * Gets the behavior list.
+	 * 
+	 * @return the behavior list
+	 */
+	public ArrayList<EntityBehavior> getBehaviorList () {
+		return this.behaviorList;
 	}
 
 	/**
-	 * Gets the creation time.
+	 * Sets the behavior list.
 	 * 
-	 * @return the creation time
+	 * @param behaviorList the new behavior list
 	 */
-	public long getCreationTime () {
-		return this.creationTime;
+	public void setBehaviorList (final ArrayList<EntityBehavior> behaviorList) {
+		this.behaviorList = behaviorList;
 	}
 
 	/**
-	 * Changes the animation to the one specified and starts it from frame zero.
+	 * Tick.
 	 * 
-	 * @param str the name of the animation to play
+	 * @param ge the GameEntity to tick
+	 * @param map the map to tick against
 	 */
-	public void playAnimation (final String str) {
-		this.currentAnimation = this.e.getAnimationHash().get(str);
+	public void tick (final GameEntityInstance ge, final Map map) {
+		if (this.behaviorList != null) {
+			for (EntityBehavior eb : this.behaviorList) {
+				eb.tick(ge, map);
+			}
+		}
 	}
 
 	/**
-	 * Gets the current animation.
+	 * Gets the animation hash.
 	 * 
-	 * @return the current animation
+	 * @return the animation hash
 	 */
-	public TextureRegion getCurrentAnimation (final float deltaT) {
-		this.animationTimer += deltaT;
-		return this.currentAnimation.getKeyFrame(this.animationTimer);
+	public HashMap<String, Animation> getAnimationHash () {
+		return this.animationHash;
+	}
+
+	/**
+	 * Sets the animation hash.
+	 * 
+	 * @param animationHash the animation hash
+	 */
+	public void setAnimationHash (final HashMap<String, Animation> animationHash) {
+		this.animationHash = animationHash;
+	}
+
+	/**
+	 * Gets the builds the mode.
+	 * 
+	 * @return the builds the mode
+	 */
+	public EnumBuildMode getBuildMode () {
+		return this.buildMode;
+	}
+
+	/**
+	 * Sets the builds the mode.
+	 * 
+	 * @param buildMode the new builds the mode
+	 */
+	public void setBuildMode (final EnumBuildMode buildMode) {
+		this.buildMode = buildMode;
+	}
+
+	/**
+	 * Sets the builds the mode.
+	 * 
+	 * @param buildMode the new builds the mode
+	 */
+	public void setBuildMode (final String buildMode) {
+		if (buildMode.equalsIgnoreCase("line")) {
+			this.buildMode = EnumBuildMode.LINE;
+		} else if (buildMode.equalsIgnoreCase("single")) {
+			this.buildMode = EnumBuildMode.SINGLE;
+		} else {
+			this.buildMode = EnumBuildMode.SINGLE;
+		}
+	}
+
+	/**
+	 * Gets the flag set.
+	 * 
+	 * @return the flag set
+	 */
+	public HashSet<EnumFlags> getFlagSet () {
+		return this.flagSet;
+	}
+
+	/**
+	 * Sets the flag set.
+	 * 
+	 * @param flagSet the new flag set
+	 */
+	public void setFlagSet (final HashSet<EnumFlags> flagSet) {
+		this.flagSet = flagSet;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals (final Object obj) {
+		return this.getId().equals(((GameEntity)obj).getId());
+	}
+
+	public int getHeight () {
+		return this.height;
+	}
+
+	public void setHeight (final int height) {
+		this.height = height;
 	}
 }

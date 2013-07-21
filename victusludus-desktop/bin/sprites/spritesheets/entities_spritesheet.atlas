@@ -94,6 +94,13 @@ nodule
   orig: 512, 32
   offset: 0, 0
   index: -1
+rat
+  rotate: false
+  xy: 1, 35
+  size: 512, 32
+  orig: 512, 32
+  offset: 0, 0
+  index: -1
 red_blood_cell
   rotate: false
   xy: 1, 1

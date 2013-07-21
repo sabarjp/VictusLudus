@@ -3,17 +3,16 @@ package com.teamderpy.victusludus.game.entity;
 
 import java.util.Vector;
 
+import com.badlogic.gdx.math.Vector3;
 import com.teamderpy.victusludus.data.MultiMap;
-import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.map.Map;
 
 /**
  * The Class GameEntityManager.
  */
 public class GameEntityManager {
-	/* all world entities indexed on position */
 	/** The game entity list. */
-	MultiMap<WorldCoord, GameEntity> gameEntityList;
+	MultiMap<Vector3, GameEntityInstance> gameEntityList;
 
 	/** The map this belongs to */
 	Map map;
@@ -24,7 +23,7 @@ public class GameEntityManager {
 	 */
 	public GameEntityManager (final Map map) {
 		this.map = map;
-		this.gameEntityList = new MultiMap<WorldCoord, GameEntity>();
+		this.gameEntityList = new MultiMap<Vector3, GameEntityInstance>();
 	}
 
 	/**
@@ -33,8 +32,8 @@ public class GameEntityManager {
 	 * @param ge the GameEntity
 	 * @param map the map the entity belongs to
 	 */
-	public void add (final GameEntity ge) {
-		this.gameEntityList.add(ge.getPos(), ge);
+	public void add (final GameEntityInstance ge) {
+		this.gameEntityList.add(ge.pos, ge);
 	}
 
 	/**
@@ -42,7 +41,7 @@ public class GameEntityManager {
 	 * 
 	 * @return the entities
 	 */
-	public Vector<GameEntity> getEntities () {
+	public Vector<GameEntityInstance> getEntities () {
 		return this.gameEntityList.getAllValues();
 	}
 
@@ -52,7 +51,7 @@ public class GameEntityManager {
 	 * @param coord the coord
 	 * @return the entity list at pos
 	 */
-	public Vector<GameEntity> getEntityListAtPos (final WorldCoord coord) {
+	public Vector<GameEntityInstance> getEntityListAtPos (final Vector3 coord) {
 		return this.gameEntityList.getValueList(coord);
 	}
 
@@ -62,10 +61,10 @@ public class GameEntityManager {
 	 * @param coord the coord the object moves to
 	 * @param ge the game entity to move
 	 */
-	public void move (final WorldCoord coord, final GameEntity ge) {
+	public void move (final Vector3 coord, final GameEntityInstance ge) {
 		/* re-index then set position */
-		this.gameEntityList.remove(ge.getPos(), ge);
-		ge.setPos(coord);
+		this.gameEntityList.remove(ge.pos, ge);
+		ge.pos = coord;
 		this.gameEntityList.add(coord, ge);
 	}
 }

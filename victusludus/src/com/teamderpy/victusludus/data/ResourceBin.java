@@ -8,10 +8,10 @@ import java.util.Map;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.teamderpy.victusludus.VictusLudusGame;
-import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.data.resources.FontFile;
 import com.teamderpy.victusludus.data.resources.StarColorTuple;
 import com.teamderpy.victusludus.game.PlayerBackground;
+import com.teamderpy.victusludus.game.entity.GameEntity;
 import com.teamderpy.victusludus.parts.Creature;
 import com.teamderpy.victusludus.parts.Material;
 
@@ -33,7 +33,7 @@ public class ResourceBin {
 	private Map<String, PlayerBackground> backgroundsHash;
 
 	/** The entity hash. */
-	private Map<String, EntityDefinition> entityHash;
+	private Map<String, GameEntity> entityHash;
 
 	/** The celestial name array */
 	private ArrayList<String> celestiaStarNameArray;
@@ -56,7 +56,7 @@ public class ResourceBin {
 		this.creatureHash = new HashMap<String, Creature>();
 		this.fontHash = new HashMap<String, FontFile>();
 		this.backgroundsHash = new HashMap<String, PlayerBackground>();
-		this.entityHash = new HashMap<String, EntityDefinition>();
+		this.entityHash = new HashMap<String, GameEntity>();
 
 		this.celestiaStarNameArray = new ArrayList<String>();
 		this.celestiaGalaxyNameArray = new ArrayList<String>();
@@ -104,7 +104,7 @@ public class ResourceBin {
 	 * 
 	 * @return the entity hash
 	 */
-	public Map<String, EntityDefinition> getEntityHash () {
+	public Map<String, GameEntity> getEntityHash () {
 		return this.entityHash;
 	}
 

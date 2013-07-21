@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.teamderpy.victusludus.game.tile.GameTile;
 
 public class Chunk {
-	public static final int VERTEX_SIZE = 6;
+	public static final int VERTEX_SIZE = 8;
 
 	/** the voxels in this chunk, using byte identifiers */
 	public final byte[] voxels;

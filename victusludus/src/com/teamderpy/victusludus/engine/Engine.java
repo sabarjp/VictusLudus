@@ -574,6 +574,7 @@ public class Engine implements ResizeListener {
 
 		if (this.currentView != null) {
 			this.currentView.setRunning(false);
+			this.currentView.dispose();
 			this.changeView(null, null);
 		}
 

@@ -1,14 +1,8 @@
 
 package com.teamderpy.victusludus.game.tile;
 
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.teamderpy.victusludus.VictusLudusGame;
+import com.badlogic.gdx.math.Vector3;
 import com.teamderpy.victusludus.game.EuclideanObject;
-import com.teamderpy.victusludus.game.WorldCoord;
 import com.teamderpy.victusludus.game.map.Map;
 
 /** The Class GameTile. */
@@ -42,11 +36,6 @@ public class GameTile extends EuclideanObject {
 	 */
 	public GameTile (final int id, final Map map) {
 		this.id = id;
-
-		super.setTotallyBlockingLOS(true);
-
-		Model model = VictusLudusGame.engine.assetManager.get("3d/cube.g3db", Model.class);
-		this.setModelInstance(new ModelInstance(model));
 	}
 
 	/**
@@ -62,14 +51,7 @@ public class GameTile extends EuclideanObject {
 		super();
 		this.id = id;
 
-		super.setWorldCoord(new WorldCoord(x, y, z));
-		super.setTotallyBlockingLOS(true);
-
-		Model model = VictusLudusGame.engine.assetManager.get("meshes/terrainCube.g3db", Model.class);
-		for (Material m : model.materials) {
-			m.set(new IntAttribute(IntAttribute.CullFace, GL20.GL_BACK));
-		}
-		this.setModelInstance(new ModelInstance(model, x, y, z));
+		super.setWorldCoord(x, y, z);
 	}
 
 	/**
@@ -95,8 +77,8 @@ public class GameTile extends EuclideanObject {
 	 * 
 	 * @return the pos
 	 */
-	public WorldCoord getPos () {
-		return super.getWorldCoord();
+	public Vector3 getPos () {
+		return super.pos;
 	}
 
 	/**
@@ -104,8 +86,8 @@ public class GameTile extends EuclideanObject {
 	 * 
 	 * @param pos the new pos
 	 */
-	public void setPos (final WorldCoord pos) {
-		super.setWorldCoord(pos);
+	public void setPos (final Vector3 pos) {
+		super.pos = pos;
 	}
 
 	public int getTileTopSpriteSheetRow () {

@@ -14,11 +14,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.OrderedMap;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.data.VFile;
-import com.teamderpy.victusludus.data.resources.EntityDefinition;
 import com.teamderpy.victusludus.engine.GameException;
 import com.teamderpy.victusludus.engine.ISettings;
 import com.teamderpy.victusludus.engine.IView;
@@ -26,6 +26,7 @@ import com.teamderpy.victusludus.engine.MousePointer;
 import com.teamderpy.victusludus.engine.graphics.GameCamera;
 import com.teamderpy.victusludus.engine.graphics.GameDimensions;
 import com.teamderpy.victusludus.game.entity.GameEntity;
+import com.teamderpy.victusludus.game.entity.GameEntityInstance;
 import com.teamderpy.victusludus.game.map.Map;
 import com.teamderpy.victusludus.gui.UI;
 import com.teamderpy.victusludus.gui.UIGameHUD;
@@ -54,7 +55,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	private EnumBuildMode buildMode;
 
 	/** The build begin coord. */
-	private WorldCoordSelection buildBeginCoord;
+	private Vector3 buildBeginCoord;
 
 	/** The game camera which holds camera offsets */
 	private GameCamera gameCamera;
@@ -63,7 +64,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	private PerspectiveCamera pcamera;
 
 	/** The input controller to move around the camera */
-	private FirstPersonCameraController camController;
+	private RTSCameraController camController;
 
 	/** The game dimensions. */
 	private GameDimensions gameDimensions;
@@ -123,7 +124,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		/* camera */
 		this.setPcamera(VictusLudusGame.engine.pcamera);
 		// this.camController = new CameraInputController(this.pcamera);
-		this.camController = new FirstPersonCameraController(this.pcamera);
+		this.camController = new RTSCameraController(this.pcamera);
 		VictusLudusGame.engine.inputMultiplexer.addProcessor(this.camController);
 
 		GameSettings requestedSettings = (GameSettings)settings;
@@ -184,6 +185,11 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		float camY = this.map.getHighest(camX, camZ) + 1.5f;
 		this.pcamera.position.set(camX, camY, camZ);
 
+		this.pcamera.rotate(-35.264F, 1, 0, 0);
+		this.pcamera.rotate(45F, 0, 1, 0);
+
+		this.map.addEntity(new GameEntityInstance("rat", (int)camX, (int)camY, (int)camZ, this.map));
+
 		/* the game renderer */
 		this.gameRenderer = new GameRenderer(this);
 
@@ -196,8 +202,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			this.gameRenderer.render(spriteBatch, modelBatch, deltaT);
 
 			this.camController.update();
-			System.out.println(this.pcamera.position);
-			System.out.println(this.pcamera.direction);
+			// System.out.println(this.pcamera.position);
+			// System.out.println(this.pcamera.direction);
 
 			// UI
 			if (this.currentUI != null) {
@@ -356,7 +362,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 					if (this.buildMode == EnumBuildMode.LINE) {
 						// mark the starting position if it is in-bounds
 						this.buildBeginCoord = null;
-						WorldCoordSelection temp = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(),
+						Vector3 temp = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(),
 							this.currentDepth, false);
 
 						// if (temp.x >= 0 && temp.y >= 0) {
@@ -378,14 +384,14 @@ public class Game implements IView, KeyboardListener, MouseListener {
 					if (this.buildMode == EnumBuildMode.LINE) {
 						// complete the line
 						if (this.buildBeginCoord != null) {
-							WorldCoordSelection wcs = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(),
+							Vector3 wcs = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(),
 								this.currentDepth, false);
-							ArrayList<WorldCoord> temp = AStarSearch.search(this.map, new WorldCoord(this.buildBeginCoord.x,
-								this.buildBeginCoord.y, this.currentDepth), new WorldCoord(wcs.x, wcs.y, this.currentDepth));
+							ArrayList<Vector3> temp = AStarSearch.search(this.map, new Vector3(this.buildBeginCoord.x,
+								this.buildBeginCoord.y, this.currentDepth), new Vector3(wcs.x, wcs.y, this.currentDepth));
 
 							if (temp != null) {
-								for (WorldCoord wc : temp) {
-									this.build(this.getBuildModeObjectID(), wc.getX(), wc.getY(), this.currentDepth);
+								for (Vector3 wc : temp) {
+									this.build(this.getBuildModeObjectID(), (int)wc.x, (int)wc.y, this.currentDepth);
 								}
 							}
 
@@ -394,8 +400,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 						}
 
 					} else {
-						WorldCoordSelection c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(),
-							this.currentDepth, false);
+						Vector3 c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth,
+							false);
 
 						// if (c.x >= 0 && c.y >= 0) {
 						// if (c.x < this.map.getLayer(this.currentDepth).length
@@ -432,7 +438,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	public void onMouseMove (final MouseEvent mouseEvent) {
 		// not moving the map
 		if (!this.holdingDownRightClick) {
-			WorldCoordSelection c = null;
+			Vector3 c = null;
 
 			if (this.interactionMode == EnumInteractionMode.MODE_QUERY_TILE) {
 				// highlight tile under cursor
@@ -446,11 +452,11 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 				// we are in the middle of a build so draw stuff
 				if (this.buildMode == EnumBuildMode.LINE && this.buildBeginCoord != null) {
-					ArrayList<WorldCoord> temp = AStarSearch.search(this.map, new WorldCoord(this.buildBeginCoord.x,
-						this.buildBeginCoord.y, this.currentDepth), new WorldCoord(c.x, c.y, this.currentDepth));
+					ArrayList<Vector3> temp = AStarSearch.search(this.map, new Vector3(this.buildBeginCoord.x, this.buildBeginCoord.y,
+						this.currentDepth), new Vector3(c.x, c.y, this.currentDepth));
 
 					if (temp != null) {
-						for (WorldCoord wc : temp) {
+						for (Vector3 wc : temp) {
 
 						}
 					}
@@ -631,8 +637,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	 * @param z the z
 	 */
 	private void build (final String objectID, final int x, final int y, final int z) {
-		EntityDefinition e = VictusLudusGame.resources.getEntityHash().get(objectID);
-		WorldCoord wc = new WorldCoord(x, y, z);
+		GameEntity e = VictusLudusGame.resources.getEntityHash().get(objectID);
+		Vector3 wc = new Vector3(x, y, z);
 
 		// Check if there is any room
 		for (int h = 1; h <= e.getHeight(); h++) {
@@ -644,9 +650,9 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 		// Check if we can build this on other buildables
 		if (e.getFlagSet().contains(EnumFlags.CANNOT_BUILD_ON_OTHERS)) {
-			Vector<GameEntity> gev = this.map.getEntityManager().getEntityListAtPos(wc);
+			Vector<GameEntityInstance> gev = this.map.getEntityManager().getEntityListAtPos(wc);
 			if (gev != null) {
-				for (GameEntity ge : gev) {
+				for (GameEntityInstance ge : gev) {
 					if (ge.getEntity().getFlagSet().contains(EnumFlags.BUILDABLE)) {
 						return;
 					}
@@ -656,9 +662,9 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 		// Check if we can stack this item against itself
 		if (e.getFlagSet().contains(EnumFlags.CANNOT_BUILD_STACKS)) {
-			Vector<GameEntity> gev = this.map.getEntityManager().getEntityListAtPos(wc);
+			Vector<GameEntityInstance> gev = this.map.getEntityManager().getEntityListAtPos(wc);
 			if (gev != null) {
-				for (GameEntity ge : gev) {
+				for (GameEntityInstance ge : gev) {
 					if (ge.getEntity().equals(e)) {
 						return;
 					}
@@ -666,7 +672,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			}
 		}
 
-		this.map.addEntity(new GameEntity(objectID, x, y, z, this.map));
+		this.map.addEntity(new GameEntityInstance(objectID, x, y, z, this.map));
 	}
 
 	/**
@@ -699,8 +705,13 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		return this.quitSignal;
 	}
 
+	@Override
+	public void dispose () {
+		VictusLudusGame.engine.inputMultiplexer.removeProcessor(this.camController);
+	}
+
 	/**
-	 * Sets the quit signal.
+	 * Sets the quit signal. If true, we will quit at the first opportunity
 	 * 
 	 * @param quitSignal the new quit signal
 	 */

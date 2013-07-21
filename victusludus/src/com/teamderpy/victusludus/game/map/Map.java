@@ -12,11 +12,11 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.teamderpy.victusludus.game.GameSettings;
-import com.teamderpy.victusludus.game.WorldCoord;
-import com.teamderpy.victusludus.game.entity.GameEntity;
+import com.teamderpy.victusludus.game.entity.GameEntityInstance;
 import com.teamderpy.victusludus.game.entity.GameEntityManager;
 
 /**
@@ -176,20 +176,13 @@ public class Map implements RenderableProvider {
 		this.vertices = new float[Chunk.VERTEX_SIZE * vertsPerQuad * Map.CHUNK_SIZE_X * Map.CHUNK_SIZE_Y * Map.CHUNK_SIZE_Z];
 		this.materials = new Material[chunksX * chunksY * chunksZ];
 		for (i = 0; i < this.materials.length; i++) {
-			this.materials[i] = new Material(/*
-														 * new
-														 * ColorAttribute(ColorAttribute.Diffuse
-														 * , MathUtils.random(0.5f, 1f),
-														 * MathUtils.random(0.5f, 1f),
-														 * MathUtils.random(0.5f, 1f), 1)
-														 */);
-
+			this.materials[i] = new Material();
 			this.materials[i].set(new TextureAttribute(TextureAttribute.Diffuse, tileTextures.getTexture()));
-
 		}
 
 		/* other stuff */
 		this.entityManager = new GameEntityManager(this);
+
 		/* generate terrain */
 		PerlinNoiseGenerator.generateVoxels(this, 0, 63, 10);
 	}
@@ -361,6 +354,7 @@ public class Map implements RenderableProvider {
 
 	@Override
 	public void getRenderables (final Array<Renderable> renderables, final Pool<Renderable> pool) {
+		/* get voxels to render */
 		this.renderedChunks = 0;
 		for (int i = 0; i < this.chunks.length; i++) {
 			Chunk chunk = this.chunks[i];
@@ -385,6 +379,27 @@ public class Map implements RenderableProvider {
 			renderable.primitiveType = GL20.GL_TRIANGLES;
 			renderables.add(renderable);
 			this.renderedChunks++;
+		}
+
+		/* get entities to render */
+		for (GameEntityInstance entity : this.entityManager.getEntities()) {
+			if (entity.getMesh() == null) {
+				continue;
+			}
+
+			if (entity.isDirty()) {
+				entity.calculateVertices();
+				entity.getMesh().setVertices(entity.getVertices());
+				entity.setDirty(false);
+			}
+
+			Renderable renderable = pool.obtain();
+			renderable.material = entity.getMaterial();
+			renderable.mesh = entity.getMesh();
+			renderable.meshPartOffset = 0;
+			renderable.meshPartSize = 4;
+			renderable.primitiveType = GL20.GL_TRIANGLES;
+			renderables.add(renderable);
 		}
 	}
 
@@ -469,7 +484,7 @@ public class Map implements RenderableProvider {
 	 * 
 	 * @param entity the entity
 	 */
-	public void addEntity (final GameEntity entity) {
+	public void addEntity (final GameEntityInstance entity) {
 		this.entityManager.add(entity);
 	}
 
@@ -498,7 +513,7 @@ public class Map implements RenderableProvider {
 	 * 
 	 * @return the entities
 	 */
-	public Vector<GameEntity> getEntities () {
+	public Vector<GameEntityInstance> getEntities () {
 		return this.entityManager.getEntities();
 	}
 
@@ -535,21 +550,20 @@ public class Map implements RenderableProvider {
 	 * @param coord the coord
 	 * @return the neighbors
 	 */
-	public ArrayList<WorldCoord> getNeighbors (final WorldCoord coord) {
-		ArrayList<WorldCoord> coordList = new ArrayList<WorldCoord>();
+	public ArrayList<Vector3> getNeighbors (final Vector3 coord) {
+		ArrayList<Vector3> coordList = new ArrayList<Vector3>();
 
-		coordList.add(new WorldCoord(coord.getX() + 1, coord.getY(), coord.getZ()));
-		coordList.add(new WorldCoord(coord.getX() - 1, coord.getY(), coord.getZ()));
-		coordList.add(new WorldCoord(coord.getX(), coord.getY() + 1, coord.getZ()));
-		coordList.add(new WorldCoord(coord.getX(), coord.getY() - 1, coord.getZ()));
-		coordList.add(new WorldCoord(coord.getX(), coord.getY(), coord.getZ() + 1));
-		coordList.add(new WorldCoord(coord.getX(), coord.getY(), coord.getZ() - 1));
+		coordList.add(new Vector3(coord.x + 1, coord.y, coord.z));
+		coordList.add(new Vector3(coord.x - 1, coord.y, coord.z));
+		coordList.add(new Vector3(coord.x, coord.y + 1, coord.z));
+		coordList.add(new Vector3(coord.x, coord.y - 1, coord.z));
+		coordList.add(new Vector3(coord.x, coord.y, coord.z + 1));
+		coordList.add(new Vector3(coord.x, coord.y, coord.z - 1));
 
 		for (int i = 0; i < coordList.size(); i++) {
-			WorldCoord c = coordList.get(i);
+			Vector3 c = coordList.get(i);
 
-			if (c.getX() >= this.width || c.getY() >= this.height || c.getZ() >= this.depth || c.getX() < 0 || c.getY() < 0
-				|| c.getZ() < 0) {
+			if (c.x >= this.width || c.y >= this.height || c.z >= this.depth || c.x < 0 || c.y < 0 || c.z < 0) {
 				coordList.remove(i);
 			}
 		}
