@@ -12,9 +12,12 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.teamderpy.victusludus.game.EuclideanObject;
+import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.game.entity.GameEntityInstance;
 import com.teamderpy.victusludus.game.entity.GameEntityManager;
@@ -23,7 +26,6 @@ import com.teamderpy.victusludus.game.entity.GameEntityManager;
  * The Class Map.
  */
 public class Map implements RenderableProvider {
-
 	/** The maximum height of a map */
 	private static final int MAXIMUM_DEPTH = 128;
 
@@ -36,6 +38,9 @@ public class Map implements RenderableProvider {
 
 	/** Size of a chunk in the z direction */
 	public static final int CHUNK_SIZE_Z = 16;
+
+	/** link to the game this map belongs to */
+	private Game game;
 
 	/** An array of chunks that make up the map */
 	public final Chunk[] chunks;
@@ -102,7 +107,8 @@ public class Map implements RenderableProvider {
 	/** The highest point. */
 	private int highestPoint;
 
-	public Map (final GameSettings requestedSettings, final TextureRegion tileTextures) {
+	public Map (final Game game, final GameSettings requestedSettings, final TextureRegion tileTextures) {
+		this.game = game;
 		this.tileTextures = tileTextures;
 
 		int chunksX = requestedSettings.getRequestedMapWidth();
@@ -388,16 +394,23 @@ public class Map implements RenderableProvider {
 			}
 
 			if (entity.isDirty()) {
-				entity.calculateVertices();
-				entity.getMesh().setVertices(entity.getVertices());
-				entity.setDirty(false);
+				int numVerts = entity.calculateVertices();
+				entity.setNumVerts(numVerts / 4 * 6);
+				entity.getMesh().setVertices(entity.getVertices(), 0, numVerts * EuclideanObject.VERTEX_SIZE);
+				entity.getMesh().transform(
+					new Matrix4().rotate(new Vector3(0, 0, 1), this.game.getPcamera().direction.cpy().scl(1, 0, 1)).trn(entity.pos));
+				/*
+				 * entity.getMesh().transform(new Matrix4(new Quaternion(new
+				 * Vector3(0, 1, 0), 180)));
+				 */
+				entity.setDirty(true);
 			}
 
 			Renderable renderable = pool.obtain();
 			renderable.material = entity.getMaterial();
 			renderable.mesh = entity.getMesh();
 			renderable.meshPartOffset = 0;
-			renderable.meshPartSize = 4;
+			renderable.meshPartSize = entity.getNumVerts();
 			renderable.primitiveType = GL20.GL_TRIANGLES;
 			renderables.add(renderable);
 		}

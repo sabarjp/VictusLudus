@@ -167,7 +167,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		 */
 		TextureRegion texture = new TextureRegion(new Texture(VFile.getFileHandle("meshes/tiles.png")));
 
-		this.map = new Map(requestedSettings, texture);
+		this.map = new Map(this, requestedSettings, texture);
 		this.currentDepth = this.map.getHighestPoint() - 1;
 
 		/* setup GUI */

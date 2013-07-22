@@ -28,7 +28,7 @@ public class GameRenderer {
 	private static final int MAX_VISIBLE_DEPTH = 10;
 
 	/**
-	 * Instantiates a new game renderer.
+	 * Instantiates a new game renderer
 	 * 
 	 * @param game the game
 	 */

@@ -23,6 +23,7 @@ public class RTSCameraController extends InputAdapter {
 	private int DOWN = Keys.E;
 	private float velocity = 5;
 	private final Vector3 tmp = new Vector3();
+	private float degreesPerPixel = 0.3F;
 
 	public RTSCameraController (final Camera camera) {
 		this.camera = camera;
@@ -51,14 +52,13 @@ public class RTSCameraController extends InputAdapter {
 
 	@Override
 	public boolean touchDragged (final int screenX, final int screenY, final int pointer) {
-		/*
-		 * float deltaX = -Gdx.input.getDeltaX() * this.degreesPerPixel; float
-		 * deltaY = -Gdx.input.getDeltaY() * this.degreesPerPixel;
-		 * this.camera.direction.rotate(this.camera.up, deltaX);
-		 * this.tmp.set(this.camera.direction).crs(this.camera.up).nor();
-		 * this.camera.direction.rotate(this.tmp, deltaY); //
-		 * camera.up.rotate(tmp, deltaY);
-		 */
+		float deltaX = -Gdx.input.getDeltaX() * this.degreesPerPixel;
+		float deltaY = -Gdx.input.getDeltaY() * this.degreesPerPixel;
+		this.camera.direction.rotate(this.camera.up, deltaX);
+		this.tmp.set(this.camera.direction).crs(this.camera.up).nor();
+		this.camera.direction.rotate(this.tmp, deltaY);
+		/* this.camera.up.rotate(this.tmp, deltaY); */
+
 		return true;
 	}
 
