@@ -73,9 +73,9 @@ public class BitmapHandler {
 
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 
-		for (int i = firstFrame; i < lastFrame; i++) {
-			int x = ((i - 1) % spritesPerRow) * spriteWidth;
-			int y = ((i - 1) / spritesPerRow) * spriteHeight;
+		for (int i = 0; i <= lastFrame - firstFrame; i++) {
+			int x = (i % spritesPerRow) * spriteWidth;
+			int y = (i / spritesPerRow) * spriteHeight;
 
 			frames.add(new TextureRegion(ss, x, y, spriteWidth, spriteHeight));
 		}

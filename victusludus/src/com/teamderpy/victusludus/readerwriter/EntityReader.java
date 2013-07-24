@@ -65,6 +65,10 @@ public class EntityReader implements IObjectReader {
 									System.out.println("found entity main height node");
 
 									e.setHeight(Integer.valueOf(mainLevel.getValue()));
+								} else if (mainLevel.getId().equalsIgnoreCase("width")) {
+									System.out.println("found entity main width node");
+
+									e.setWidth(Integer.valueOf(mainLevel.getValue()));
 								} else {
 									System.out.println("mainLevel");
 									this.logError(f.path(), r, mainLevel);
@@ -119,6 +123,9 @@ public class EntityReader implements IObjectReader {
 											this.logError(f.path(), r, iconLevel);
 										}
 									}
+								} else if (graphicsLevel.getId().equalsIgnoreCase("billboard")) {
+									System.out.println("found entity graphics billboard node");
+									e.setBillboard(Boolean.valueOf(graphicsLevel.getValue()));
 								} else if (graphicsLevel.getId().equalsIgnoreCase("animation")) {
 									System.out.println("found entity graphics animation node");
 
@@ -129,6 +136,8 @@ public class EntityReader implements IObjectReader {
 
 									int firstFrame = 1;
 									int lastFrame = 1;
+									int framesPerRow = 1;
+									int rowsPerSprite = 1;
 									int speed = 1000;
 
 									while (r.peek() != null && r.peek().getNode().equalsIgnoreCase("animation")) {
@@ -144,6 +153,12 @@ public class EntityReader implements IObjectReader {
 										} else if (animationLevel.getId().equalsIgnoreCase("end_frame")) {
 											System.out.println("found entity graphics animation end_frame node");
 											lastFrame = Integer.valueOf(animationLevel.getValue());
+										} else if (animationLevel.getId().equalsIgnoreCase("frames_per_row")) {
+											System.out.println("found entity graphics animation frames_per_row node");
+											framesPerRow = Integer.valueOf(animationLevel.getValue());
+										} else if (animationLevel.getId().equalsIgnoreCase("rows_in_sprite")) {
+											System.out.println("found entity graphics animation rows_in_sprite node");
+											rowsPerSprite = Integer.valueOf(animationLevel.getValue());
 										} else if (animationLevel.getId().equalsIgnoreCase("speed")) {
 											System.out.println("found entity graphics animation speed node");
 											speed = Integer.valueOf(animationLevel.getValue());
@@ -156,7 +171,7 @@ public class EntityReader implements IObjectReader {
 									e.getAnimationHash().put(
 										animationID,
 										BitmapHandler.LoadAnimationSheet(VictusLudusGame.resources.getTextureAtlasEntities(),
-											animationPath, 16, 1, firstFrame, lastFrame, speed));
+											animationPath, framesPerRow, rowsPerSprite, firstFrame, lastFrame, speed));
 								} else {
 									System.out.println("graphicsLevel");
 									this.logError(f.path(), r, graphicsLevel);

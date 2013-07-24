@@ -188,7 +188,17 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		this.pcamera.rotate(-35.264F, 1, 0, 0);
 		this.pcamera.rotate(45F, 0, 1, 0);
 
-		this.map.addEntity(new GameEntityInstance("rat", (int)camX, (int)camY, (int)camZ, this.map));
+		this.map.addEntity(new GameEntityInstance("rat", (int)camX, (int)this.map.getHighest(camX, camZ), (int)camZ, this.map));
+		this.map.addEntity(new GameEntityInstance("nodule", (int)camX - 5, (int)this.map.getHighest(camX - 5, camZ - 5),
+			(int)camZ - 5, this.map));
+		this.map.addEntity(new GameEntityInstance("bone_marrow", (int)camX + 5, (int)this.map.getHighest(camX + 5, camZ + 5),
+			(int)camZ + 5, this.map));
+		this.map.addEntity(new GameEntityInstance("alveolus", (int)camX + 8, (int)this.map.getHighest(camX + 8, camZ + 8),
+			(int)camZ + 8, this.map));
+		this.map.addEntity(new GameEntityInstance("red_blood_cell", (int)camX + 14, (int)this.map.getHighest(camX + 14, camZ + 2),
+			(int)camZ + 2, this.map));
+		this.map.addEntity(new GameEntityInstance("red_blood_cell", 0, (int)this.map.getHighest(0, 0), 0, this.map));
+		this.map.addEntity(new GameEntityInstance("desk", 6, (int)this.map.getHighest(6, 6), 6, this.map));
 
 		/* the game renderer */
 		this.gameRenderer = new GameRenderer(this);
@@ -231,7 +241,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 			/* beware of concurrent modification! */
 			for (int i = 0; i < this.map.getEntities().size(); i++) {
-				this.map.getEntities().get(i).tick();
+				this.map.getEntities().get(i).tick(deltaTime);
 			}
 		}
 	}

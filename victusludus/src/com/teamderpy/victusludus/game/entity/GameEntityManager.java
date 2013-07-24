@@ -33,7 +33,7 @@ public class GameEntityManager {
 	 * @param map the map the entity belongs to
 	 */
 	public void add (final GameEntityInstance ge) {
-		this.gameEntityList.add(ge.pos, ge);
+		this.gameEntityList.add(ge.getPos(), ge);
 	}
 
 	/**
@@ -63,8 +63,8 @@ public class GameEntityManager {
 	 */
 	public void move (final Vector3 coord, final GameEntityInstance ge) {
 		/* re-index then set position */
-		this.gameEntityList.remove(ge.pos, ge);
-		ge.pos = coord;
+		this.gameEntityList.remove(ge.getPos(), ge);
+		ge.setPos(coord);
 		this.gameEntityList.add(coord, ge);
 	}
 }

@@ -197,7 +197,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = u1;
+		vertices[vertexOffset++] = u2;
 		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
@@ -207,7 +207,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = u1;
-		vertices[vertexOffset++] = v1;
+		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
 		vertices[vertexOffset++] = 0;
@@ -215,7 +215,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = u2;
+		vertices[vertexOffset++] = u1;
 		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
@@ -225,7 +225,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = u2;
-		vertices[vertexOffset++] = v2;
+		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
 		vertices[vertexOffset++] = 0;
@@ -246,7 +246,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = u1;
+		vertices[vertexOffset++] = u2;
 		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = -1;
@@ -256,7 +256,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = u1;
-		vertices[vertexOffset++] = v1;
+		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = -1;
 		vertices[vertexOffset++] = 0;
@@ -264,7 +264,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = u2;
+		vertices[vertexOffset++] = u1;
 		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = -1;
@@ -274,7 +274,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = u2;
-		vertices[vertexOffset++] = v2;
+		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = -1;
 		vertices[vertexOffset++] = 0;
@@ -295,7 +295,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = u1;
+		vertices[vertexOffset++] = u2;
 		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = -1;
 		vertices[vertexOffset++] = 0;
@@ -305,7 +305,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = u1;
-		vertices[vertexOffset++] = v1;
+		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = -1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
@@ -313,7 +313,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = u2;
+		vertices[vertexOffset++] = u1;
 		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = -1;
 		vertices[vertexOffset++] = 0;
@@ -323,7 +323,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = u2;
-		vertices[vertexOffset++] = v2;
+		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = -1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
@@ -344,7 +344,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = u1;
+		vertices[vertexOffset++] = u2;
 		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
@@ -354,7 +354,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = u1;
-		vertices[vertexOffset++] = v1;
+		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
 		vertices[vertexOffset++] = 0;
@@ -362,7 +362,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = u2;
+		vertices[vertexOffset++] = u1;
 		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
@@ -372,7 +372,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = u2;
-		vertices[vertexOffset++] = v2;
+		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
 		vertices[vertexOffset++] = 0;
@@ -393,7 +393,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = u1;
+		vertices[vertexOffset++] = u2;
 		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
@@ -403,7 +403,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = u1;
-		vertices[vertexOffset++] = v1;
+		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
@@ -411,7 +411,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
-		vertices[vertexOffset++] = u2;
+		vertices[vertexOffset++] = u1;
 		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
@@ -421,7 +421,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z;
 		vertices[vertexOffset++] = u2;
-		vertices[vertexOffset++] = v2;
+		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 1;
@@ -442,7 +442,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x;
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = u1;
+		vertices[vertexOffset++] = u2;
 		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
@@ -452,7 +452,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = u1;
-		vertices[vertexOffset++] = v1;
+		vertices[vertexOffset++] = v2;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = -1;
@@ -460,7 +460,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.x + x + 1;
 		vertices[vertexOffset++] = offset.y + y + 1;
 		vertices[vertexOffset++] = offset.z + z + 1;
-		vertices[vertexOffset++] = u2;
+		vertices[vertexOffset++] = u1;
 		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
@@ -470,7 +470,7 @@ public class Chunk {
 		vertices[vertexOffset++] = offset.y + y;
 		vertices[vertexOffset++] = offset.z + z + 1;
 		vertices[vertexOffset++] = u2;
-		vertices[vertexOffset++] = v2;
+		vertices[vertexOffset++] = v1;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = 0;
 		vertices[vertexOffset++] = -1;

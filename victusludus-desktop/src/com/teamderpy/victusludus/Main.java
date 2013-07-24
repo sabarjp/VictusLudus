@@ -20,7 +20,7 @@ public class Main {
 
 	public static void main (final String[] args) {
 		/*
-		 * s dynamically pack textures
+		 * dynamically pack textures
 		 */
 		if (Main.IS_DEVELOPMENT_MODE) {
 			final Settings settings = new Settings();

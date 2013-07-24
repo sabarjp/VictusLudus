@@ -15,12 +15,14 @@ import com.teamderpy.victusludus.game.map.Map;
  * The Class Entity which is loaded and populated based on mod files
  */
 public class GameEntity {
-
 	/** The id. */
 	private String id;
 
 	/** The name. */
 	private String name;
+
+	/** Whether this entity is a billboard or not */
+	private boolean isBillboard;
 
 	/** The parent button node. */
 	private String parentButtonNode;
@@ -43,6 +45,9 @@ public class GameEntity {
 	/** Height in block units */
 	private int height;
 
+	/** width in block units */
+	private int width;
+
 	/**
 	 * Instantiates a new entity.
 	 */
@@ -50,6 +55,7 @@ public class GameEntity {
 		// this.buttonSpriteSheet = null;
 
 		this.behaviorList = null;
+		this.isBillboard = false;
 
 		this.name = "";
 		this.setBuildMode(EnumBuildMode.SINGLE);
@@ -254,5 +260,21 @@ public class GameEntity {
 
 	public void setHeight (final int height) {
 		this.height = height;
+	}
+
+	public int getWidth () {
+		return this.width;
+	}
+
+	public void setWidth (final int width) {
+		this.width = width;
+	}
+
+	public boolean isBillboard () {
+		return this.isBillboard;
+	}
+
+	public void setBillboard (final boolean isBillboard) {
+		this.isBillboard = isBillboard;
 	}
 }

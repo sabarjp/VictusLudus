@@ -2,11 +2,11 @@
 package com.teamderpy.victusludus.game.tile;
 
 import com.badlogic.gdx.math.Vector3;
-import com.teamderpy.victusludus.game.EuclideanObject;
+import com.teamderpy.victusludus.game.IPosition;
 import com.teamderpy.victusludus.game.map.Map;
 
 /** The Class GameTile. */
-public class GameTile extends EuclideanObject {
+public class GameTile implements IPosition {
 	public static final byte ID_GRASS = 0x1;
 	public static final byte ID_GRID = 0x2;
 	public static final byte ID_DIRT = 0x3;
@@ -28,6 +28,8 @@ public class GameTile extends EuclideanObject {
 	/** The id. */
 	private int id;
 
+	private Vector3 pos;
+
 	/**
 	 * Instantiates a new game tile.
 	 * 
@@ -36,6 +38,7 @@ public class GameTile extends EuclideanObject {
 	 */
 	public GameTile (final int id, final Map map) {
 		this.id = id;
+		this.pos = new Vector3(-1, -1, -1);
 	}
 
 	/**
@@ -51,7 +54,7 @@ public class GameTile extends EuclideanObject {
 		super();
 		this.id = id;
 
-		super.setWorldCoord(x, y, z);
+		this.pos = new Vector3(x, y, z);
 	}
 
 	/**
@@ -72,22 +75,21 @@ public class GameTile extends EuclideanObject {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the world position of the object
-	 * 
-	 * @return the pos
-	 */
+	@Override
 	public Vector3 getPos () {
-		return super.pos;
+		return this.pos;
 	}
 
-	/**
-	 * Sets the world position of the object
-	 * 
-	 * @param pos the new pos
-	 */
+	@Override
 	public void setPos (final Vector3 pos) {
-		super.pos = pos;
+		this.pos = pos;
+	}
+
+	@Override
+	public void setPos (final float x, final float y, final float z) {
+		this.pos.x = x;
+		this.pos.y = y;
+		this.pos.z = z;
 	}
 
 	public int getTileTopSpriteSheetRow () {
@@ -121,4 +123,5 @@ public class GameTile extends EuclideanObject {
 	public static int getTileSideSpriteSheetColumn (final byte id) {
 		return (id - 1) % GameTile.TILES_PER_ROW;
 	}
+
 }

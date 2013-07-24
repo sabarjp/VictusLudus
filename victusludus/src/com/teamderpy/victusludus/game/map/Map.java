@@ -4,19 +4,12 @@ package com.teamderpy.victusludus.game.map;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
-import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.game.entity.GameEntityInstance;
@@ -25,7 +18,7 @@ import com.teamderpy.victusludus.game.entity.GameEntityManager;
 /**
  * The Class Map.
  */
-public class Map implements RenderableProvider {
+public class Map {
 	/** The maximum height of a map */
 	private static final int MAXIMUM_DEPTH = 128;
 
@@ -33,7 +26,6 @@ public class Map implements RenderableProvider {
 	public static final int CHUNK_SIZE_X = 16;
 
 	/** Size of a chunk in the y direction */
-
 	public static final int CHUNK_SIZE_Y = 16;
 
 	/** Size of a chunk in the z direction */
@@ -93,7 +85,7 @@ public class Map implements RenderableProvider {
 	// private GameTile[][][] tiles;
 
 	/** The entity manager. */
-	private GameEntityManager entityManager;
+	public GameEntityManager entityManager;
 
 	/** The depth. */
 	private int depth;
@@ -358,118 +350,6 @@ public class Map implements RenderableProvider {
 		}
 	}
 
-	@Override
-	public void getRenderables (final Array<Renderable> renderables, final Pool<Renderable> pool) {
-		/* get voxels to render */
-		this.renderedChunks = 0;
-		for (int i = 0; i < this.chunks.length; i++) {
-			Chunk chunk = this.chunks[i];
-			Mesh mesh = this.meshes[i];
-
-			if (this.dirty[i]) {
-				int numVerts = chunk.calculateVertices(this.vertices);
-				this.numVertices[i] = numVerts / 4 * 6;
-				mesh.setVertices(this.vertices, 0, numVerts * Chunk.VERTEX_SIZE);
-				this.dirty[i] = false;
-			}
-
-			if (this.numVertices[i] == 0) {
-				continue;
-			}
-
-			Renderable renderable = pool.obtain();
-			renderable.material = this.materials[i];
-			renderable.mesh = mesh;
-			renderable.meshPartOffset = 0;
-			renderable.meshPartSize = this.numVertices[i];
-			renderable.primitiveType = GL20.GL_TRIANGLES;
-			renderables.add(renderable);
-			this.renderedChunks++;
-		}
-
-		/* get entities to render */
-		for (GameEntityInstance entity : this.entityManager.getEntities()) {
-			if (entity.getMesh() == null) {
-				continue;
-			}
-
-			if (entity.isDirty()) {
-				int numVerts = entity.calculateVertices();
-				entity.setNumVerts(numVerts / 4 * 6);
-				entity.getMesh().setVertices(entity.getVertices(), 0, numVerts * EuclideanObject.VERTEX_SIZE);
-				entity.getMesh().transform(
-					new Matrix4().rotate(new Vector3(0, 0, 1), this.game.getPcamera().direction.cpy().scl(1, 0, 1)).trn(entity.pos));
-				/*
-				 * entity.getMesh().transform(new Matrix4(new Quaternion(new
-				 * Vector3(0, 1, 0), 180)));
-				 */
-				entity.setDirty(true);
-			}
-
-			Renderable renderable = pool.obtain();
-			renderable.material = entity.getMaterial();
-			renderable.mesh = entity.getMesh();
-			renderable.meshPartOffset = 0;
-			renderable.meshPartSize = entity.getNumVerts();
-			renderable.primitiveType = GL20.GL_TRIANGLES;
-			renderables.add(renderable);
-		}
-	}
-
-	/**
-	 * Instantiates a new map.
-	 * 
-	 * @param width the width
-	 * @param height the height
-	 */
-
-	/*
-	 * public Map (final GameSettings requestedSettings, final Game game) {
-	 * this.game = game; this.width = requestedSettings.getRequestedMapWidth();
-	 * this.height = requestedSettings.getRequestedMapHeight(); this.depth =
-	 * Map.MAXIMUM_DEPTH;
-	 * 
-	 * this.lights = new Lights(); this.lights.ambientLight.set(0.7f, 0.7f, 0.7f,
-	 * 1);
-	 * 
-	 * this.tiles = new GameTile[this.depth][this.width][this.height];
-	 * 
-	 * LayeredGenerator gen = new
-	 * LayeredGenerator((int)requestedSettings.getRequestedMapScale(),
-	 * requestedSettings.getRequestedMapRandomness()); int[][] mapArray =
-	 * gen.generateInt(this.width, this.height, true);
-	 * MatrixMath.smooth(mapArray,
-	 * (int)requestedSettings.getRequestedMapSmoothness());
-	 * MatrixMath.capMax(mapArray, this.depth - 1);
-	 * 
-	 * int highestPoint = 0; int lowestPoint = 9999;
-	 * 
-	 * // find the highest point for (int[] row : mapArray) { for (int element :
-	 * row) { if (element > highestPoint) { highestPoint = element; }
-	 * 
-	 * if (element < lowestPoint) { lowestPoint = element; } } }
-	 * 
-	 * // apply the plateau factor MatrixMath.capMax(mapArray, (int)(lowestPoint
-	 * + (highestPoint - lowestPoint) * (1.0F -
-	 * requestedSettings.getRequestedMapPlateauFactor())));
-	 * MatrixMath.capMin(mapArray, (int)(lowestPoint + (highestPoint -
-	 * lowestPoint) * requestedSettings.getRequestedMapPlateauFactor()));
-	 * 
-	 * // create actual terrain for (int i = 0; i < mapArray.length; i++) { for
-	 * (int j = 0; j < mapArray[i].length; j++) { for (int k = 0; k <
-	 * mapArray[i][j]; k++) { this.tiles[k][i][j] = new
-	 * GameTile(GameTile.ID_GRASS, i, j, k, this); if (mapArray[i][j] >
-	 * this.highestPoint) { this.highestPoint = mapArray[i][j]; } } } }
-	 * 
-	 * // this.fillTilesInLayer(0, GameTile.ID_AGAR);
-	 * 
-	 * this.entityManager = new GameEntityManager(this);
-	 * 
-	 * this.tileOverlayList = new Array<GameTile>();
-	 * 
-	 * this.lightMap = new LightMap(this, this.depth); }
-	 */
-
 	/**
 	 * Gets the entity manager.
 	 * 
@@ -480,19 +360,6 @@ public class Map implements RenderableProvider {
 	}
 
 	/**
-	 * Fill tiles in layer.
-	 * 
-	 * @param depth the depth
-	 * @param tileID the tile id
-	 */
-	/*
-	 * public void fillTilesInLayer (final int depth, final byte tileID) { for
-	 * (int i = 0; i < this.tiles[depth].length; i++) { for (int j = 0; j <
-	 * this.tiles[depth][i].length; j++) { this.tiles[depth][i][j] = new
-	 * GameTile(tileID, i, j, depth, this); } } }
-	 */
-
-	/**
 	 * Adds the entity.
 	 * 
 	 * @param entity the entity
@@ -500,26 +367,6 @@ public class Map implements RenderableProvider {
 	public void addEntity (final GameEntityInstance entity) {
 		this.entityManager.add(entity);
 	}
-
-	/**
-	 * Gets the layer.
-	 * 
-	 * @param depth the depth
-	 * @return the layer
-	 */
-	/*
-	 * public GameTile[][] getLayer (final int depth) { return this.tiles[depth];
-	 * }
-	 */
-
-	/**
-	 * Gets the map.
-	 * 
-	 * @return the map
-	 */
-	/*
-	 * public GameTile[][][] getMap () { return this.tiles; }
-	 */
 
 	/**
 	 * Gets the entities.

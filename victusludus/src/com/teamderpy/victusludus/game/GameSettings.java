@@ -1,13 +1,12 @@
+
 package com.teamderpy.victusludus.game;
 
 import com.teamderpy.victusludus.engine.ISettings;
 
-
-
 /**
  * The Class GameSettings.
  */
-public class GameSettings implements ISettings{
+public class GameSettings implements ISettings {
 
 	/** The requested map height. */
 	private int requestedMapHeight;
@@ -29,109 +28,109 @@ public class GameSettings implements ISettings{
 
 	/**
 	 * Gets the requested map height.
-	 *
+	 * 
 	 * @return the requested map height
 	 */
-	public int getRequestedMapHeight() {
+	public int getRequestedMapHeight () {
 		return this.requestedMapHeight;
 	}
 
 	/**
 	 * Sets the requested map height.
-	 *
+	 * 
 	 * @param requestedMapHeight the new requested map height
 	 */
-	public void setRequestedMapHeight(final int requestedMapHeight) {
+	public void setRequestedMapHeight (final int requestedMapHeight) {
 		this.requestedMapHeight = requestedMapHeight;
 	}
 
 	/**
 	 * Gets the requested map width.
-	 *
+	 * 
 	 * @return the requested map width
 	 */
-	public int getRequestedMapWidth() {
+	public int getRequestedMapWidth () {
 		return this.requestedMapWidth;
 	}
 
 	/**
 	 * Sets the requested map width.
-	 *
+	 * 
 	 * @param requestedMapWidth the new requested map width
 	 */
-	public void setRequestedMapWidth(final int requestedMapWidth) {
+	public void setRequestedMapWidth (final int requestedMapWidth) {
 		this.requestedMapWidth = requestedMapWidth;
 	}
 
 	/**
 	 * Gets the requested map smoothness.
-	 *
+	 * 
 	 * @return the requested map smoothness
 	 */
-	public float getRequestedMapSmoothness() {
+	public float getRequestedMapSmoothness () {
 		return this.requestedMapSmoothness;
 	}
 
 	/**
 	 * Sets the requested map smoothness.
-	 *
+	 * 
 	 * @param requestedMapSmoothness the new requested map smoothness
 	 */
-	public void setRequestedMapSmoothness(final float requestedMapSmoothness) {
+	public void setRequestedMapSmoothness (final float requestedMapSmoothness) {
 		this.requestedMapSmoothness = requestedMapSmoothness;
 	}
 
 	/**
 	 * Gets the requested map scale.
-	 *
+	 * 
 	 * @return the requested map scale
 	 */
-	public float getRequestedMapScale() {
+	public float getRequestedMapScale () {
 		return this.requestedMapScale;
 	}
 
 	/**
 	 * Sets the requested map scale.
-	 *
+	 * 
 	 * @param requestedMapScale the new requested map scale
 	 */
-	public void setRequestedMapScale(final float requestedMapScale) {
+	public void setRequestedMapScale (final float requestedMapScale) {
 		this.requestedMapScale = requestedMapScale;
 	}
 
 	/**
 	 * Gets the requested map randomness.
-	 *
+	 * 
 	 * @return the requested map randomness
 	 */
-	public float getRequestedMapRandomness() {
+	public float getRequestedMapRandomness () {
 		return this.requestedMapRandomness;
 	}
 
 	/**
 	 * Sets the requested map randomness.
-	 *
+	 * 
 	 * @param requestedMapRandomness the new requested map randomness
 	 */
-	public void setRequestedMapRandomness(final float requestedMapRandomness) {
+	public void setRequestedMapRandomness (final float requestedMapRandomness) {
 		this.requestedMapRandomness = requestedMapRandomness;
 	}
 
 	/**
 	 * Gets the requested map plateau factor.
-	 *
+	 * 
 	 * @return the requested map plateau factor
 	 */
-	public float getRequestedMapPlateauFactor() {
+	public float getRequestedMapPlateauFactor () {
 		return this.requestedMapPlateauFactor;
 	}
 
 	/**
 	 * Sets the requested map plateau factor.
-	 *
+	 * 
 	 * @param requestedMapPlateauFactor the new requested map plateau factor
 	 */
-	public void setRequestedMapPlateauFactor(final float requestedMapPlateauFactor) {
+	public void setRequestedMapPlateauFactor (final float requestedMapPlateauFactor) {
 		this.requestedMapPlateauFactor = requestedMapPlateauFactor;
 	}
 }

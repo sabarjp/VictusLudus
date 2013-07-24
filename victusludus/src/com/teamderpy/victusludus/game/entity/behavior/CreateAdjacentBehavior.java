@@ -52,10 +52,12 @@ public class CreateAdjacentBehavior extends EntityBehavior {
 
 		List<Vector3> adjacentCoords = new LinkedList<Vector3>();
 
-		adjacentCoords.add(new Vector3(ge.pos.x + 1, ge.pos.y, ge.pos.z));
-		adjacentCoords.add(new Vector3(ge.pos.x - 1, ge.pos.y, ge.pos.z));
-		adjacentCoords.add(new Vector3(ge.pos.x, ge.pos.y - 1, ge.pos.z));
-		adjacentCoords.add(new Vector3(ge.pos.x, ge.pos.y + 1, ge.pos.z));
+		Vector3 pos = ge.getPos();
+
+		adjacentCoords.add(new Vector3(pos.x + 1, pos.y, pos.z));
+		adjacentCoords.add(new Vector3(pos.x - 1, pos.y, pos.z));
+		adjacentCoords.add(new Vector3(pos.x, pos.y - 1, pos.z));
+		adjacentCoords.add(new Vector3(pos.x, pos.y + 1, pos.z));
 
 		for (int i = 0; i < this.count; i++) {
 			Collections.shuffle(adjacentCoords);
