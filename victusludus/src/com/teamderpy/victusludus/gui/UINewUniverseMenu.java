@@ -17,8 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.engine.ISettings;
+import com.teamderpy.victusludus.engine.SettingsImpl;
 import com.teamderpy.victusludus.game.cosmos.Cosmos;
-import com.teamderpy.victusludus.game.cosmos.UniverseSettings;
 
 public class UINewUniverseMenu extends UI {
 	private TextField universeNameField;
@@ -169,12 +170,12 @@ public class UINewUniverseMenu extends UI {
 				UINewUniverseMenu.this.soundSelect.play();
 
 				if (UINewUniverseMenu.this.universeNameField.getText().length() > 0) {
-					UniverseSettings requestedSettings = new UniverseSettings();
+					ISettings requestedSettings = new SettingsImpl();
 
-					requestedSettings.setRequestedUniAge(UINewUniverseMenu.this.universeAgeSlider.getValue());
-					requestedSettings.setRequestedStarMassDistribution(UINewUniverseMenu.this.starMassSlider.getValue());
-					requestedSettings.setRequestedSeed(UINewUniverseMenu.longHashString(UINewUniverseMenu.this.universeSeedField
-						.getText()));
+					requestedSettings.addValue("universeAge", UINewUniverseMenu.this.universeAgeSlider.getValue());
+					requestedSettings.addValue("starMassDistribution", UINewUniverseMenu.this.starMassSlider.getValue());
+					requestedSettings.addValue("seed",
+						UINewUniverseMenu.longHashString(UINewUniverseMenu.this.universeSeedField.getText()));
 
 					VictusLudusGame.engine.changeUI(null);
 					VictusLudusGame.engine.changeView(new Cosmos(), requestedSettings);

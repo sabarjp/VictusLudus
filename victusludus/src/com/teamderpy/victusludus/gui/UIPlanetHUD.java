@@ -11,8 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.teamderpy.victusludus.VictusLudusGame;
+import com.teamderpy.victusludus.engine.ISettings;
+import com.teamderpy.victusludus.engine.SettingsImpl;
 import com.teamderpy.victusludus.game.Game;
-import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.renderer.cosmos.CosmosRenderer;
 
@@ -86,14 +87,15 @@ public class UIPlanetHUD extends UI {
 		playButton.addListener(new ChangeListener() {
 			@Override
 			public void changed (final ChangeEvent event, final Actor actor) {
-				GameSettings requestedSettings = new GameSettings();
+				ISettings requestedSettings = new SettingsImpl();
 
-				requestedSettings.setRequestedMapHeight(5);
-				requestedSettings.setRequestedMapWidth(5);
-				requestedSettings.setRequestedMapSmoothness(2.0F); // 0-10
-				requestedSettings.setRequestedMapRandomness(0.25F); // 0-1.5
-				requestedSettings.setRequestedMapScale(8F); // 1-12
-				requestedSettings.setRequestedMapPlateauFactor(0.2F); // 0-0.3
+				requestedSettings.addValue("useOrtho", false);
+				requestedSettings.addValue("mapHeight", 5);
+				requestedSettings.addValue("mapWidth", 5);
+				requestedSettings.addValue("mapSmoothness", 2.0f); // 0-10
+				requestedSettings.addValue("mapRandomness", 0.25f); // 0-1.5
+				requestedSettings.addValue("mapScale", 8f); // 1-12
+				requestedSettings.addValue("mapPlateauFactor", 0.2f); // 0-0.3
 
 				VictusLudusGame.engine.changeUI(null);
 				VictusLudusGame.engine.changeView(new Game(), requestedSettings);

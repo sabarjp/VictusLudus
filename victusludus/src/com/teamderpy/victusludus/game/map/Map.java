@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.math.Vector3;
+import com.teamderpy.victusludus.engine.ISettings;
 import com.teamderpy.victusludus.game.Game;
-import com.teamderpy.victusludus.game.GameSettings;
 import com.teamderpy.victusludus.game.entity.GameEntityInstance;
 import com.teamderpy.victusludus.game.entity.GameEntityManager;
 
@@ -99,12 +99,12 @@ public class Map {
 	/** The highest point. */
 	private int highestPoint;
 
-	public Map (final Game game, final GameSettings requestedSettings, final TextureRegion tileTextures) {
+	public Map (final Game game, final ISettings requestedSettings, final TextureRegion tileTextures) {
 		this.game = game;
 		this.tileTextures = tileTextures;
 
-		int chunksX = requestedSettings.getRequestedMapWidth();
-		int chunksZ = requestedSettings.getRequestedMapHeight();
+		int chunksX = requestedSettings.getInt("mapWidth");
+		int chunksZ = requestedSettings.getInt("mapHeight");
 		int chunksY = Map.MAXIMUM_DEPTH / 16;
 
 		this.chunks = new Chunk[chunksX * chunksY * chunksZ];

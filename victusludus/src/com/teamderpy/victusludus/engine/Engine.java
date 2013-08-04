@@ -6,7 +6,6 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -118,9 +117,6 @@ public class Engine implements ResizeListener {
 	/** the orthographic camera */
 	public OrthographicCamera ocamera;
 
-	/** the perspective camera */
-	public PerspectiveCamera pcamera;
-
 	/** frames per second */
 	private int fps = 0;
 
@@ -132,9 +128,8 @@ public class Engine implements ResizeListener {
 	 * 
 	 * @param camera the orthographic camera
 	 */
-	public Engine (final OrthographicCamera camera, final PerspectiveCamera pcamera) {
+	public Engine (final OrthographicCamera camera) {
 		this.ocamera = camera;
-		this.pcamera = pcamera;
 
 		this.shapeRenderer = new ShapeRenderer();
 		this.shapeRenderer.setProjectionMatrix(camera.combined);
@@ -423,11 +418,6 @@ public class Engine implements ResizeListener {
 			this.fps = (int)Math.round((this.framesSinceReset * (1000.0 / interval)));
 			this.tps = (int)Math.round((this.ticksSinceReset * (1000.0 / interval)));
 
-			// System.err.println(this.framesSinceReset + " frames in " + interval
-// + " time");
-			// System.err.println(this.ticksSinceReset + "  ticks in " + interval +
-// " time");
-
 			this.framesSinceReset = 0;
 			this.ticksSinceReset = 0;
 			this.lastFPSResetTime = Time.getTimeMilli();
@@ -624,9 +614,6 @@ public class Engine implements ResizeListener {
 	public void changeCamera (final int width, final int height) {
 		this.ocamera.setToOrtho(true, width, height);
 		this.ocamera.update();
-		this.pcamera.viewportWidth = width;
-		this.pcamera.viewportHeight = height;
-		this.pcamera.update();
 		EasyGL.setViewport();
 	}
 

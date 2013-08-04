@@ -4,9 +4,12 @@ package com.teamderpy.victusludus.game;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -61,7 +64,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	private GameCamera gameCamera;
 
 	/** Inherited from the game engine */
-	private PerspectiveCamera pcamera;
+	private Camera camera;
 
 	/** The input controller to move around the camera */
 	private RTSCameraController camController;
@@ -121,13 +124,30 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			throw new GameException();
 		}
 
-		/* camera */
-		this.setPcamera(VictusLudusGame.engine.pcamera);
-		// this.camController = new CameraInputController(this.pcamera);
-		this.camController = new RTSCameraController(this.pcamera);
+		/* instantiate the camera */
+
+		Camera pcam = new PerspectiveCamera(67, VictusLudusGame.engine.X_RESOLUTION(), VictusLudusGame.engine.Y_RESOLUTION());
+		pcam.near = 0.1f;
+		pcam.far = 1000f;
+		pcam.update();
+		pcam.rotate(-35.264F, 1, 0, 0);
+		pcam.rotate(45F, 0, 1, 0);
+
+		if (settings.getBoolean("useOrtho")) {
+			this.camera = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));
+			this.camera.position.set(pcam.position);
+			this.camera.direction.set(pcam.direction);
+			this.camera.near = 0.0001f;
+			this.camera.far = 10000;
+			this.camera.update();
+		} else {
+			this.camera = pcam;
+		}
+
+		this.camController = new RTSCameraController(this.camera);
 		VictusLudusGame.engine.inputMultiplexer.addProcessor(this.camController);
 
-		GameSettings requestedSettings = (GameSettings)settings;
+		ISettings requestedSettings = settings;
 
 		/* light */
 		this.solarTintMap.put(24.00F, new Color(0.13F, 0.04F, 0.27F, 1));
@@ -177,16 +197,13 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		/* setup the camera */
 		this.gameCamera = new GameCamera();
 
-		/* center camera */
+		/* centers the camera */
 		this.gameCamera.setOffsetX(this.gameDimensions.getWidth() / 2);
 
 		float camX = this.map.voxelsX / 2f;
 		float camZ = this.map.voxelsZ / 2f;
 		float camY = this.map.getHighest(camX, camZ) + 1.5f;
-		this.pcamera.position.set(camX, camY, camZ);
-
-		this.pcamera.rotate(-35.264F, 1, 0, 0);
-		this.pcamera.rotate(45F, 0, 1, 0);
+		this.camera.position.set(camX, camY, camZ);
 
 		this.map.addEntity(new GameEntityInstance("rat", (int)camX, (int)this.map.getHighest(camX, camZ), (int)camZ, this.map));
 		this.map.addEntity(new GameEntityInstance("nodule", (int)camX - 5, (int)this.map.getHighest(camX - 5, camZ - 5),
@@ -763,12 +780,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		return false;
 	}
 
-	public PerspectiveCamera getPcamera () {
-		return this.pcamera;
-	}
-
-	public void setPcamera (final PerspectiveCamera pcamera) {
-		this.pcamera = pcamera;
+	public Camera getCamera () {
+		return this.camera;
 	}
 
 	/**

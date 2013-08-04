@@ -7,7 +7,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -31,7 +30,6 @@ public class VictusLudusGame implements ApplicationListener {
 	public static ResourceBin resources = new ResourceBin();
 
 	private OrthographicCamera ocamera;
-	private PerspectiveCamera pcamera;
 
 	private SpriteBatch spriteBatch;
 	private ModelBatch modelBatch;
@@ -53,16 +51,11 @@ public class VictusLudusGame implements ApplicationListener {
 		this.ocamera.setToOrtho(true, w, h);
 		this.ocamera.update();
 
-		this.pcamera = new PerspectiveCamera(67, w, h);
-		this.pcamera.near = 0.1f;
-		this.pcamera.far = 1000f;
-		this.pcamera.update();
-
 		this.spriteBatch = new SpriteBatch();
 		this.spriteBatch.disableBlending();
 		this.modelBatch = new ModelBatch();
 
-		VictusLudusGame.engine = new Engine(this.ocamera, this.pcamera);
+		VictusLudusGame.engine = new Engine(this.ocamera);
 		VictusLudusGame.engine.initializeBegin();
 	}
 

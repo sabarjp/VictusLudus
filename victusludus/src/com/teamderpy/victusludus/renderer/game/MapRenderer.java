@@ -39,7 +39,7 @@ public class MapRenderer implements RenderableProvider {
 		DefaultShader.defaultCullFace = GL20.GL_FRONT;
 		GLES10Shader.defaultCullFace = GL20.GL_FRONT;
 
-		modelBatch.begin(this.game.getPcamera());
+		modelBatch.begin(this.game.getCamera());
 		modelBatch.render(this, this.game.getLights());
 		modelBatch.end();
 
@@ -89,7 +89,7 @@ public class MapRenderer implements RenderableProvider {
 				if (entity.getEntity().isBillboard()) {
 					entity.getMesh().transform(
 						new Matrix4().rotate(new Vector3(0, 0, 1),
-							entity.getPos().cpy().sub(this.game.getPcamera().position).scl(1, 0, 1).nor()).trn(entity.getPos()));
+							entity.getPos().cpy().sub(this.game.getCamera().position).scl(1, 0, 1).nor()).trn(entity.getPos()));
 				} else {
 					entity.getMesh().transform(
 						new Matrix4().rotate(new Vector3(0, 1, 0), entity.getDirection().getDegreesRotation()).trn(entity.getPos()));

@@ -60,12 +60,12 @@ public class Cosmos implements IView, MouseListener {
 			throw new GameException();
 		}
 
-		UniverseSettings requestedSettings = (UniverseSettings)settings;
-		this.seed = requestedSettings.getRequestedSeed();
+		ISettings requestedSettings = settings;
+		this.seed = requestedSettings.getLong("seed");
 
-		this.universe = new Universe(this.seed + 10523, requestedSettings.getRequestedStarMassDistribution());
+		this.universe = new Universe(this.seed + 10523, requestedSettings.getFloat("starMassDistribution"));
 
-		this.universe.create(new BigDecimal(requestedSettings.getRequestedUniAge() * 1000000000));
+		this.universe.create(new BigDecimal(requestedSettings.getFloat("universeAge") * 1000000000));
 
 		this.gameDimensions = new GameDimensions();
 
