@@ -89,7 +89,7 @@ public class UIPlanetHUD extends UI {
 			public void changed (final ChangeEvent event, final Actor actor) {
 				ISettings requestedSettings = new SettingsImpl();
 
-				requestedSettings.addValue("useOrtho", false);
+				requestedSettings.addValue("useOrtho", true);
 				requestedSettings.addValue("mapHeight", 5);
 				requestedSettings.addValue("mapWidth", 5);
 				requestedSettings.addValue("mapSmoothness", 2.0f); // 0-10

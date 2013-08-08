@@ -125,7 +125,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		}
 
 		/* instantiate the camera */
-
 		Camera pcam = new PerspectiveCamera(67, VictusLudusGame.engine.X_RESOLUTION(), VictusLudusGame.engine.Y_RESOLUTION());
 		pcam.near = 0.1f;
 		pcam.far = 1000f;
@@ -135,10 +134,9 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 		if (settings.getBoolean("useOrtho")) {
 			this.camera = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));
-			this.camera.position.set(pcam.position);
 			this.camera.direction.set(pcam.direction);
-			this.camera.near = 0.0001f;
-			this.camera.far = 10000;
+			this.camera.near = 0.1f;
+			this.camera.far = 1000f;
 			this.camera.update();
 		} else {
 			this.camera = pcam;
@@ -203,7 +201,12 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		float camX = this.map.voxelsX / 2f;
 		float camZ = this.map.voxelsZ / 2f;
 		float camY = this.map.getHighest(camX, camZ) + 1.5f;
-		this.camera.position.set(camX, camY, camZ);
+
+		if (settings.getBoolean("useOrtho")) {
+			this.camera.position.set(camX, camY + 10f, camZ);
+		} else {
+			this.camera.position.set(camX, camY, camZ);
+		}
 
 		this.map.addEntity(new GameEntityInstance("rat", (int)camX, (int)this.map.getHighest(camX, camZ), (int)camZ, this.map));
 		this.map.addEntity(new GameEntityInstance("nodule", (int)camX - 5, (int)this.map.getHighest(camX - 5, camZ - 5),
