@@ -134,6 +134,7 @@ public class PerlinNoiseGenerator {
 		for (int z = 0; z < map.voxelsZ; z++) {
 			for (int x = 0; x < map.voxelsX; x++) {
 				map.setColumn(x, heightMap[idx++], z, GameTile.ID_GRASS);
+				map.setHighestPointIfHigher((int)map.getHighest(x, z));
 			}
 		}
 	}

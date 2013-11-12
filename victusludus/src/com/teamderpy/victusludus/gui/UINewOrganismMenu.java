@@ -154,7 +154,12 @@ public class UINewOrganismMenu extends UI {
 					requestedSettings.addValue("organismAge", UINewOrganismMenu.this.worldAgeSlider.getValue());
 					requestedSettings.addValue("seed",
 						UINewOrganismMenu.longHashString(UINewOrganismMenu.this.organismSeedField.getText()));
-					requestedSettings.addValue("useOrtho", false);
+
+					if (UINewOrganismMenu.this.organismNameField.getText().equals("ortho")) {
+						requestedSettings.addValue("useOrtho", true);
+					} else {
+						requestedSettings.addValue("useOrtho", false);
+					}
 					requestedSettings.addValue("mapHeight", 5);
 					requestedSettings.addValue("mapWidth", 5);
 					requestedSettings.addValue("mapSmoothness", 2.0f); // 0-10

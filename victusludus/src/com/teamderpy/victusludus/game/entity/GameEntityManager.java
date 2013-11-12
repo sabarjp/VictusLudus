@@ -13,6 +13,7 @@ import com.teamderpy.victusludus.game.map.Map;
 public class GameEntityManager {
 	/** The game entity list. */
 	MultiMap<Vector3, GameEntityInstance> gameEntityList;
+	MultiMap<Vector3, GameEntityInstance> overlayList;
 
 	/** The map this belongs to */
 	Map map;
@@ -24,6 +25,7 @@ public class GameEntityManager {
 	public GameEntityManager (final Map map) {
 		this.map = map;
 		this.gameEntityList = new MultiMap<Vector3, GameEntityInstance>();
+		this.overlayList = new MultiMap<Vector3, GameEntityInstance>();
 	}
 
 	/**
@@ -37,12 +39,54 @@ public class GameEntityManager {
 	}
 
 	/**
+	 * Adds the game entity to the list
+	 * 
+	 * @param ge the GameEntity
+	 * @param map the map the entity belongs to
+	 */
+	public void addOverlay (final GameEntityInstance ge) {
+		this.overlayList.add(ge.getPos(), ge);
+	}
+
+	/**
 	 * Gets the entities.
 	 * 
 	 * @return the entities
 	 */
 	public Vector<GameEntityInstance> getEntities () {
 		return this.gameEntityList.getAllValues();
+	}
+
+	/**
+	 * Gets the overlay entities.
+	 * 
+	 * @return the entities
+	 */
+	public Vector<GameEntityInstance> getOverlayEntities () {
+		return this.overlayList.getAllValues();
+	}
+
+	/**
+	 * Clears all overlay entities.
+	 * 
+	 * @return the entities
+	 */
+	public void clearOverlayEntities () {
+		this.overlayList.clear();
+	}
+
+	/**
+	 * Gets all entities.
+	 * 
+	 * @return the entities
+	 */
+	public Vector<GameEntityInstance> getAllEntities () {
+		Vector<GameEntityInstance> combinedList = new Vector<GameEntityInstance>();
+
+		combinedList.addAll(this.gameEntityList.getAllValues());
+		combinedList.addAll(this.overlayList.getAllValues());
+
+		return combinedList;
 	}
 
 	/**

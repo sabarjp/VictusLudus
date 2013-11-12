@@ -179,6 +179,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 		this.map = new Map(this, requestedSettings, texture);
 		this.currentDepth = this.map.getHighestPoint() - 1;
+		this.gameCamera.setGamePlane(-(this.getCurrentDepth() + 1));
 
 		/* setup GUI */
 		this.changeUI(new UIGameHUD());
@@ -192,20 +193,29 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		if (settings.getBoolean("useOrtho")) {
 			this.gameCamera.getCamera().position.set(camX, camY + 10f, camZ);
 		} else {
-			this.gameCamera.getCamera().position.set(camX, camY, camZ);
+			this.gameCamera.getCamera().position.set(camX, camY + 1f, camZ);
 		}
 
-		this.map.addEntity(new GameEntityInstance("rat", (int)camX, (int)this.map.getHighest(camX, camZ), (int)camZ, this.map));
-		this.map.addEntity(new GameEntityInstance("nodule", (int)camX - 5, (int)this.map.getHighest(camX - 5, camZ - 5),
-			(int)camZ - 5, this.map));
-		this.map.addEntity(new GameEntityInstance("bone_marrow", (int)camX + 5, (int)this.map.getHighest(camX + 5, camZ + 5),
-			(int)camZ + 5, this.map));
-		this.map.addEntity(new GameEntityInstance("alveolus", (int)camX + 8, (int)this.map.getHighest(camX + 8, camZ + 8),
-			(int)camZ + 8, this.map));
-		this.map.addEntity(new GameEntityInstance("red_blood_cell", (int)camX + 14, (int)this.map.getHighest(camX + 14, camZ + 2),
-			(int)camZ + 2, this.map));
+		this.gameCamera.getCamera().update();
+
 		this.map.addEntity(new GameEntityInstance("red_blood_cell", 0, (int)this.map.getHighest(0, 0), 0, this.map));
-		this.map.addEntity(new GameEntityInstance("desk", 6, (int)this.map.getHighest(6, 6), 6, this.map));
+		this.map.addEntity(new GameEntityInstance("bone_marrow", 16, (int)this.map.getHighest(camX + 5, camZ + 5), 16, this.map));
+
+		/*
+		 * this.map.addEntity(new GameEntityInstance("rat", (int)camX,
+		 * (int)this.map.getHighest(camX, camZ), (int)camZ, this.map));
+		 * this.map.addEntity(new GameEntityInstance("nodule", (int)camX - 5,
+		 * (int)this.map.getHighest(camX - 5, camZ - 5), (int)camZ - 5,
+		 * this.map));
+		 * 
+		 * this.map.addEntity(new GameEntityInstance("alveolus", (int)camX + 8,
+		 * (int)this.map.getHighest(camX + 8, camZ + 8), (int)camZ + 8,
+		 * this.map)); this.map.addEntity(new GameEntityInstance("red_blood_cell",
+		 * (int)camX + 14, (int)this.map.getHighest(camX + 14, camZ + 2),
+		 * (int)camZ + 2, this.map); this.map.addEntity(new
+		 * GameEntityInstance("desk", 6, (int)this.map.getHighest(6, 6), 6,
+		 * this.map));
+		 */
 
 		/* the game renderer */
 		this.gameRenderer = new GameRenderer(this);
@@ -217,10 +227,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	public void render (final SpriteBatch spriteBatch, final ModelBatch modelBatch, final float deltaT) {
 		if (this.isRunning) {
 			this.gameRenderer.render(spriteBatch, modelBatch, deltaT);
-
-			// this.camController.update();
-			// System.out.println(this.pcamera.position);
-			// System.out.println(this.pcamera.direction);
 
 			// UI
 			if (this.currentUI != null) {
@@ -322,9 +328,11 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 	/** Increase depth. */
 	private void increaseDepth () {
-		if (this.currentDepth < this.map.getDepth()) {
+		if (this.currentDepth < this.map.getHighestPoint() - 1) {
 			this.currentDepth++;
 		}
+
+		this.gameCamera.setGamePlane(-(this.getCurrentDepth() + 1));
 
 		((UIGameHUD)this.currentUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 		VictusLudusGame.engine.inputPoller.forceMouseMove();
@@ -337,6 +345,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		if (this.currentDepth > 0) {
 			this.currentDepth--;
 		}
+
+		this.gameCamera.setGamePlane(-(this.getCurrentDepth() + 1));
 
 		((UIGameHUD)this.currentUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 		VictusLudusGame.engine.inputPoller.forceMouseMove();
@@ -433,20 +443,14 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 	@Override
 	public void onMouseMove (final MouseEvent mouseEvent) {
-		System.out.println("scroll any");
-
-		// not moving the map
 		Vector3 c = null;
 
 		if (this.interactionMode == EnumInteractionMode.MODE_QUERY_TILE) {
-			// highlight tile under cursor
-			c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
-		} else if (this.interactionMode == EnumInteractionMode.MODE_QUERY_WALL) {
-			// highlight tile and wall under cursor
-			c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, true);
+			// check tile under cursor
+			c = this.gameCamera.getGamePlaneIntersection(mouseEvent.getX(), mouseEvent.getY());
 		} else if (this.interactionMode == EnumInteractionMode.MODE_BUILD) {
 			// highlight tile under cursor
-			c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
+			c = this.gameCamera.getGamePlaneIntersection(mouseEvent.getX(), mouseEvent.getY());
 
 			// we are in the middle of a build so draw stuff
 			if (this.buildMode == EnumBuildMode.LINE && this.buildBeginCoord != null) {
@@ -469,17 +473,23 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			return;
 		}
 
-		if (c.x >= 0 && c.y >= 0) {
-			// if (c.x < this.map.getLayer(this.currentDepth).length && c.y <
-// this.map.getLayer(this.currentDepth)[0].length) {
-			// // this.gameRenderer.setHighlightedTile(c);
-			// this.map.getTileOverlayList().add(new GameTile(GameTile.ID_GRID,
-// c.x, c.y, this.currentDepth, this.map));
-			// ((UIGameHUD)this.currentUI).setCurrentTileText(c.x + "," + c.y);
-			// } else {
-			// this.map.getTileOverlayList().clear();
-			// // this.gameRenderer.setHighlightedTile(null);
-			// }
+		if (c.x >= 0 && c.z >= 0) {
+			if (c.x < this.map.voxelsX && c.z < this.map.voxelsZ) {
+				// this.gameRenderer.setHighlightedTile(c);
+				this.map.entityManager.clearOverlayEntities();
+				this.map.entityManager.addOverlay(new GameEntityInstance("red_blood_cell", (int)c.x, (int)c.y, (int)c.z, this.map));
+
+				int x = (int)c.x;
+				int y = (int)c.y;
+				int z = (int)c.z;
+
+				System.err.println("x=" + x + ", z=" + z + "       y=" + y);
+
+				((UIGameHUD)this.currentUI).setCurrentTileText((int)c.x + "," + (int)c.z);
+			} else {
+				this.map.entityManager.clearOverlayEntities();
+				// this.gameRenderer.setHighlightedTile(null);
+			}
 		}
 	}
 

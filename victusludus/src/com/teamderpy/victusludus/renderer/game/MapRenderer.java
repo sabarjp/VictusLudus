@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.teamderpy.victusludus.game.EuclideanObject;
 import com.teamderpy.victusludus.game.Game;
+import com.teamderpy.victusludus.game.IDirection.EnumDirection;
 import com.teamderpy.victusludus.game.entity.GameEntityInstance;
 import com.teamderpy.victusludus.game.map.Chunk;
 import com.teamderpy.victusludus.game.map.Map;
@@ -76,7 +77,7 @@ public class MapRenderer implements RenderableProvider {
 		}
 
 		/* get entities to render */
-		for (GameEntityInstance entity : this.map.entityManager.getEntities()) {
+		for (GameEntityInstance entity : this.map.entityManager.getAllEntities()) {
 			if (entity.getMesh() == null) {
 				continue;
 			}
@@ -86,14 +87,14 @@ public class MapRenderer implements RenderableProvider {
 				entity.setNumVerts(numVerts / 4 * 6);
 				entity.getMesh().setVertices(entity.getVertices(), 0, numVerts * EuclideanObject.VERTEX_SIZE);
 
-				if (entity.getEntity().isBillboard()) {
+				if (!this.map.isOrtho() && entity.getEntity().isBillboard()) {
 					entity.getMesh().transform(
 						new Matrix4().rotate(new Vector3(0, 0, 1),
 							entity.getPos().cpy().sub(this.game.getGameCamera().getCamera().position).scl(1, 0, 1).nor()).trn(
 							entity.getPos()));
 				} else {
 					entity.getMesh().transform(
-						new Matrix4().rotate(new Vector3(0, 1, 0), entity.getDirection().getDegreesRotation()).trn(entity.getPos()));
+						new Matrix4().rotate(new Vector3(0, 1, 0), EnumDirection.NORTHWEST.getDegreesRotation()).trn(entity.getPos()));
 				}
 
 				entity.setDirty(true);

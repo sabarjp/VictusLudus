@@ -31,6 +31,9 @@ public class Map {
 	/** Size of a chunk in the z direction */
 	public static final int CHUNK_SIZE_Z = 16;
 
+	/** whether or not we are rendering in orthogonic perspective */
+	private boolean isOrtho;
+
 	/** link to the game this map belongs to */
 	private Game game;
 
@@ -81,27 +84,17 @@ public class Map {
 
 	/** old stuff below, can probably replace */
 
-	/** The tiles. */
-	// private GameTile[][][] tiles;
-
 	/** The entity manager. */
 	public GameEntityManager entityManager;
 
-	/** The depth. */
-	private int depth;
-
-	/** The width. */
-	private int width;
-
-	/** The height. */
-	private int height;
-
 	/** The highest point. */
-	private int highestPoint;
+	private int highestPoint = 0;
 
 	public Map (final Game game, final ISettings requestedSettings, final TextureRegion tileTextures) {
 		this.game = game;
 		this.tileTextures = tileTextures;
+
+		this.isOrtho = requestedSettings.getBoolean("useOrtho");
 
 		int chunksX = requestedSettings.getInt("mapWidth");
 		int chunksZ = requestedSettings.getInt("mapHeight");
@@ -378,33 +371,6 @@ public class Map {
 	}
 
 	/**
-	 * Gets the width.
-	 * 
-	 * @return the width
-	 */
-	public int getWidth () {
-		return this.width;
-	}
-
-	/**
-	 * Gets the height.
-	 * 
-	 * @return the height
-	 */
-	public int getHeight () {
-		return this.height;
-	}
-
-	/**
-	 * Gets the depth.
-	 * 
-	 * @return the depth
-	 */
-	public int getDepth () {
-		return this.depth;
-	}
-
-	/**
 	 * Gets the neighbors.
 	 * 
 	 * @param coord the coord
@@ -423,7 +389,7 @@ public class Map {
 		for (int i = 0; i < coordList.size(); i++) {
 			Vector3 c = coordList.get(i);
 
-			if (c.x >= this.width || c.y >= this.height || c.z >= this.depth || c.x < 0 || c.y < 0 || c.z < 0) {
+			if (c.x >= this.voxelsX || c.y >= this.voxelsY || c.z >= this.voxelsZ || c.x < 0 || c.y < 0 || c.z < 0) {
 				coordList.remove(i);
 			}
 		}
@@ -440,9 +406,19 @@ public class Map {
 		return this.highestPoint;
 	}
 
+	public void setHighestPointIfHigher (final int highestPoint) {
+		if (highestPoint > this.highestPoint) {
+			this.highestPoint = highestPoint;
+		}
+	}
+
 	/**
 	 * Unregister listeners.
 	 */
 	public void unregisterListeners () {
+	}
+
+	public boolean isOrtho () {
+		return this.isOrtho;
 	}
 }
