@@ -1,3 +1,4 @@
+
 package com.teamderpy.victusludus.gui.eventhandler;
 
 import java.util.ArrayDeque;
@@ -10,12 +11,10 @@ import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
 
-
-
 /**
  * The Class MouseHandler.
  */
-public class MouseHandler extends AbstractHandler{
+public class MouseHandler extends AbstractHandler {
 
 	/** The name. */
 	private static String name = "MOUSE_HANDLER";
@@ -32,7 +31,7 @@ public class MouseHandler extends AbstractHandler{
 	/**
 	 * Instantiates a new mouse handler.
 	 */
-	public MouseHandler(){
+	public MouseHandler () {
 		this.eventCounter = 0L;
 		this.listenerCount = 0L;
 
@@ -42,119 +41,154 @@ public class MouseHandler extends AbstractHandler{
 	}
 
 	/* signal all listeners with an event */
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#signalAllNow(java.util.EventObject)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#signalAllNow
+	 * (java.util.EventObject)
 	 */
 	@Override
-	public void signalAllNow(final EventObject e){
-		if(e instanceof MouseEvent){
-			MouseEvent evt = (MouseEvent) e;
-			
-			for(MouseListener l: this.listenerQueue){
-				if(VictusLudusGame.engine.IS_DEBUGGING){
+	public void signalAllNow (final EventObject e) {
+		if (e instanceof MouseEvent) {
+			MouseEvent evt = (MouseEvent)e;
+
+			for (MouseListener l : this.listenerQueue) {
+				if (VictusLudusGame.engine.IS_DEBUGGING) {
 					Gdx.app.log("info", "SIGNAL     " + MouseHandler.name + ": " + evt + " -> " + l);
 				}
-				
-				if(evt.getSpecificEvent() == MouseEvent.EVENT_CLICK){
-					if(l.onMouseClick(evt)) break;;
-				} else if (evt.getSpecificEvent() == MouseEvent.EVENT_MOVE){
+
+				if (evt.getSpecificEvent() == MouseEvent.EVENT_CLICK) {
+					if (l.onMouseClick(evt)) {
+						break;
+					}
+					;
+				} else if (evt.getSpecificEvent() == MouseEvent.EVENT_MOVE) {
 					l.onMouseMove(evt);
+				} else if (evt.getSpecificEvent() == MouseEvent.EVENT_DRAGGED) {
+					l.onMouseDrag(evt);
 				}
 			}
-		} else if(e instanceof ScrollEvent){
-			ScrollEvent evt = (ScrollEvent) e;
-			
-			for(MouseListener l: this.listenerQueue){
-				if(VictusLudusGame.engine.IS_DEBUGGING){
+		} else if (e instanceof ScrollEvent) {
+			ScrollEvent evt = (ScrollEvent)e;
+
+			for (MouseListener l : this.listenerQueue) {
+				if (VictusLudusGame.engine.IS_DEBUGGING) {
 					Gdx.app.log("info", "SIGNAL     " + MouseHandler.name + ": " + evt + " -> " + l);
 				}
-				
-				if(l.onScroll(evt)) break;
+
+				if (l.onScroll(evt)) {
+					break;
+				}
 			}
 		}
 	}
 
 	/* registers listeners at the next opportunity */
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#registerPlease(java.util.EventListener)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#registerPlease
+	 * (java.util.EventListener)
 	 */
 	@Override
-	public void registerPlease(final EventListener l){
-		this.registerQueue.add((MouseListener) l);
+	public void registerPlease (final EventListener l) {
+		this.registerQueue.add((MouseListener)l);
 	}
 
 	/* unregisters listeners at the next opportunity */
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#unregisterPlease(java.util.EventListener)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#unregisterPlease
+	 * (java.util.EventListener)
 	 */
 	@Override
-	public void unregisterPlease(final EventListener l){
-		this.unregisterQueue.add((MouseListener) l);
+	public void unregisterPlease (final EventListener l) {
+		this.unregisterQueue.add((MouseListener)l);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#registerAllNow()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#registerAllNow
+	 * ()
 	 */
 	@Override
-	public void registerAllNow() {
+	public void registerAllNow () {
 		/* register new objects */
-		while(!this.registerQueue.isEmpty()){
+		while (!this.registerQueue.isEmpty()) {
 			MouseListener l = this.registerQueue.removeFirst();
 
-			if(!this.listenerQueue.contains(l)){
-				if(this.listenerQueue.add(l)) {
+			if (!this.listenerQueue.contains(l)) {
+				if (this.listenerQueue.add(l)) {
 					this.listenerCount++;
 				}
 
-				if(VictusLudusGame.engine.IS_DEBUGGING) {
+				if (VictusLudusGame.engine.IS_DEBUGGING) {
 					Gdx.app.log("info", "REGISTER   " + MouseHandler.name + ": " + l);
 				}
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#unregisterAllNow()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#unregisterAllNow
+	 * ()
 	 */
 	@Override
-	public void unregisterAllNow() {
+	public void unregisterAllNow () {
 		/* unregister old objects */
-		while(!this.unregisterQueue.isEmpty()){
+		while (!this.unregisterQueue.isEmpty()) {
 			MouseListener l = this.unregisterQueue.removeFirst();
 
-			if(this.listenerQueue.contains(l)){
-				if(this.listenerQueue.remove(l)) {
+			if (this.listenerQueue.contains(l)) {
+				if (this.listenerQueue.remove(l)) {
 					this.listenerCount--;
 				}
 
-				if(VictusLudusGame.engine.IS_DEBUGGING) {
+				if (VictusLudusGame.engine.IS_DEBUGGING) {
 					Gdx.app.log("info", "UNREGISTER " + MouseHandler.name + ": " + l);
 				}
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#getEventCounter()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#getEventCounter
+	 * ()
 	 */
 	@Override
-	public long getEventCounter() {
+	public long getEventCounter () {
 		return this.eventCounter;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#getListenerCount()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.teamderpy.victusludus.gui.eventhandler.AbstractHandler#getListenerCount
+	 * ()
 	 */
 	@Override
-	public long getListenerCount() {
+	public long getListenerCount () {
 		return this.listenerCount;
 	}
 
 	@Override
-	public String getListenerList() {
+	public String getListenerList () {
 		StringBuilder buf = new StringBuilder();
 
-		for(EventListener l:this.listenerQueue){
+		for (EventListener l : this.listenerQueue) {
 			buf.append(this.getClass() + "   " + l.getClass() + ":" + l + "\n");
 		}
 

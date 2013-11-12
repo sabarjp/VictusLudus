@@ -4,6 +4,7 @@ package com.teamderpy.victusludus.game.cosmos;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.OrderedMap;
 
+@Deprecated
 public enum EnumPlanetType {
 	GAS_GIANT(true, "planet/gas_giant", "Gas Giant"),
 	ICE_GIANT(true, "planet/ice_giant", "Ice Giant"),

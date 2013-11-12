@@ -19,14 +19,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.engine.ISettings;
 import com.teamderpy.victusludus.engine.SettingsImpl;
-import com.teamderpy.victusludus.game.cosmos.Cosmos;
+import com.teamderpy.victusludus.game.Game;
 
-@Deprecated
-public class UINewUniverseMenu extends UI {
-	private TextField universeNameField;
-	private TextField universeSeedField;
-	private Slider universeAgeSlider;
-	private Slider starMassSlider;
+public class UINewOrganismMenu extends UI {
+	private TextField organismNameField;
+	private TextField organismSeedField;
+	private Slider worldAgeSlider;
 
 	/* whether a name has been typed in */
 	private boolean typedInName = false;
@@ -60,101 +58,81 @@ public class UINewUniverseMenu extends UI {
 
 		/************ TITLE */
 
-		final Label titleText = new Label("New Universe", this.skin, "medium");
+		final Label titleText = new Label("New Organism", this.skin, "medium");
 		tableTitle.add(titleText);
 		tableTitle.row();
 
 		/************ TOOLTIP */
 
-		final Label tooltipText = new Label("Create a new universe to play in", this.skin);
+		final Label tooltipText = new Label("Create a new organism to play with", this.skin);
 
-		/************ UNIVERSE NAME */
-		final Label universeNameLabel = new Label("Universe name", this.skin);
-		this.universeNameField = new TextField("", this.skin);
+		/************ ORGANISM NAME */
+		final Label organismLabelField = new Label("Organism name", this.skin);
+		this.organismNameField = new TextField("", this.skin);
 
-		tableContent.add(universeNameLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
-		tableContent.add(this.universeNameField).pad(UI.CELL_PADDING).colspan(3);
+		tableContent.add(organismLabelField).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
+		tableContent.add(this.organismNameField).pad(UI.CELL_PADDING).colspan(3);
 		tableContent.row();
 
-		this.universeNameField.addListener(new ClickListener() {
+		this.organismNameField.addListener(new ClickListener() {
 			@Override
 			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
-				tooltipText.setText("The name of your universe");
+				tooltipText.setText("The name of your organism");
 			}
 		});
 
-		this.universeNameField.addListener(new InputListener() {
+		this.organismNameField.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped (final InputEvent event, final char character) {
-				if (!UINewUniverseMenu.this.universeNameField.getText().isEmpty()) {
-					UINewUniverseMenu.this.typedInName = true;
+				if (!UINewOrganismMenu.this.organismNameField.getText().isEmpty()) {
+					UINewOrganismMenu.this.typedInName = true;
 				} else {
-					UINewUniverseMenu.this.typedInName = false;
+					UINewOrganismMenu.this.typedInName = false;
 				}
 				return true;
 			}
 		});
 
-		/************ UNIVERSE AGE */
-		final Label universeAgeLabel = new Label("Universe age", this.skin);
-		final Label universeAgeLessLabel = new Label("Young", this.skin);
-		final Label universeAgeMoreLabel = new Label("Old", this.skin);
-		this.universeAgeSlider = new Slider(0.5F, 60.5F, 0.5F, false, this.skin);
-		this.universeAgeSlider.setValue(12);
+		/************ WORLD AGE */
+		final Label worldAgeLabel = new Label("World age", this.skin);
+		final Label worldAgeLessLabel = new Label("Young", this.skin);
+		final Label worldAgeMoreLabel = new Label("Old", this.skin);
+		this.worldAgeSlider = new Slider(0.5F, 60.5F, 0.5F, false, this.skin);
+		this.worldAgeSlider.setValue(12);
 
-		tableContent.add(universeAgeLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
-		tableContent.add(universeAgeLessLabel).pad(UI.CELL_PADDING).right();
-		tableContent.add(this.universeAgeSlider).pad(UI.CELL_PADDING);
-		tableContent.add(universeAgeMoreLabel).pad(UI.CELL_PADDING).left();
+		tableContent.add(worldAgeLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
+		tableContent.add(worldAgeLessLabel).pad(UI.CELL_PADDING).right();
+		tableContent.add(this.worldAgeSlider).pad(UI.CELL_PADDING);
+		tableContent.add(worldAgeMoreLabel).pad(UI.CELL_PADDING).left();
 		tableContent.row();
 
-		this.universeAgeSlider.addListener(new ClickListener() {
+		this.worldAgeSlider.addListener(new ClickListener() {
 			@Override
 			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
-				tooltipText.setText("The age of the universe");
+				tooltipText.setText("The age of the world");
 			}
 		});
 
-		/************ STAR MASS */
-		final Label starMassLabel = new Label("Average Star Mass", this.skin);
-		final Label starMassLessLabel = new Label("Small", this.skin);
-		final Label starMassMoreLabel = new Label("Massive", this.skin);
-		this.starMassSlider = new Slider(0, 100, 2F, false, this.skin);
-		this.starMassSlider.setValue(24F);
+		/************ SEED */
+		final Label organismSeedLabel = new Label("Seed", this.skin);
+		this.organismSeedField = new TextField("", this.skin);
 
-		tableContent.add(starMassLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
-		tableContent.add(starMassLessLabel).pad(UI.CELL_PADDING).right();
-		tableContent.add(this.starMassSlider).pad(UI.CELL_PADDING);
-		tableContent.add(starMassMoreLabel).pad(UI.CELL_PADDING).left();
+		tableContent.add(organismSeedLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
+		tableContent.add(this.organismSeedField).pad(UI.CELL_PADDING).colspan(3);
 		tableContent.row();
 
-		this.starMassSlider.addListener(new ClickListener() {
-			@Override
-			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActor) {
-				tooltipText.setText("How massive the typical star is");
-			}
-		});
-
-		/************ UNIVERSE SEED */
-		final Label universeSeedLabel = new Label("Seed", this.skin);
-		this.universeSeedField = new TextField("", this.skin);
-
-		tableContent.add(universeSeedLabel).pad(UI.CELL_PADDING).padRight(UI.CELL_PADDING * 10).left();
-		tableContent.add(this.universeSeedField).pad(UI.CELL_PADDING).colspan(3);
-		tableContent.row();
-
-		this.universeSeedField.addListener(new ClickListener() {
+		this.organismSeedField.addListener(new ClickListener() {
 			@Override
 			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActorr) {
-				tooltipText.setText("The random seed for the universe");
+				tooltipText.setText("The random seed for the world");
 			}
 		});
 
-		this.universeSeedField.addListener(new InputListener() {
+		this.organismSeedField.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped (final InputEvent event, final char character) {
-				if (!UINewUniverseMenu.this.typedInName) {
-					UINewUniverseMenu.this.universeNameField.setText(UINewUniverseMenu.this.universeSeedField.getText());
+				if (!UINewOrganismMenu.this.typedInName) {
+					UINewOrganismMenu.this.organismNameField.setText(UINewOrganismMenu.this.organismSeedField.getText());
 				}
 				return true;
 			}
@@ -168,23 +146,29 @@ public class UINewUniverseMenu extends UI {
 		continueButton.addListener(new ChangeListener() {
 			@Override
 			public void changed (final ChangeEvent event, final Actor actor) {
-				UINewUniverseMenu.this.soundSelect.play();
+				UINewOrganismMenu.this.soundSelect.play();
 
-				if (UINewUniverseMenu.this.universeNameField.getText().length() > 0) {
+				if (UINewOrganismMenu.this.organismNameField.getText().length() > 0) {
 					ISettings requestedSettings = new SettingsImpl();
 
-					requestedSettings.addValue("universeAge", UINewUniverseMenu.this.universeAgeSlider.getValue());
-					requestedSettings.addValue("starMassDistribution", UINewUniverseMenu.this.starMassSlider.getValue());
+					requestedSettings.addValue("organismAge", UINewOrganismMenu.this.worldAgeSlider.getValue());
 					requestedSettings.addValue("seed",
-						UINewUniverseMenu.longHashString(UINewUniverseMenu.this.universeSeedField.getText()));
+						UINewOrganismMenu.longHashString(UINewOrganismMenu.this.organismSeedField.getText()));
+					requestedSettings.addValue("useOrtho", false);
+					requestedSettings.addValue("mapHeight", 5);
+					requestedSettings.addValue("mapWidth", 5);
+					requestedSettings.addValue("mapSmoothness", 2.0f); // 0-10
+					requestedSettings.addValue("mapRandomness", 0.25f); // 0-1.5
+					requestedSettings.addValue("mapScale", 8f); // 1-12
+					requestedSettings.addValue("mapPlateauFactor", 0.2f); // 0-0.3
 
 					VictusLudusGame.engine.changeUI(null);
-					VictusLudusGame.engine.changeView(new Cosmos(), requestedSettings);
+					VictusLudusGame.engine.changeView(new Game(), requestedSettings);
 				} else {
-					new Dialog("Universe name?", UINewUniverseMenu.this.skin, "dialog") {
+					new Dialog("Organism name?", UINewOrganismMenu.this.skin, "dialog") {
 
-					}.text("You forgot to enter a universe name!").button("OK!", true).key(Keys.ENTER, true).key(Keys.ESCAPE, true)
-						.show(UINewUniverseMenu.this.stage);
+					}.text("You forgot to enter a name!").button("OK!", true).key(Keys.ENTER, true).key(Keys.ESCAPE, true)
+						.show(UINewOrganismMenu.this.stage);
 				}
 			}
 		});
@@ -192,7 +176,7 @@ public class UINewUniverseMenu extends UI {
 		continueButton.addListener(new ClickListener() {
 			@Override
 			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActorr) {
-				tooltipText.setText("Create the universe");
+				tooltipText.setText("Create the organism!");
 			}
 		});
 
@@ -205,7 +189,7 @@ public class UINewUniverseMenu extends UI {
 		backButton.addListener(new ChangeListener() {
 			@Override
 			public void changed (final ChangeEvent event, final Actor actor) {
-				UINewUniverseMenu.this.soundSelect.play();
+				UINewOrganismMenu.this.soundSelect.play();
 				VictusLudusGame.engine.changeUI(new UIMainMenu());
 			}
 		});

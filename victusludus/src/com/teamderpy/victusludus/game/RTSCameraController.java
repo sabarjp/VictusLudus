@@ -15,12 +15,15 @@ import com.badlogic.gdx.utils.IntIntMap;
 public class RTSCameraController extends InputAdapter {
 	private final Camera camera;
 	private final IntIntMap keys = new IntIntMap();
-	private int STRAFE_LEFT = Keys.A;
-	private int STRAFE_RIGHT = Keys.D;
-	private int FORWARD = Keys.W;
-	private int BACKWARD = Keys.S;
-	private int UP = Keys.Q;
-	private int DOWN = Keys.E;
+
+	public int STRAFE_LEFT = Keys.A;
+	public int STRAFE_RIGHT = Keys.D;
+	public int FORWARD = Keys.W;
+	public int BACKWARD = Keys.S;
+
+	public int ZOOM_IN = Keys.X;
+	public int ZOOM_OUT = Keys.Z;
+
 	private float velocity = 5;
 	private final Vector3 tmp = new Vector3();
 	private float degreesPerPixel = 0.3F;
@@ -52,14 +55,19 @@ public class RTSCameraController extends InputAdapter {
 
 	@Override
 	public boolean touchDragged (final int screenX, final int screenY, final int pointer) {
-		float deltaX = -Gdx.input.getDeltaX() * this.degreesPerPixel;
-		float deltaY = -Gdx.input.getDeltaY() * this.degreesPerPixel;
-		this.camera.direction.rotate(this.camera.up, deltaX);
-		this.tmp.set(this.camera.direction).crs(this.camera.up).nor();
-		this.camera.direction.rotate(this.tmp, deltaY);
+		// points the camera as the mouse moves
+
+		/*
+		 * float deltaX = -Gdx.input.getDeltaX() * this.degreesPerPixel; float
+		 * deltaY = -Gdx.input.getDeltaY() * this.degreesPerPixel;
+		 * this.camera.direction.rotate(this.camera.up, deltaX);
+		 * this.tmp.set(this.camera.direction).crs(this.camera.up).nor();
+		 * this.camera.direction.rotate(this.tmp, deltaY);
+		 */
+
 		/* this.camera.up.rotate(this.tmp, deltaY); */
 
-		return true;
+		return false;
 	}
 
 	public void update () {
@@ -87,13 +95,13 @@ public class RTSCameraController extends InputAdapter {
 			this.camera.position.add(this.tmp);
 		}
 
-		if (this.keys.containsKey(this.UP)) {
-			this.tmp.set(this.camera.direction).nor().scl(0, deltaTime * this.velocity, 0);
+		if (this.keys.containsKey(this.ZOOM_IN)) {
+			this.tmp.set(this.camera.direction).nor().scl(deltaTime * this.velocity);
 			this.camera.position.add(this.tmp);
 		}
 
-		if (this.keys.containsKey(this.DOWN)) {
-			this.tmp.set(this.camera.direction).nor().scl(0, -deltaTime * this.velocity, 0);
+		if (this.keys.containsKey(this.ZOOM_OUT)) {
+			this.tmp.set(this.camera.direction).nor().scl(-deltaTime * this.velocity);
 			this.camera.position.add(this.tmp);
 		}
 

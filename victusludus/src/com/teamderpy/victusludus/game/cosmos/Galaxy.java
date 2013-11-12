@@ -13,6 +13,7 @@ import com.teamderpy.victusludus.language.GreekLatinGenerator;
  * 
  * @author Josh
  */
+@Deprecated
 public class Galaxy {
 	private static int MIN_STAR_COUNT = 8;
 	private static int MAX_STAR_COUNT = 28;
@@ -170,7 +171,8 @@ public class Galaxy {
 	/**
 	 * A tick of time
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	public void tick (final BigDecimal delta) {
 		// tick all children

@@ -1,9 +1,10 @@
 
 package com.teamderpy.victusludus.game.map;
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.math.MathUtils;
 import com.teamderpy.victusludus.game.tile.GameTile;
 
 /**
@@ -13,11 +14,13 @@ import com.teamderpy.victusludus.game.tile.GameTile;
  * @author badlogic
  */
 public class PerlinNoiseGenerator {
+	private static Random rand;
+
 	public static float[][] generateWhiteNoise (final int width, final int height) {
 		float[][] noise = new float[width][height];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				noise[x][y] = MathUtils.random();
+				noise[x][y] = PerlinNoiseGenerator.rand.nextFloat();
 			}
 		}
 		return noise;
@@ -123,7 +126,9 @@ public class PerlinNoiseGenerator {
 		return pixmap;
 	}
 
-	public static void generateVoxels (final Map map, final int min, final int max, final int octaveCount) {
+	public static void generateVoxels (final Map map, final int min, final int max, final int octaveCount, final long seed) {
+		PerlinNoiseGenerator.rand = new Random(seed);
+
 		byte[] heightMap = PerlinNoiseGenerator.generateHeightMap(map.voxelsX, map.voxelsZ, min, max, octaveCount);
 		int idx = 0;
 		for (int z = 0; z < map.voxelsZ; z++) {

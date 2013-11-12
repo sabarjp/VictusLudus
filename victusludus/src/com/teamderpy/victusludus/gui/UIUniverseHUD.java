@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.teamderpy.victusludus.VictusLudusGame;
 
+@Deprecated
 public class UIUniverseHUD extends UI {
 	private Label selectedGalaxyName;
 	private Label selectedGalaxyType;

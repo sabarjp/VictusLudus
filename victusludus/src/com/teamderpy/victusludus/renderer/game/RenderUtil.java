@@ -21,10 +21,9 @@ public final class RenderUtil {
 	 * @return the screen coord
 	 */
 	public static ScreenCoord worldCoordToScreenCoord (final Game game, final int x, final int y, final int layer) {
-		float actualX = x * (game.getTileWidthScaled() / 2) - y * (game.getTileWidthScaled() / 2)
-			+ game.getGameCamera().getOffsetX();
-		float actualY = y * (game.getTileHeightScaled() / 2) + x * (game.getTileHeightScaled() / 2)
-			+ game.getGameCamera().getOffsetY() - layer * game.getLayerHeightScaled();
+		float actualX = x * (game.getTileWidthScaled() / 2) - y * (game.getTileWidthScaled() / 2);
+		float actualY = y * (game.getTileHeightScaled() / 2) + x * (game.getTileHeightScaled() / 2) - layer
+			* game.getLayerHeightScaled();
 
 		return new ScreenCoord((int)actualX, (int)actualY);
 	}
@@ -41,10 +40,9 @@ public final class RenderUtil {
 	 * @return the screen coord as an array with 2 elements, x and y
 	 */
 	public static int[] worldCoordToRawScreenCoord (final Game game, final int x, final int y, final int layer) {
-		float actualX = x * (game.getTileWidthScaled() / 2) - y * (game.getTileWidthScaled() / 2)
-			+ game.getGameCamera().getOffsetX();
-		float actualY = y * (game.getTileHeightScaled() / 2) + x * (game.getTileHeightScaled() / 2)
-			+ game.getGameCamera().getOffsetY() - layer * game.getLayerHeightScaled();
+		float actualX = x * (game.getTileWidthScaled() / 2) - y * (game.getTileWidthScaled() / 2);
+		float actualY = y * (game.getTileHeightScaled() / 2) + x * (game.getTileHeightScaled() / 2) - layer
+			* game.getLayerHeightScaled();
 
 		return new int[] {(int)actualX, (int)actualY, layer};
 	}
@@ -82,9 +80,8 @@ public final class RenderUtil {
 	 * @return the world coord as an array with 3 elements, x y and z
 	 */
 	public static int[] screenCoordToRawWorldCoord (final Game game, final float x, final float y, final float layer) {
-		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthScaled();
-		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer * game.getLayerHeightScaled()))
-			/ game.getTileHeightScaled();
+		float virtualTileX = (x) / game.getTileWidthScaled();
+		float virtualTileY = (y - (layer * game.getLayerHeightScaled())) / game.getTileHeightScaled();
 		int isoTileX, isoTileY;
 
 		isoTileX = (int)Math.floor(virtualTileY + virtualTileX - 0.5);
@@ -133,9 +130,8 @@ public final class RenderUtil {
 		final boolean calculateWallFacing) {
 		Vector3 w = new Vector3(0, 0, 0);
 
-		float virtualTileX = (x - game.getGameCamera().getOffsetX()) / game.getTileWidthScaled();
-		float virtualTileY = (y - (game.getGameCamera().getOffsetY() - layer * game.getLayerHeightScaled()))
-			/ game.getTileHeightScaled();
+		float virtualTileX = (x) / game.getTileWidthScaled();
+		float virtualTileY = (y - (layer * game.getLayerHeightScaled())) / game.getTileHeightScaled();
 
 		int isoTileX, isoTileY;
 

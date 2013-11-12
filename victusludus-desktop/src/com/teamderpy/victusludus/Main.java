@@ -55,7 +55,6 @@ public class Main {
 		 * create directory listings
 		 */
 		if (Main.IS_DEVELOPMENT_MODE) {
-
 			File dir = new File("../victusludus-android/assets/");
 
 			Main.createFileList(dir);

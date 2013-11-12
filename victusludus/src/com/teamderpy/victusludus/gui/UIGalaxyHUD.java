@@ -14,6 +14,7 @@ import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.renderer.cosmos.CosmosRenderer;
 
+@Deprecated
 public class UIGalaxyHUD extends UI {
 	private Label selectedStarName;
 	private Label selectedStarType;

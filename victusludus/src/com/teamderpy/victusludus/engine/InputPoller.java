@@ -1,6 +1,8 @@
 
 package com.teamderpy.victusludus.engine;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputProcessor;
 import com.teamderpy.victusludus.VictusLudusGame;
 import com.teamderpy.victusludus.gui.eventhandler.event.KeyDownEvent;
@@ -66,6 +68,23 @@ public class InputPoller implements InputProcessor {
 
 	@Override
 	public boolean touchDragged (final int screenX, final int screenY, final int pointer) {
+		int button = -1;
+
+		// pass the first button that is held
+		if (Gdx.app.getInput().isButtonPressed(Buttons.LEFT)) {
+			button = Buttons.LEFT;
+		} else if (Gdx.app.getInput().isButtonPressed(Buttons.RIGHT)) {
+			button = Buttons.RIGHT;
+		} else if (Gdx.app.getInput().isButtonPressed(Buttons.MIDDLE)) {
+			button = Buttons.MIDDLE;
+		}
+
+		if (screenX != this.lastMouseX || screenY != this.lastMouseY) {
+			VictusLudusGame.engine.eventHandler.signal(new MouseEvent(VictusLudusGame.engine.eventHandler, MouseEvent.EVENT_DRAGGED,
+				screenX, screenY, button, true));
+			this.lastMouseX = screenX;
+			this.lastMouseY = screenY;
+		}
 		return false;
 	}
 

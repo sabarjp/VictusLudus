@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 
 import com.teamderpy.victusludus.precision.Precision;
 
+@Deprecated
 public class Cosmology {
 	public static MathContext COSMIC_RND = MathContext.DECIMAL128;
 
@@ -52,7 +53,8 @@ public class Cosmology {
 	public static BigDecimal LIGHT_SPEED = new BigDecimal("299792458");
 
 	/**
-	 * Turns a number into a string for stellar age. I.E, 6000000 returns "6 billion years"
+	 * Turns a number into a string for stellar age. I.E, 6000000 returns
+	 * "6 billion years"
 	 * 
 	 * @param age in years
 	 * @return string formatted for stellar timescale
@@ -155,9 +157,12 @@ public class Cosmology {
 	 * @param y1
 	 * @param y2
 	 * @param desiredX the x at which we desire an interpolated Y
-	 * @param slopeFactor a float which determines the growth curve. A number less than 1 will cause rapid growth early that tapers
-	 *           off, with more aggressive grown the closer to zero the value is. If the value is greater than one, then the
-	 *           opposite effect occurs, with slow growth early, but rapid growth rate. Similar to a graph of Y=X^(slopeFactor)
+	 * @param slopeFactor a float which determines the growth curve. A number
+	 *           less than 1 will cause rapid growth early that tapers off, with
+	 *           more aggressive grown the closer to zero the value is. If the
+	 *           value is greater than one, then the opposite effect occurs, with
+	 *           slow growth early, but rapid growth rate. Similar to a graph of
+	 *           Y=X^(slopeFactor)
 	 * @return the interpolated Y
 	 */
 	static public BigDecimal exponentialInterpolation (final BigDecimal x1, final BigDecimal x2, final BigDecimal y1,
@@ -170,8 +175,8 @@ public class Cosmology {
 	}
 
 	/**
-	 * Calculates the gravitational force of attraction of a massive object for another smaller object at its surface with
-	 * negligible mass
+	 * Calculates the gravitational force of attraction of a massive object for
+	 * another smaller object at its surface with negligible mass
 	 * 
 	 * @param mass in kilograms
 	 * @param radius in meters
@@ -295,7 +300,8 @@ public class Cosmology {
 	}
 
 	/**
-	 * Calculates the kepler orbital distance given the semi major axis, eccentricity, and true anomaly
+	 * Calculates the kepler orbital distance given the semi major axis,
+	 * eccentricity, and true anomaly
 	 * 
 	 * Derived from http://www.jgiesen.de/kepler/kepler.html
 	 * 
@@ -315,14 +321,16 @@ public class Cosmology {
 	}
 
 	/**
-	 * Calculates the kepler coordinates of an object given the semi major axis, eccentricity, and eccentric anomaly
+	 * Calculates the kepler coordinates of an object given the semi major axis,
+	 * eccentricity, and eccentric anomaly
 	 * 
 	 * Derived from http://www.jgiesen.de/kepler/kepler.html
 	 * 
 	 * @param semiMajorAxis
 	 * @param eccentricity
 	 * @param eccentricAnomaly
-	 * @return the coordinates in an array, with 0 corresponding to X and 1 corresponding to Y
+	 * @return the coordinates in an array, with 0 corresponding to X and 1
+	 *         corresponding to Y
 	 */
 	static public BigDecimal[] calculateKeplerCoordinate (final BigDecimal semiMajorAxis, final double eccentricity,
 		final BigDecimal eccentricAnomaly) {
@@ -340,7 +348,8 @@ public class Cosmology {
 	}
 
 	/**
-	 * Calculates the kepler orbital distance given several parameters at a point in time past the periapsis
+	 * Calculates the kepler orbital distance given several parameters at a point
+	 * in time past the periapsis
 	 * 
 	 * @param mass1
 	 * @param mass2
@@ -360,14 +369,16 @@ public class Cosmology {
 	}
 
 	/**
-	 * Calculates the kepler coordinate given several parameters at a point in time past the periapsis
+	 * Calculates the kepler coordinate given several parameters at a point in
+	 * time past the periapsis
 	 * 
 	 * @param mass1
 	 * @param mass2
 	 * @param semiMajorAxis
 	 * @param deltaTime
 	 * @param eccentricity
-	 * @return the coordinates in an array, with 0 corresponding to X and 1 corresponding to Y
+	 * @return the coordinates in an array, with 0 corresponding to X and 1
+	 *         corresponding to Y
 	 */
 	static public BigDecimal[] calculateKeplerCoordinateAtTime (final BigDecimal mass1, final BigDecimal mass2,
 		final BigDecimal semiMajorAxis, final BigDecimal deltaTime, final double eccentricity) {

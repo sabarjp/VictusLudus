@@ -256,4 +256,9 @@ public class ActionArea2D implements MouseListener, HoverListener {
 	public boolean onScroll (final ScrollEvent scrollEvent) {
 		return false;
 	}
+
+	@Override
+	public void onMouseDrag (final MouseEvent evt) {
+
+	}
 }

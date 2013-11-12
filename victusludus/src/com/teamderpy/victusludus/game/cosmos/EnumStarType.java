@@ -1,6 +1,7 @@
 
 package com.teamderpy.victusludus.game.cosmos;
 
+@Deprecated
 public enum EnumStarType {
 	DUST("star/star_dust", "Dust Cloud"),
 	BROWN_DWARF("star/star_brown_dwarf", "Brown Dwarf"),
@@ -35,9 +36,11 @@ public enum EnumStarType {
 		this.properName = properName;
 	}
 
-	/** Returns the sprite path
+	/**
+	 * Returns the sprite path
 	 * 
-	 * @return the sprite path */
+	 * @return the sprite path
+	 */
 	public String getPath () {
 		return this.path;
 	}

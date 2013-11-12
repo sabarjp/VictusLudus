@@ -17,6 +17,7 @@ import com.teamderpy.victusludus.gui.eventhandler.event.MouseEvent;
 import com.teamderpy.victusludus.gui.eventhandler.event.ScrollEvent;
 import com.teamderpy.victusludus.renderer.cosmos.CosmosRenderer;
 
+@Deprecated
 public class Cosmos implements IView, MouseListener {
 	/** universal seed */
 	private long seed;
@@ -75,10 +76,6 @@ public class Cosmos implements IView, MouseListener {
 		this.gameDimensions.setRenderWidth(CosmosRenderer.COSMOS_DISPLAY_WIDTH);
 
 		this.registerListeners();
-
-		this.gameCamera = new GameCamera();
-
-		this.gameCamera.setOffsetX(this.gameDimensions.getWidth() / 2);
 
 		this.cosmosRenderer = new CosmosRenderer(this);
 
@@ -233,5 +230,10 @@ public class Cosmos implements IView, MouseListener {
 	@Override
 	public void dispose () {
 		return;
+	}
+
+	@Override
+	public void onMouseDrag (final MouseEvent evt) {
+
 	}
 }

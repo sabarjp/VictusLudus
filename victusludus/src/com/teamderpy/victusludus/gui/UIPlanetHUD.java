@@ -17,6 +17,7 @@ import com.teamderpy.victusludus.game.Game;
 import com.teamderpy.victusludus.game.cosmos.EnumCosmosMode;
 import com.teamderpy.victusludus.renderer.cosmos.CosmosRenderer;
 
+@Deprecated
 public class UIPlanetHUD extends UI {
 	private Label currentPlanetName;
 	private Label currentPlanetType;

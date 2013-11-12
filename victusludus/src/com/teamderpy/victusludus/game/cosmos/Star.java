@@ -18,6 +18,7 @@ import com.teamderpy.victusludus.precision.Precision;
  * 
  * @author Josh
  */
+@Deprecated
 public class Star {
 	private static BigDecimal MAIN_SEQUENCE_START_MULT = new BigDecimal("0.80");
 	private static BigDecimal MAIN_SEQUENCE_END_MULT = new BigDecimal("1.60");

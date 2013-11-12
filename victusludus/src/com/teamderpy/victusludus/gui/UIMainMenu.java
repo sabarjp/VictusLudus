@@ -55,7 +55,7 @@ public class UIMainMenu extends UI {
 
 		/************ NEW GAME */
 
-		final TextButton newWorldButton = new TextButton("New universe", this.skin);
+		final TextButton newWorldButton = new TextButton("New organism", this.skin);
 		tableContent.add(newWorldButton).pad(UI.CELL_PADDING);
 		tableContent.row();
 
@@ -63,14 +63,14 @@ public class UIMainMenu extends UI {
 			@Override
 			public void changed (final ChangeEvent event, final Actor actor) {
 				UIMainMenu.this.soundSelect.play();
-				VictusLudusGame.engine.changeUI(new UINewUniverseMenu());
+				VictusLudusGame.engine.changeUI(new UINewOrganismMenu());
 			}
 		});
 
 		newWorldButton.addListener(new ClickListener() {
 			@Override
 			public void enter (final InputEvent event, final float x, final float y, final int pointer, final Actor fromActorr) {
-				tooltipText.setText("Generates a new universe to play in");
+				tooltipText.setText("Creates a new organism to play with");
 			}
 		});
 

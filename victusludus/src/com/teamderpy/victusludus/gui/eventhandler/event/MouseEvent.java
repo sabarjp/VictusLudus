@@ -11,11 +11,9 @@ public class MouseEvent extends EventObject {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -4751970392667326635L;
 
-	/** The Constant EVENT_MOVE. */
 	public static final byte EVENT_MOVE = 0x0;
-
-	/** The Constant EVENT_CLICK. */
 	public static final byte EVENT_CLICK = 0x1;
+	public static final byte EVENT_DRAGGED = 0x2;
 
 	/** The specific event. */
 	private byte specificEvent;

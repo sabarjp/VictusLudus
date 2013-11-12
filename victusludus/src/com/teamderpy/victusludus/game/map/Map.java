@@ -182,7 +182,7 @@ public class Map {
 		this.entityManager = new GameEntityManager(this);
 
 		/* generate terrain */
-		PerlinNoiseGenerator.generateVoxels(this, 0, 63, 10);
+		PerlinNoiseGenerator.generateVoxels(this, 16, 16, 10, requestedSettings.getLong("seed"));
 	}
 
 	/**

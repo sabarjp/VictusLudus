@@ -63,12 +63,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	/** The game camera which holds camera offsets */
 	private GameCamera gameCamera;
 
-	/** Inherited from the game engine */
-	private Camera camera;
-
-	/** The input controller to move around the camera */
-	private RTSCameraController camController;
-
 	/** The game dimensions. */
 	private GameDimensions gameDimensions;
 
@@ -83,9 +77,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 	/** The game renderer. */
 	private GameRenderer gameRenderer;
-
-	/** used with map scrolling */
-	private boolean holdingDownRightClick = false;
 
 	/** the time of the day, from 0 to 24 */
 	private float hour;
@@ -133,17 +124,18 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		pcam.rotate(45F, 0, 1, 0);
 
 		if (settings.getBoolean("useOrtho")) {
-			this.camera = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));
-			this.camera.direction.set(pcam.direction);
-			this.camera.near = 0.1f;
-			this.camera.far = 1000f;
-			this.camera.update();
+			this.gameCamera = new GameCamera(new OrthographicCamera(10,
+				10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth())));
+			this.gameCamera.getCamera().direction.set(pcam.direction);
+			this.gameCamera.getCamera().near = 0.1f;
+			this.gameCamera.getCamera().far = 1000f;
+			this.gameCamera.getCamera().update();
 		} else {
-			this.camera = pcam;
+			this.gameCamera = new GameCamera(pcam);
 		}
 
-		this.camController = new RTSCameraController(this.camera);
-		VictusLudusGame.engine.inputMultiplexer.addProcessor(this.camController);
+		// this.camController = new RTSCameraController(this.camera);
+		// VictusLudusGame.engine.inputMultiplexer.addProcessor(this.camController);
 
 		ISettings requestedSettings = settings;
 
@@ -192,20 +184,15 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		this.changeUI(new UIGameHUD());
 		((UIGameHUD)this.currentUI).setCurrentDepthText(Integer.toString(this.currentDepth));
 
-		/* setup the camera */
-		this.gameCamera = new GameCamera();
-
-		/* centers the camera */
-		this.gameCamera.setOffsetX(this.gameDimensions.getWidth() / 2);
-
+		/* center the camera */
 		float camX = this.map.voxelsX / 2f;
 		float camZ = this.map.voxelsZ / 2f;
 		float camY = this.map.getHighest(camX, camZ) + 1.5f;
 
 		if (settings.getBoolean("useOrtho")) {
-			this.camera.position.set(camX, camY + 10f, camZ);
+			this.gameCamera.getCamera().position.set(camX, camY + 10f, camZ);
 		} else {
-			this.camera.position.set(camX, camY, camZ);
+			this.gameCamera.getCamera().position.set(camX, camY, camZ);
 		}
 
 		this.map.addEntity(new GameEntityInstance("rat", (int)camX, (int)this.map.getHighest(camX, camZ), (int)camZ, this.map));
@@ -231,7 +218,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		if (this.isRunning) {
 			this.gameRenderer.render(spriteBatch, modelBatch, deltaT);
 
-			this.camController.update();
+			// this.camController.update();
 			// System.out.println(this.pcamera.position);
 			// System.out.println(this.pcamera.direction);
 
@@ -266,22 +253,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 		}
 	}
 
-	/** Zoom out. */
-	public void zoomOut () {
-		if (this.gameCamera.getZoom() > 0.25) {
-			this.gameCamera.setZoom(this.gameCamera.getZoom() / 2);
-			VictusLudusGame.engine.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.ZOOM, this));
-		}
-	}
-
-	/** Zoom in. */
-	public void zoomIn () {
-		if (this.gameCamera.getZoom() < 4) {
-			this.gameCamera.setZoom(this.gameCamera.getZoom() * 2);
-			VictusLudusGame.engine.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.ZOOM, this));
-		}
-	}
-
 	/**
 	 * Gets the current depth.
 	 * 
@@ -297,7 +268,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	 * @return the tile height scaled
 	 */
 	public int getTileHeightScaled () {
-		return (int)(this.getGameDimensions().getTileHeight() * this.gameCamera.getZoom());
+		return (this.getGameDimensions().getTileHeight());
 	}
 
 	/**
@@ -306,7 +277,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	 * @return the tile width scaled
 	 */
 	public int getTileWidthScaled () {
-		return (int)(this.getGameDimensions().getTileWidth() * this.gameCamera.getZoom());
+		return (this.getGameDimensions().getTileWidth());
 	}
 
 	/**
@@ -315,7 +286,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 	 * @return the layer height scaled
 	 */
 	public int getLayerHeightScaled () {
-		return (int)(this.getGameDimensions().getLayerHeight() * this.gameCamera.getZoom());
+		return (this.getGameDimensions().getLayerHeight());
 	}
 
 	/**
@@ -451,12 +422,8 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			// right click
 		} else if (mouseEvent.getButton() == Buttons.RIGHT) {
 			if (mouseEvent.isButtonPressed()) {
-				this.holdingDownRightClick = true;
 				this.rightClickX = mouseEvent.getX();
 				this.rightClickY = mouseEvent.getY();
-				return true;
-			} else {
-				this.holdingDownRightClick = false;
 				return true;
 			}
 		}
@@ -466,57 +433,63 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 	@Override
 	public void onMouseMove (final MouseEvent mouseEvent) {
+		System.out.println("scroll any");
+
 		// not moving the map
-		if (!this.holdingDownRightClick) {
-			Vector3 c = null;
+		Vector3 c = null;
 
-			if (this.interactionMode == EnumInteractionMode.MODE_QUERY_TILE) {
-				// highlight tile under cursor
-				c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
-			} else if (this.interactionMode == EnumInteractionMode.MODE_QUERY_WALL) {
-				// highlight tile and wall under cursor
-				c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, true);
-			} else if (this.interactionMode == EnumInteractionMode.MODE_BUILD) {
-				// highlight tile under cursor
-				c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
+		if (this.interactionMode == EnumInteractionMode.MODE_QUERY_TILE) {
+			// highlight tile under cursor
+			c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
+		} else if (this.interactionMode == EnumInteractionMode.MODE_QUERY_WALL) {
+			// highlight tile and wall under cursor
+			c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, true);
+		} else if (this.interactionMode == EnumInteractionMode.MODE_BUILD) {
+			// highlight tile under cursor
+			c = RenderUtil.screenCoordToWorldCoord(this, mouseEvent.getX(), mouseEvent.getY(), this.currentDepth, false);
 
-				// we are in the middle of a build so draw stuff
-				if (this.buildMode == EnumBuildMode.LINE && this.buildBeginCoord != null) {
-					ArrayList<Vector3> temp = AStarSearch.search(this.map, new Vector3(this.buildBeginCoord.x, this.buildBeginCoord.y,
-						this.currentDepth), new Vector3(c.x, c.y, this.currentDepth));
+			// we are in the middle of a build so draw stuff
+			if (this.buildMode == EnumBuildMode.LINE && this.buildBeginCoord != null) {
+				ArrayList<Vector3> temp = AStarSearch.search(this.map, new Vector3(this.buildBeginCoord.x, this.buildBeginCoord.y,
+					this.currentDepth), new Vector3(c.x, c.y, this.currentDepth));
 
-					if (temp != null) {
-						for (Vector3 wc : temp) {
+				if (temp != null) {
+					for (Vector3 wc : temp) {
 
-						}
 					}
+				}
 
-					// this.map.getTileOverlayList().add(new
+				// this.map.getTileOverlayList().add(new
 // GameTile(GameTile.ID_PATH_GOOD, this.buildBeginCoord.x,
 // this.buildBeginCoord.y, this.currentDepth));
-					// this.map.getTileOverlayList().add(new
+				// this.map.getTileOverlayList().add(new
 // GameTile(GameTile.ID_PATH_GOOD, c.x, c.y, this.currentDepth));
-				}
-			} else {
-				return;
 			}
-
-			if (c.x >= 0 && c.y >= 0) {
-				// if (c.x < this.map.getLayer(this.currentDepth).length && c.y <
-// this.map.getLayer(this.currentDepth)[0].length) {
-				// // this.gameRenderer.setHighlightedTile(c);
-				// this.map.getTileOverlayList().add(new GameTile(GameTile.ID_GRID,
-// c.x, c.y, this.currentDepth, this.map));
-				// ((UIGameHUD)this.currentUI).setCurrentTileText(c.x + "," + c.y);
-				// } else {
-				// this.map.getTileOverlayList().clear();
-				// // this.gameRenderer.setHighlightedTile(null);
-				// }
-			}
-			// map is being scrolled
 		} else {
-			this.gameCamera.setOffsetX(this.gameCamera.getOffsetX() - (this.rightClickX - mouseEvent.getX()));
-			this.gameCamera.setOffsetY(this.gameCamera.getOffsetY() - (this.rightClickY - mouseEvent.getY()));
+			return;
+		}
+
+		if (c.x >= 0 && c.y >= 0) {
+			// if (c.x < this.map.getLayer(this.currentDepth).length && c.y <
+// this.map.getLayer(this.currentDepth)[0].length) {
+			// // this.gameRenderer.setHighlightedTile(c);
+			// this.map.getTileOverlayList().add(new GameTile(GameTile.ID_GRID,
+// c.x, c.y, this.currentDepth, this.map));
+			// ((UIGameHUD)this.currentUI).setCurrentTileText(c.x + "," + c.y);
+			// } else {
+			// this.map.getTileOverlayList().clear();
+			// // this.gameRenderer.setHighlightedTile(null);
+			// }
+		}
+	}
+
+	@Override
+	public void onMouseDrag (final MouseEvent mouseEvent) {
+		float deltaTime = Gdx.graphics.getDeltaTime();
+
+		// map is being scrolled
+		if (mouseEvent.getButton() == Buttons.RIGHT) {
+			this.gameCamera.moveCamera(this.rightClickX - mouseEvent.getX(), -(this.rightClickY - mouseEvent.getY()), deltaTime);
 
 			VictusLudusGame.engine.eventHandler.signal(new RenderEvent(this, EnumRenderEventType.SCROLL_MAP, this));
 
@@ -527,23 +500,25 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 	@Override
 	public boolean onKeyDown (final KeyDownEvent keyboardEvent) {
+		float deltaTime = Gdx.graphics.getDeltaTime();
+
 		if (keyboardEvent.getKey() == Keys.I) {
-			this.gameCamera.moveCameraUp();
+			this.gameCamera.moveCameraUp(deltaTime);
 			return true;
 		} else if (keyboardEvent.getKey() == Keys.K) {
-			this.gameCamera.moveCameraDown();
+			this.gameCamera.moveCameraDown(deltaTime);
 			return true;
 		} else if (keyboardEvent.getKey() == Keys.L) {
-			this.gameCamera.moveCameraRight();
+			this.gameCamera.moveCameraRight(deltaTime);
 			return true;
 		} else if (keyboardEvent.getKey() == Keys.J) {
-			this.gameCamera.moveCameraLeft();
+			this.gameCamera.moveCameraLeft(deltaTime);
 			return true;
 		} else if (keyboardEvent.getKey() == Keys.Z) {
-			this.zoomOut();
+			this.gameCamera.zoomCameraOut(deltaTime);
 			return true;
 		} else if (keyboardEvent.getKey() == Keys.X) {
-			this.zoomIn();
+			this.gameCamera.zoomCameraIn(deltaTime);
 			return true;
 		} else if (keyboardEvent.getKey() == Keys.PLUS) {
 			this.increaseDepth();
@@ -553,6 +528,29 @@ public class Game implements IView, KeyboardListener, MouseListener {
 			return true;
 		}
 
+		return false;
+	}
+
+	@Override
+	public boolean onScroll (final ScrollEvent scrollEvent) {
+		float deltaTime = Gdx.graphics.getDeltaTime();
+
+		if (scrollEvent.getScrollAmount() > 0) {
+			this.gameCamera.zoomCameraOut(deltaTime);
+		} else {
+			this.gameCamera.zoomCameraIn(deltaTime);
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean onKeyUp (final KeyUpEvent keyboardEvent) {
+		return false;
+	}
+
+	@Override
+	public boolean onKeyTyped (final KeyTypedEvent keyboardEvent) {
 		return false;
 	}
 
@@ -737,7 +735,7 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 	@Override
 	public void dispose () {
-		VictusLudusGame.engine.inputMultiplexer.removeProcessor(this.camController);
+
 	}
 
 	/**
@@ -760,31 +758,6 @@ public class Game implements IView, KeyboardListener, MouseListener {
 
 	public void setAmbientLightColor (final Color ambientLightColor) {
 		this.ambientLightColor = ambientLightColor;
-	}
-
-	@Override
-	public boolean onScroll (final ScrollEvent scrollEvent) {
-		if (scrollEvent.getScrollAmount() > 0) {
-			this.zoomOut();
-		} else {
-			this.zoomIn();
-		}
-
-		return true;
-	}
-
-	@Override
-	public boolean onKeyUp (final KeyUpEvent keyboardEvent) {
-		return false;
-	}
-
-	@Override
-	public boolean onKeyTyped (final KeyTypedEvent keyboardEvent) {
-		return false;
-	}
-
-	public Camera getCamera () {
-		return this.camera;
 	}
 
 	/**

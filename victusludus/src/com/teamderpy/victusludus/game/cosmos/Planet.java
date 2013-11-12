@@ -13,6 +13,7 @@ import com.teamderpy.victusludus.precision.Precision;
  * @author Josh
  * 
  */
+@Deprecated
 public class Planet implements Comparable<Planet> {
 	public static MathContext PLANET_RND = MathContext.DECIMAL64;
 	public static BigDecimal MIN_ROTATIONAL_PERIOD = BigDecimal.valueOf(86400 / 400);

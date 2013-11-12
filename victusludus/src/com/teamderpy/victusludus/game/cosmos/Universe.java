@@ -12,6 +12,7 @@ import com.teamderpy.victusludus.VictusLudusGame;
  * 
  * @author Josh
  */
+@Deprecated
 public class Universe {
 	private static int MIN_GALAXY_COUNT = 8;
 	private static int MAX_GALAXY_COUNT = 32;
@@ -53,7 +54,8 @@ public class Universe {
 	}
 
 	/**
-	 * Creates a new universe where a certain amount of time has passed since the big bang
+	 * Creates a new universe where a certain amount of time has passed since the
+	 * big bang
 	 * @param timePassed the amount of time that has passed
 	 * @param f
 	 */
@@ -129,7 +131,8 @@ public class Universe {
 	/**
 	 * A tick of time in years
 	 * 
-	 * @param delta the amount of stellar time that has passed since the last tick, in years
+	 * @param delta the amount of stellar time that has passed since the last
+	 *           tick, in years
 	 */
 	public void tick (final BigDecimal delta) {
 		// tick all children
