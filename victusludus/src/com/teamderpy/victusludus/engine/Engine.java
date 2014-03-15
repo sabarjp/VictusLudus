@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.teamderpy.victusludus.data.DataLoader;
 import com.teamderpy.victusludus.engine.graphics.EasyGL;
-import com.teamderpy.victusludus.game.cosmos.Universe;
 import com.teamderpy.victusludus.gui.GUI;
 import com.teamderpy.victusludus.gui.UI;
 import com.teamderpy.victusludus.gui.UIMainMenu;
@@ -77,9 +76,6 @@ public class Engine implements ResizeListener {
 
 	/** The current view. */
 	public IView currentView = null;
-
-	/** The current universe. */
-	public Universe currentUniverse = null;
 
 	/** The mouse pointer. */
 	public MousePointer mousePointer = null;
