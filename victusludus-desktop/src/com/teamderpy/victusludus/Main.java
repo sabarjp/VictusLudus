@@ -36,8 +36,11 @@ public class Main {
 			settings.filterMag = TextureFilter.Nearest;
 			settings.forceSquareOutput = false;
 
-			TexturePacker2.process(settings, "../victusludus-sprites/cosmos", "../victusludus-android/assets/sprites/spritesheets",
-				"cosmos_spritesheet");
+			/*
+			 * TexturePacker2.process(settings, "../victusludus-sprites/cosmos",
+			 * "../victusludus-android/assets/sprites/spritesheets",
+			 * "cosmos_spritesheet");
+			 */
 
 			TexturePacker2.process(settings, "../victusludus-sprites/entities",
 				"../victusludus-android/assets/sprites/spritesheets", "entities_spritesheet");
