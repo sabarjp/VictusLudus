@@ -1,4 +1,4 @@
 VictusLudus
 ===========
 
-An isometric and slightly fantastical simulation game inspired by SimCity, Spore, and Dwarf Fortress.
+Coding practice for a game engine utilizing libgdx
